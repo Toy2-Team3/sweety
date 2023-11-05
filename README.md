@@ -23,7 +23,7 @@ E.g, Y_FE_Toy2_GYOHEON
 - 과제 수행 및 제출 과정에서 문제가 발생한 경우, 바로 담당 멘토나 강사에게 얘기하세요!
 
 ## 필수 구현 사항
-- [ ] `useState`, `useReducer`를 활용한 상태 관리 구형
+- [ ] `useState`, `useReducer`를 활용한 상태 관리 구현
 - [ ] `Sass`, `styled-component`를 활용한 스타일 구현
 - [ ] `react` 상태를 통한 할일 CRUD 구현
 - [ ] 상태에 따라 달라지는 스타일 구현
