@@ -6,9 +6,9 @@
 ## 과제 수행 및 제출 방법
 
 ```
-Y_FE_{팀명}
+Y_FE_Toy2_{팀명}
 
-E.g, Y_FE_GYOHEON
+E.g, Y_FE_Toy2_GYOHEON
 ```
 
 1. 현재 저장소를 로컬에 클론(Clone)합니다.
