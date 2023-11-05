@@ -40,7 +40,7 @@ E.g, Y_FE_Toy2_GYOHEON
 
 ## 예시 프로젝트
 
-![[Pasted image 20231103152605.png]]
+![private-messaging-part-1-chat-ab610e9e03738ad37f7b0fb55c771087](https://github.com/KDT1-FE/Y_FE_Toy2/assets/66263916/c5247dde-2ca6-4285-a60e-8dcf23326d0e)
 
 ## API 사용법
 
