@@ -22,6 +22,8 @@ E.g, Y_FE_Toy2_GYOHEON
 
 - 과제 수행 및 제출 과정에서 문제가 발생한 경우, 바로 담당 멘토나 강사에게 얘기하세요!
 
+- 백엔드 서버에 문제가 생겼을 경우, 바로 슬랙의 GyoHeon Lee에게 연락하세요!
+
 ## 필수 구현 사항
 - [ ] `useState`, `useReducer`를 활용한 상태 관리 구현
 - [ ] `Sass`, `styled-component`를 활용한 스타일 구현
@@ -275,16 +277,16 @@ interface Chat {
 
 ```json
 [
- {
-	"id": "user1",
-	"name": "lgh",
-	"picture": "https://gravatar.com/avatar/c274467c5ef4fe381b154a20c5e7ce26?s=200&d=retro"
+  {
+    "id": "user1",
+    "name": "lgh",
+    "picture": "https://gravatar.com/avatar/c274467c5ef4fe381b154a20c5e7ce26?s=200&d=retro"
   },
   {
-	"id": "user2",
-	"name": "ldj",
-	"picture": "https://gravatar.com/avatar/d94869409b4e94903723612a4f93a6f9?s=200&d=retro"
-  }
+    "id": "user2",
+    "name": "ldj",
+    "picture": "https://gravatar.com/avatar/d94869409b4e94903723612a4f93a6f9?s=200&d=retro"
+   }
 ]
 ```
 
@@ -308,29 +310,29 @@ interface RequestBody{
 
 ```json
 {
-	"name": "test chat",
-	"users": ["user2"],
+  "name": "test chat",
+  "users": ["user2"],
 }
 ```
 
 응답 데이터 타입 및 예시:
 ```ts
 interface ResponseValue {
-	id: string,
-	name: string,
-	users: string[], // 자신을 포함한 참가자들 id
-	isPrivate: boolean,
-	updatedAt: Date
+  id: string,
+  name: string,
+  users: string[], // 자신을 포함한 참가자들 id
+  isPrivate: boolean,
+  updatedAt: Date
 }
 ```
 
 ```json
 {
-	"id": "fasgadsfdsghssdlsdafasd",
-	"name": "test chat",
-	"users": ["user2", "user1"],
-	"isPrivate": false,
-	"updatedAt": "2023-11-01T08:23:39.850Z"
+  "id": "fasgadsfdsghssdlsdafasd",
+  "name": "test chat",
+  "users": ["user2", "user1"],
+  "isPrivate": false,
+  "updatedAt": "2023-11-01T08:23:39.850Z"
 }
 ```
 
@@ -364,25 +366,25 @@ interface Chat {
 ```json
 [
   {
-	"id": "f189ab25-5644-4d72-bd7c-0170ee9c8ede",
-	"name": "chat room 1",
-	"users": [
-	  "user12",
-	  "user11",
-	  "user6"
-	],
-	"isPrivate": false,
-	"updatedAt": "2023-10-31T13:18:38.216Z"
+    "id": "f189ab25-5644-4d72-bd7c-0170ee9c8ede",
+    "name": "chat room 1",
+    "users": [
+      "user12",
+      "user11",
+      "user6"
+    ],
+    "isPrivate": false,
+    "updatedAt": "2023-10-31T13:18:38.216Z"
   },
   {
-	"id": "f189ab25-5644-4d72-bd7c-0170ee9c8edj",
-	"name": "chat room 2",
-	"users": [
-	  "user7",
-	  "user1"
-	],
-	"isPrivate": false,
-	"updatedAt": "2023-10-31T15:18:38.216Z"
+    "id": "f189ab25-5644-4d72-bd7c-0170ee9c8edj",
+    "name": "chat room 2",
+    "users": [
+      "user7",
+      "user1"
+    ],
+    "isPrivate": false,
+    "updatedAt": "2023-10-31T15:18:38.216Z"
   }
 ]
 ```
@@ -412,25 +414,25 @@ interface Chat {
 ```json
 [
   {
-	"id": "f189ab25-5644-4d72-bd7c-0170ee9c8ede",
-	"name": "chat room 1",
-	"users": [
-	  "user12",
-	  "user11",
-	  "user6"
-	],
-	"isPrivate": true,
-	"updatedAt": "2023-10-31T13:18:38.216Z"
+    "id": "f189ab25-5644-4d72-bd7c-0170ee9c8ede",
+    "name": "chat room 1",
+    "users": [
+      "user12",
+      "user11",
+      "user6"
+    ],
+    "isPrivate": true,
+    "updatedAt": "2023-10-31T13:18:38.216Z"
   },
   {
-	"id": "f189ab25-5644-4d72-bd7c-0170ee9c8edj",
-	"name": "chat room 2",
-	"users": [
-	  "user7",
-	  "user1"
-	],
-	"isPrivate": false,
-	"updatedAt": "2023-10-31T15:18:38.216Z"
+    "id": "f189ab25-5644-4d72-bd7c-0170ee9c8edj",
+    "name": "chat room 2",
+    "users": [
+      "user7",
+      "user1"
+    ],
+    "isPrivate": false,
+    "updatedAt": "2023-10-31T15:18:38.216Z"
   }
 ]
 ```
@@ -470,15 +472,15 @@ interface ResponseValue{
 
 ```json
 {
-	"id": "f189ab25-5644-4d72-bd7c-0170ee9c8ede",
-	"name": "chat room 1",
-	"users": [
-	  "user12",
-	  "user11",
-	  "user6"
-	],
-	"isPrivate": true,
-	"updatedAt": "2023-10-31T13:18:38.216Z"
+  "id": "f189ab25-5644-4d72-bd7c-0170ee9c8ede",
+  "name": "chat room 1",
+  "users": [
+    "user12",
+    "user11",
+    "user6"
+  ],
+  "isPrivate": true,
+  "updatedAt": "2023-10-31T13:18:38.216Z"
 }
 ```
 
@@ -505,14 +507,14 @@ interface RequestBody {
 
 응답 데이터 타입 및 예시:
 ```ts
-interface ResponseValue{
-	message: string;
+interface ResponseValue {
+  message: string;
 }
 ```
 
 ```json
 {
-	"message": "Leave success"
+  "message": "Leave success"
 }
 ```
 
@@ -553,17 +555,17 @@ interface ResponseValue{
 
 ```json
 {
-	"id": "f189ab25-5644-4d72-bd7c-0170ee9c8ede",
-	"name": "chat room 1",
-	"users": [
-	  "user12",
-	  "user11",
-	  "user6",
-	  "user1",
-	  "user2"
-	],
-	"isPrivate": true,
-	"updatedAt": "2023-10-31T13:18:38.216Z"
+  "id": "f189ab25-5644-4d72-bd7c-0170ee9c8ede",
+  "name": "chat room 1",
+  "users": [
+    "user12",
+    "user11",
+    "user6",
+    "user1",
+    "user2"
+  ],
+  "isPrivate": true,
+  "updatedAt": "2023-10-31T13:18:38.216Z"
 }
 ```
 
@@ -604,7 +606,7 @@ type RequestData: string;
 ### example
 ```ts
 socket.on('message-to-client', (messageObject) => {
-	console.log(messageObject);
+  console.log(messageObject);
 })
 ```
 ### message-to-client
@@ -613,10 +615,10 @@ socket.on('message-to-client', (messageObject) => {
 응답 데이터
 ```ts
 interface ResponseData {
-	id: string;
-	text: string;
-	userId: string; // 메세지를 보낸 사람의 id
-	createdAt: Date;
+  id: string;
+  text: string;
+  userId: string; // 메세지를 보낸 사람의 id
+  createdAt: Date;
 }
 ```
 ### messages-to-client
@@ -625,10 +627,10 @@ interface ResponseData {
 응답 데이터
 ```ts
 interface Message {
-	id: string;
-	text: string;
-	userId: string; // 메세지를 보낸 사람의 id
-	createdAt: Date;
+  id: string;
+  text: string;
+  userId: string; // 메세지를 보낸 사람의 id
+  createdAt: Date;
 }
 
 interface ResponseData {
@@ -641,8 +643,8 @@ interface ResponseData {
 응답 데이터
 ```ts
 interface ResponseData {
-	users: string[]; // 참여자들 id
-	joiners: string[]; // 새로운 참여자 id
+  users: string[]; // 참여자들 id
+  joiners: string[]; // 새로운 참여자 id
 }
 ```
 ### leave
@@ -651,8 +653,8 @@ interface ResponseData {
 응답 데이터
 ```ts
 interface ResponseData {
-	users: string[]; // 참여자들 id
-	leaver: string; // 나간 사용자 id
+  users: string[]; // 참여자들 id
+  leaver: string; // 나간 사용자 id
 }
 ```
 ### new-chat
@@ -661,11 +663,11 @@ interface ResponseData {
 응답 데이터
 ```ts
 interface ResponseData {
-	id: string;
-	name: string;
-	users: string[]; // 참여자들 id
-	isPrivate: boolean;
-	updatedAt: Date;
+  id: string;
+  name: string;
+  users: string[]; // 참여자들 id
+  isPrivate: boolean;
+  updatedAt: Date;
 }
 ```
 
@@ -675,6 +677,6 @@ interface ResponseData {
 응답 데이터
 ```ts
 interface ResponseData {
-	user: string[]; // 참가자들 id
+  user: string[]; // 참가자들 id
 }
 ```
