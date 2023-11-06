@@ -574,7 +574,7 @@ interface ResponseValue{
 - Socket 연결시에도 headers는 유지해야 합니다.
 ## 기본 연결
 ```ts
-socket.on(`http://localhost:4000/chat?chatId=${chatId}`)
+socket.on(`https://fastcampus-chat.net/chat?chatId=${chatId}`)
 ```
 
 ## emit Event(client -> server)
