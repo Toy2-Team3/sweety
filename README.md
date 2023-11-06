@@ -272,7 +272,7 @@ curl https://fastcampus-chat.net/users
 ```ts
 type ResponseValue = User[]
 
-interface Chat {
+interface User {
   id: string;
   name: string;
   picture: string;
@@ -307,7 +307,7 @@ curl https://fastcampus-chat.net/chat
 ```ts
 interface RequestBody{
   name: string, // chat 이름
-  users: string[], //참가자들 id(자신 미포함)
+  users: string[], // 참가자들 id(자신 미포함)
   isPrivate?: boolean // 공개 비공개
 }
 ```
@@ -315,7 +315,18 @@ interface RequestBody{
 ```json
 {
   "name": "test chat",
-  "users": ["user2"],
+  "users": [
+    {
+      "id": "user1",
+      "name": "lgh",
+      "picture": "https://gravatar.com/avatar/c274467c5ef4fe381b154a20c5e7ce26?s=200&d=retro"
+    },
+    {
+      "id": "user2",
+      "name": "ldj",
+      "picture": "https://gravatar.com/avatar/d94869409b4e94903723612a4f93a6f9?s=200&d=retro"
+    }
+  ],
 }
 ```
 
@@ -324,9 +335,15 @@ interface RequestBody{
 interface ResponseValue {
   id: string,
   name: string,
-  users: string[], // 자신을 포함한 참가자들 id
+  users: User[], // 자신을 포함한 참가자들 정보
   isPrivate: boolean,
   updatedAt: Date
+}
+
+interface User {
+  id: string;
+  name: string;
+  picture: string;
 }
 ```
 
@@ -334,7 +351,18 @@ interface ResponseValue {
 {
   "id": "fasgadsfdsghssdlsdafasd",
   "name": "test chat",
-  "users": ["user2", "user1"],
+  "users": [
+    {
+      "id": "user1",
+      "name": "lgh",
+      "picture": "https://gravatar.com/avatar/c274467c5ef4fe381b154a20c5e7ce26?s=200&d=retro"
+    },
+    {
+      "id": "user2",
+      "name": "ldj",
+      "picture": "https://gravatar.com/avatar/d94869409b4e94903723612a4f93a6f9?s=200&d=retro"
+     }
+  ],
   "isPrivate": false,
   "updatedAt": "2023-11-01T08:23:39.850Z"
 }
@@ -360,10 +388,23 @@ type ResponseValue = Chat[]
 interface Chat {
   id: string;
   name: string;
-  users: string[]; // 속한 유저 id
+  users: User[]; // 속한 유저 정보
   isPrivate: boolean;
-  
+  latestMessage: Message | null;
   updatedAt: Date;
+}
+
+interface User {
+  id: string;
+  name: string;
+  picture: string;
+}
+
+interface Message {
+  id: string;
+  text: string;
+  userId: string;
+  createAt: Date;
 }
 ```
 
@@ -373,22 +414,44 @@ interface Chat {
     "id": "f189ab25-5644-4d72-bd7c-0170ee9c8ede",
     "name": "chat room 1",
     "users": [
-      "user12",
-      "user11",
-      "user6"
-    ],
+    {
+      "id": "user1",
+      "name": "lgh",
+      "picture": "https://gravatar.com/avatar/c274467c5ef4fe381b154a20c5e7ce26?s=200&d=retro"
+    },
+    {
+      "id": "user2",
+      "name": "ldj",
+      "picture": "https://gravatar.com/avatar/d94869409b4e94903723612a4f93a6f9?s=200&d=retro"
+    }
+  ],
     "isPrivate": false,
-    "updatedAt": "2023-10-31T13:18:38.216Z"
+    "updatedAt": "2023-10-31T13:18:38.216Z",
+    "latestMessage": null
   },
   {
     "id": "f189ab25-5644-4d72-bd7c-0170ee9c8edj",
     "name": "chat room 2",
     "users": [
-      "user7",
-      "user1"
-    ],
+    {
+      "id": "user1",
+      "name": "lgh",
+      "picture": "https://gravatar.com/avatar/c274467c5ef4fe381b154a20c5e7ce26?s=200&d=retro"
+    },
+    {
+      "id": "user2",
+      "name": "ldj",
+      "picture": "https://gravatar.com/avatar/d94869409b4e94903723612a4f93a6f9?s=200&d=retro"
+    }
+  ],
     "isPrivate": false,
-    "updatedAt": "2023-10-31T15:18:38.216Z"
+    "updatedAt": "2023-10-31T15:18:38.216Z",
+    "latestMessage": {
+      "id": "8f7f67bb-f1ab-4792-9678-0b8546adcb6f",
+      "text": "testtest444",
+      "userId": "test:test6",
+      "createdAt": 2023-11-06T11:15:50.588+00:00
+    }
   }
 ]
 ```
@@ -402,16 +465,33 @@ curl https://fastcampus-chat.net/chat
 - 내가 속한 모든 채팅을 조회합니다.
 - isPrivate: true인 채팅방도 모두 보이게 됩니다.
 
+요청 데이터 타입 및 예시:
+- 없음
+
+응답 데이터 타입 및 예시:
 ```ts
 type ResponseValue = Chat[]
 
 interface Chat {
   id: string;
   name: string;
-  users: string[]; // 속한 유저 id
+  users: User[]; // 속한 유저 id
   isPrivate: boolean;
-  
+  latestMessage: Message | null;
   updatedAt: Date;
+}
+
+interface User {
+  id: string;
+  name: string;
+  picture: string;
+}
+
+interface Message {
+  id: string;
+  text: string;
+  userId: string;
+  createAt: Date;
 }
 ```
 
@@ -421,22 +501,44 @@ interface Chat {
     "id": "f189ab25-5644-4d72-bd7c-0170ee9c8ede",
     "name": "chat room 1",
     "users": [
-      "user12",
-      "user11",
-      "user6"
-    ],
+    {
+      "id": "user1",
+      "name": "lgh",
+      "picture": "https://gravatar.com/avatar/c274467c5ef4fe381b154a20c5e7ce26?s=200&d=retro"
+    },
+    {
+      "id": "user2",
+      "name": "ldj",
+      "picture": "https://gravatar.com/avatar/d94869409b4e94903723612a4f93a6f9?s=200&d=retro"
+    }
+  ],
     "isPrivate": true,
-    "updatedAt": "2023-10-31T13:18:38.216Z"
+    "updatedAt": "2023-10-31T13:18:38.216Z",
+    "latestMessage": null
   },
   {
     "id": "f189ab25-5644-4d72-bd7c-0170ee9c8edj",
     "name": "chat room 2",
     "users": [
-      "user7",
-      "user1"
+      {
+        "id": "user1",
+        "name": "lgh",
+        "picture": "https://gravatar.com/avatar/c274467c5ef4fe381b154a20c5e7ce26?s=200&d=retro"
+      },
+      {
+        "id": "user2",
+        "name": "ldj",
+        "picture": "https://gravatar.com/avatar/d94869409b4e94903723612a4f93a6f9?s=200&d=retro"
+      }
     ],
     "isPrivate": false,
-    "updatedAt": "2023-10-31T15:18:38.216Z"
+    "updatedAt": "2023-10-31T15:18:38.216Z",
+    "latestMessage": {
+      "id": "8f7f67bb-f1ab-4792-9678-0b8546adcb6f",
+      "text": "testtest444",
+      "userId": "test:test6",
+      "createdAt": 2023-11-06T11:15:50.588+00:00
+    }
   }
 ]
 ```
@@ -467,10 +569,15 @@ interface RequestBody {
 interface ResponseValue{
   id: string;
   name: string;
-  users: string[]; // 속한 유저 id
+  users: User[]; // 속한 유저 id
   isPrivate: boolean;
-  
   updatedAt: Date;
+}
+
+interface User {
+  id: string;
+  name: string;
+  picture: string;
 }
 ```
 
@@ -479,9 +586,16 @@ interface ResponseValue{
   "id": "f189ab25-5644-4d72-bd7c-0170ee9c8ede",
   "name": "chat room 1",
   "users": [
-    "user12",
-    "user11",
-    "user6"
+    {
+      "id": "user1",
+      "name": "lgh",
+      "picture": "https://gravatar.com/avatar/c274467c5ef4fe381b154a20c5e7ce26?s=200&d=retro"
+    },
+    {
+      "id": "user2",
+      "name": "ldj",
+      "picture": "https://gravatar.com/avatar/d94869409b4e94903723612a4f93a6f9?s=200&d=retro"
+    }
   ],
   "isPrivate": true,
   "updatedAt": "2023-10-31T13:18:38.216Z"
@@ -550,10 +664,15 @@ interface RequestBody {
 interface ResponseValue{
   id: string;
   name: string;
-  users: string[]; // 속한 유저 id
+  users: User[]; // 속한 유저 정보
   isPrivate: boolean;
-  
   updatedAt: Date;
+}
+
+interface User {
+  id: string;
+  name: string;
+  picture: string;
 }
 ```
 
@@ -562,11 +681,16 @@ interface ResponseValue{
   "id": "f189ab25-5644-4d72-bd7c-0170ee9c8ede",
   "name": "chat room 1",
   "users": [
-    "user12",
-    "user11",
-    "user6",
-    "user1",
-    "user2"
+    {
+      "id": "user1",
+      "name": "lgh",
+      "picture": "https://gravatar.com/avatar/c274467c5ef4fe381b154a20c5e7ce26?s=200&d=retro"
+    },
+    {
+      "id": "user2",
+      "name": "ldj",
+      "picture": "https://gravatar.com/avatar/d94869409b4e94903723612a4f93a6f9?s=200&d=retro"
+    }
   ],
   "isPrivate": true,
   "updatedAt": "2023-10-31T13:18:38.216Z"
