@@ -27,7 +27,7 @@ E.g, Y_FE_Toy2_GYOHEON
 ## 필수 구현 사항
 - [ ] `useState`, `useReducer`를 활용한 상태 관리 구현
 - [ ] `Sass` 또는 `styled-component`를 활용한 스타일 구현
-- [ ] `react` 상태를 통한 할일 CRUD 구현
+- [ ] `react` 상태를 통한 CRUD 구현
 - [ ] 상태에 따라 달라지는 스타일 구현
 - [ ] `custom hook`을 통한 비동기 처리 구현
 - [ ] 유저인증 시스템(로그인, 회원가입) 구현
