@@ -40,6 +40,10 @@ E.g, Y_FE_Toy2_GYOHEON
 - [ ] `storybook`을 활용한 디자인 시스템 구현
 - [ ] `jest`를 활용한 단위 테스트 구현
 
+## 추가 사항
+- api들의 응답 데이터들을 일부러 파편화 해두었습니다!
+- api들 간의 데이터를 조합하여 이상적인 구조를 만들어보세요.
+
 ## 예시 프로젝트
 
 ![private-messaging-part-1-chat-ab610e9e03738ad37f7b0fb55c771087](https://github.com/KDT1-FE/Y_FE_Toy2/assets/66263916/c5247dde-2ca6-4285-a60e-8dcf23326d0e)
