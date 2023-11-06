@@ -450,7 +450,7 @@ interface Message {
       "id": "8f7f67bb-f1ab-4792-9678-0b8546adcb6f",
       "text": "testtest444",
       "userId": "test:test6",
-      "createdAt": 2023-11-06T11:15:50.588+00:00
+      "createdAt": "2023-11-06T11:15:50.588+00:00"
     }
   }
 ]
@@ -537,7 +537,7 @@ interface Message {
       "id": "8f7f67bb-f1ab-4792-9678-0b8546adcb6f",
       "text": "testtest444",
       "userId": "test:test6",
-      "createdAt": 2023-11-06T11:15:50.588+00:00
+      "createdAt": "2023-11-06T11:15:50.588+00:00"
     }
   }
 ]
