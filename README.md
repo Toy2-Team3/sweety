@@ -25,7 +25,7 @@ E.g, Y_FE_Toy2_GYOHEON
 - 백엔드 서버에 문제가 생겼을 경우, 바로 슬랙의 GyoHeon Lee에게 연락하세요!
 
 ## 필수 구현 사항
-- [ ] `useState`, `useReducer`를 활용한 상태 관리 구현
+- [ ] `useState` 또는 `useReducer`를 활용한 상태 관리 구현
 - [ ] `Sass` 또는 `styled-component`를 활용한 스타일 구현
 - [ ] `react` 상태를 통한 CRUD 구현
 - [ ] 상태에 따라 달라지는 스타일 구현
