@@ -1,6 +1,7 @@
 import React from 'react';
+import CommunityCreateItem from './community-create-item/CommunityCreateItem';
 // import CommunityItem from './community-item/CommunityItem';
-import CommunityModal from './community-modal/CommunityModal';
+// import CommunityModal from './community-modal/CommunityModal';
 
 const index = () => {
   return (
@@ -9,7 +10,8 @@ const index = () => {
       {/* <CommunityItem />
       <CommunityItem />
       <CommunityItem /> */}
-      <CommunityModal />
+      {/* <CommunityModal /> */}
+      <CommunityCreateItem />
     </div>
   );
 };
