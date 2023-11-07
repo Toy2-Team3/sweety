@@ -1,6 +1,7 @@
-export default function CommunityPage() {
+import React from "react";
 
-  return (
-    <h1>COMMUNITY PAGE</h1>
-  )
-}
+const CommunityPage = () => {
+  return <div>CommunityPage</div>;
+};
+
+export default CommunityPage;

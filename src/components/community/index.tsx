@@ -1,5 +1,5 @@
 import React from 'react';
-import CommunityCreateItem from './community-create-item/CommunityCreateItem';
+import CommunityEdit from './community-edit/CommunityEdit';
 // import CommunityItem from './community-item/CommunityItem';
 // import CommunityModal from './community-modal/CommunityModal';
 
@@ -11,7 +11,7 @@ const index = () => {
       <CommunityItem />
       <CommunityItem /> */}
       {/* <CommunityModal /> */}
-      <CommunityCreateItem />
+      <CommunityEdit />
     </div>
   );
 };
