@@ -7,12 +7,13 @@ import { IButtonType } from '../community-item/CommunityItem';
 const Modal = styled.div`
   width: 100vw;
   height: 100vh;
+
+  position: relative;
 `;
 
 const ModalWrapper = styled.div`
-  max-height: 20rem;
-  max-width: 50%;
   min-width: 30%;
+  max-width: 50%;
   padding: 3rem;
 
   display: flex;
@@ -25,7 +26,27 @@ const ModalWrapper = styled.div`
   /* border: transparent; */
   border-radius: 1rem;
 
-  position: relative;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+  @media (max-width: 480px) {
+    width: 100%;
+    max-width: 90%;
+    padding: 1.5rem;
+  }
+
+  h1 {
+    font-size: 2rem;
+    font-weight: bold;
+  }
+
+  p {
+    font-size: 1.1rem;
+    font-weight: normal;
+    line-height: 1.5rem;
+  }
 
   div {
     display: flex;

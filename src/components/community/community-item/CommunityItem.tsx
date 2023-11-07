@@ -3,9 +3,9 @@ import CommunityItemButtons from '../Community-item-buttons/CommunityItemButtons
 import styled from 'styled-components';
 
 const Container = styled.div`
-  max-height: 20rem;
-  width: 50%;
+  width: 100%;
   min-width: 30%;
+  max-height: 15rem;
   padding: 2rem;
   margin: 1rem;
 
@@ -31,6 +31,16 @@ const Container = styled.div`
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+  }
+
+  h1 {
+    font-size: 2rem;
+    font-weight: bold;
+  }
+
+  p {
+    font-size: 1.1rem;
+    font-weight: normal;
   }
 `;
 
