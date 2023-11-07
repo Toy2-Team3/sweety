@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import CommunityItemButtons from '../Community-item-buttons/CommunityItemButtons';
 import Close from '../../../assets/close.png';
+import { IButtonType } from '../community-item/CommunityItem';
 
 const Modal = styled.div`
   width: 100vw;
@@ -12,7 +13,7 @@ const ModalWrapper = styled.div`
   max-height: 20rem;
   max-width: 50%;
   min-width: 30%;
-  padding: 3rem 3rem;
+  padding: 3rem;
 
   display: flex;
   flex-direction: column;
@@ -43,19 +44,24 @@ const CloseButton = styled.div`
 `;
 
 const CommunityModal = () => {
+  const buttonText: IButtonType = {
+    left: '삭제',
+    right: '수정',
+  };
+
   return (
     <Modal>
       <ModalWrapper>
         <CloseButton>
           <img src={Close} />
         </CloseButton>
-        <h1>매주 월요일 바이크 타실 분</h1>
+        <h1>매주 월요일 바이크 타실 분 🚴</h1>
         <p>
           안녕하세요, 바이크 소모임 000입니다! 저희 소모임은 매주 월요일 저녁
           8시에 진행됩니다. 많관부~ 어째저째 길다~~~ 내용이 길게 보입니다.
         </p>
         <div>
-          <CommunityItemButtons />
+          <CommunityItemButtons buttonText={buttonText} />
         </div>
       </ModalWrapper>
     </Modal>

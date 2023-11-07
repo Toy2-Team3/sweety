@@ -1,10 +1,10 @@
 import './App.css';
-import Community from './components/community';
+import CommunityPage from './pages/CommunityPage';
 
 function App() {
   return (
     <div className="App">
-      <Community />
+      <CommunityPage />
     </div>
   );
 }

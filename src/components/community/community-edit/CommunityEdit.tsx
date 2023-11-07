@@ -1,6 +1,7 @@
 import React from 'react';
 import CommunityItemButtons from '../Community-item-buttons/CommunityItemButtons';
 import styled from 'styled-components';
+import { IButtonType } from '../community-item/CommunityItem';
 
 const EditWrapper = styled.div`
   width: 80%;
@@ -67,6 +68,11 @@ const ButtonWrapper = styled.div`
 `;
 
 const CommunityEdit = () => {
+  const buttonText: IButtonType = {
+    left: '초기화',
+    right: '등록',
+  };
+
   return (
     <EditWrapper>
       <InputForm>
@@ -80,7 +86,7 @@ const CommunityEdit = () => {
         </InputWrapper>
       </InputForm>
       <ButtonWrapper>
-        <CommunityItemButtons />
+        <CommunityItemButtons buttonText={buttonText} />
       </ButtonWrapper>
     </EditWrapper>
   );

@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import { IButtonType } from '../community-item/CommunityItem';
 
 const ButtonWrapper = styled.div`
   width: 30%;
@@ -16,17 +17,29 @@ const Button = styled.button<{ $left?: boolean }>`
   color: white;
   border: transparent;
   border-radius: 0.5rem;
+  box-shadow: 1px 1px 2px 1px rgba(0, 0, 0, 0.3);
 
   width: 40%;
   height: 100%;
   padding: 0 auto;
+
+  transition: all 0.3s;
+
+  &:hover {
+    transform: scale(1.05);
+    cursor: pointer;
+  }
 `;
 
-const CommunityItemButtons = () => {
+interface IButtonProps {
+  buttonText: IButtonType;
+}
+
+const CommunityItemButtons: React.FC<IButtonProps> = ({ buttonText }) => {
   return (
     <ButtonWrapper>
-      <Button $left>버튼1</Button>
-      <Button>버튼2</Button>
+      <Button $left>{buttonText.left}</Button>
+      <Button>{buttonText.right}</Button>
     </ButtonWrapper>
   );
 };
