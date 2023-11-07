@@ -1,10 +1,10 @@
 import './App.css';
+import Auth from './components/login/Auth';
 
 function App() {
   return (
     <div className="App">
-      <button>asdfsdas</button>
-      <input type="text" />
+      <Auth />
     </div>
   );
 }
