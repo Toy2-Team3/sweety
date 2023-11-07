@@ -9,6 +9,10 @@ const ButtonWrapper = styled.div`
   flex-direction: row;
   justify-content: right;
   gap: 1rem;
+
+  @media (max-width: 480px) {
+    width: 50%;
+  }
 `;
 
 const Button = styled.button<{ $left?: boolean }>`
@@ -16,6 +20,7 @@ const Button = styled.button<{ $left?: boolean }>`
 
   white-space: nowrap;
   color: white;
+  font-size: 1.1rem;
 
   border: transparent;
   border-radius: 0.5rem;
