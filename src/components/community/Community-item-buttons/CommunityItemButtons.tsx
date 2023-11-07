@@ -14,14 +14,16 @@ const ButtonWrapper = styled.div`
 const Button = styled.button<{ $left?: boolean }>`
   background: ${(props) => (props.$left ? '#777777' : '#D94E28')};
 
+  white-space: nowrap;
   color: white;
+
   border: transparent;
   border-radius: 0.5rem;
   box-shadow: 1px 1px 2px 1px rgba(0, 0, 0, 0.3);
 
-  width: 40%;
+  width: 100%;
   height: 100%;
-  padding: 0 auto;
+  padding: 0 0.5rem;
 
   transition: all 0.3s;
 

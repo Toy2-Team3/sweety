@@ -26,6 +26,7 @@ const Container = styled.div`
     justify-content: left;
   }
 
+  h1,
   p {
     white-space: nowrap;
     overflow: hidden;
