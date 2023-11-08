@@ -1,6 +1,8 @@
 import styled from 'styled-components';
 import { Container } from './StartPage';
-import { GreetingText } from './SignUpIDPW';
+import { CorrectText, GreetingText, WarnText } from './SignUpIDPW';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 import { useState } from 'react';
 
 const regions = [
@@ -25,15 +27,16 @@ const regions = [
 interface ButtonProps {
   profileImage: string | null;
   name: string;
-  birthday: string;
+  birthday: Date | null;
   selectedGender: string;
   selectedRegion: string;
+  isNameValid: boolean;
 }
 
 function SignUpSpecific() {
   const [profileImage, setProfileImage] = useState<string | null>(null);
   const [name, setName] = useState<string>('');
-  const [birthday, setBirthday] = useState<string>('');
+  const [birthday, setBirthday] = useState<Date | null>(null);
   const [selectedGender, setSelectedGender] = useState('');
   const [selectedRegion, setSelectedRegion] = useState('');
 
@@ -46,7 +49,11 @@ function SignUpSpecific() {
     }
   };
 
-  console.log(selectedRegion);
+  const isNameValid = (name: string) => {
+    if (name.length > 20) return false;
+    const nameRegex = /^[A-Za-z가-힣]+$/;
+    return nameRegex.test(name);
+  };
 
   return (
     <Container style={{ gap: '18px' }}>
@@ -58,23 +65,36 @@ function SignUpSpecific() {
             style={{ backgroundImage: `url(${profileImage})` }}
           />
         </label>
-        <ProfileInput type="file" id="profile" onChange={handleImageUpload} />
+        <ProfileInput
+          type="file"
+          id="profile"
+          onChange={handleImageUpload}
+          accept=".jpg, .jpeg, .png"
+        />
       </ProfileWrapper>
-      <div>
+      <div style={{ position: 'relative' }}>
         <p>이름</p>
         <NameInput
           placeholder="이름을 입력해주세요"
           value={name}
           onChange={(e) => setName(e.target.value)}
         />
+        {name ? (
+          isNameValid(name) ? (
+            <CorrectText>정말 매력적인 이름이네요!</CorrectText>
+          ) : (
+            <WarnText>영문, 한글 조합 20자 이하입니다</WarnText>
+          )
+        ) : null}
       </div>
       <BirthGenderWrapper>
         <div>
           <p>생년월일</p>
-          <BirthdayInput
-            placeholder="YYYY-MM-DD"
-            value={birthday}
-            onChange={(e) => setBirthday(e.target.value)}
+
+          <CustomDatePicker
+            selected={birthday}
+            onChange={(date: Date | null) => setBirthday(date)}
+            dateFormat="yyyy-MM-dd"
           />
         </div>
         <div>
@@ -123,6 +143,7 @@ function SignUpSpecific() {
       <SignUpButton
         profileImage={profileImage}
         name={name}
+        isNameValid={isNameValid(name)}
         birthday={birthday}
         selectedGender={selectedGender}
         selectedRegion={selectedRegion}
@@ -168,7 +189,7 @@ const BirthGenderWrapper = styled.div`
   width: 340px;
 `;
 
-const BirthdayInput = styled.input`
+const CustomDatePicker = styled(DatePicker)`
   width: 140px;
   height: 50px;
   padding: 0 23px;
@@ -211,22 +232,22 @@ const SignUpButton = styled.button<ButtonProps>`
   border-radius: 12px;
   background: ${({
     profileImage,
-    name,
+    isNameValid,
     birthday,
     selectedGender,
     selectedRegion,
   }) =>
-    profileImage && name && birthday && selectedGender && selectedRegion
+    profileImage && isNameValid && birthday && selectedGender && selectedRegion
       ? '#d94e28'
       : '#dfdfdf'};
   cursor: ${({
     profileImage,
-    name,
+    isNameValid,
     birthday,
     selectedGender,
     selectedRegion,
   }) =>
-    profileImage && name && birthday && selectedGender && selectedRegion
+    profileImage && isNameValid && birthday && selectedGender && selectedRegion
       ? 'pointer'
       : 'default'};
 `;

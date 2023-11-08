@@ -2,6 +2,7 @@ import styled from 'styled-components';
 import { ReactComponent as SweetLogo } from '../../assets/sweetyLogo.svg';
 import { Container } from './StartPage';
 import { useState } from 'react';
+import { ShowPasswordButton } from './SignUpIDPW';
 
 interface ButtonProps {
   Id: string;
@@ -10,6 +11,7 @@ interface ButtonProps {
 function Login() {
   const [Id, setId] = useState('');
   const [Pw, setPw] = useState('');
+  const [showPw, setShowPw] = useState(false);
 
   return (
     <Container>
@@ -24,15 +26,19 @@ function Login() {
           placeholder="아이디를 입력해주세요."
         />
       </InputWrapper>
-      <InputWrapper>
+      <InputWrapper style={{ position: 'relative' }}>
         <p>비밀번호</p>
         <IdPwInput
+          type={showPw ? 'text' : 'password'}
           value={Pw}
           onChange={(e) => {
             setPw(e.target.value);
           }}
           placeholder="비밀변호를 입력해주세요."
         />
+        <ShowPasswordButton onClick={() => setShowPw(!showPw)}>
+          {showPw ? '🙂' : '😌'}
+        </ShowPasswordButton>
       </InputWrapper>
       <LoginButton Id={Id} Pw={Pw}>
         로그인
