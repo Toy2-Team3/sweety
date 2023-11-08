@@ -7,6 +7,7 @@ import HomePage from './pages/HomePage';
 import CommunityPage from './pages/CommunityPage';
 import ChatPage from './pages/chatting/index';
 import MyPage from './pages/MyPage';
+import styled from 'styled-components';
 
 function App() {
   return (
@@ -14,16 +15,32 @@ function App() {
       <BrowserRouter>
         <div className="App" style={{display: 'flex'}}>
           <NavigationBar></NavigationBar>
-          <Routes>
-            <Route path="/" element={<HomePage/>} /> 
-            <Route path="/community" element={<CommunityPage/>} /> 
-            <Route path="/chat" element={<ChatPage/>} /> 
-            <Route path="/mypage" element={<MyPage/>} /> 
-          </Routes>
+          <PageWrap>
+            <Routes>
+              <Route path="/" element={<HomePage/>} /> 
+              <Route path="/community" element={<CommunityPage/>} /> 
+              <Route path="/chat" element={<ChatPage/>} /> 
+              <Route path="/mypage" element={<MyPage/>} /> 
+            </Routes>
+          </PageWrap>
         </div>
       </BrowserRouter>  
     </ThemeProvider>
   );
 }
+
+const PageWrap = styled.div`
+  flex: 1; 
+  margin-left: 300px;
+
+  ${props => props.theme.response.tablet} {
+    margin-left: 100px;
+  }
+
+  ${props => props.theme.response.mobile} {
+    margin-left: 0;
+    margin-bottom: 120px;
+  }
+`;
 
 export default App;
