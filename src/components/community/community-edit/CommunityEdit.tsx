@@ -18,7 +18,6 @@ const EditWrapper = styled.div`
 
 const InputForm = styled.form`
   width: 100%;
-  /* min-width: 30%; */
 
   display: flex;
   flex-direction: column;

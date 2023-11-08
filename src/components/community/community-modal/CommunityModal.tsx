@@ -4,12 +4,12 @@ import CommunityItemButtons from '../Community-item-buttons/CommunityItemButtons
 import Close from '../../../assets/close.png';
 import { IButtonType } from '../community-item/CommunityItem';
 
-const Modal = styled.div`
-  width: 100vw;
-  height: 100vh;
+// const Modal = styled.div`
+//   width: 100vw;
+//   height: 100vh;
 
-  position: relative;
-`;
+//   position: relative;
+// `;
 
 const ModalWrapper = styled.div`
   min-width: 30%;
@@ -31,7 +31,7 @@ const ModalWrapper = styled.div`
   left: 50%;
   transform: translate(-50%, -50%);
 
-  @media (max-width: 480px) {
+  ${(props) => props.theme.response.mobile} {
     width: 100%;
     max-width: 90%;
     padding: 1.5rem;
@@ -95,28 +95,28 @@ const CommunityModal = () => {
   };
 
   return (
-    <Modal>
-      <ModalWrapper>
-        <CloseButton>
-          <img src={Close} />
-        </CloseButton>
-        <ModalTop>
-          <img src={Close} />
-          <div>
-            <h3>이상한 고양이님</h3>
-            <p>서울</p>
-          </div>
-        </ModalTop>
-        <h1>매주 월요일 바이크 타실 분 🚴</h1>
-        <p>
-          안녕하세요, 바이크 소모임 000입니다! 저희 소모임은 매주 월요일 저녁
-          8시에 진행됩니다. 많관부~ 어째저째 길다~~~ 내용이 길게 보입니다.
-        </p>
-        <ButtonWrapper>
-          <CommunityItemButtons buttonText={buttonText} />
-        </ButtonWrapper>
-      </ModalWrapper>
-    </Modal>
+    // <Modal>
+    <ModalWrapper>
+      <CloseButton>
+        <img src={Close} />
+      </CloseButton>
+      <ModalTop>
+        <img src={Close} />
+        <div>
+          <h3>이상한 고양이님</h3>
+          <p>서울</p>
+        </div>
+      </ModalTop>
+      <h1>매주 월요일 바이크 타실 분 🚴</h1>
+      <p>
+        안녕하세요, 바이크 소모임 000입니다! 저희 소모임은 매주 월요일 저녁
+        8시에 진행됩니다. 많관부~ 어째저째 길다~~~ 내용이 길게 보입니다.
+      </p>
+      <ButtonWrapper>
+        <CommunityItemButtons buttonText={buttonText} />
+      </ButtonWrapper>
+    </ModalWrapper>
+    // </Modal>
   );
 };
 

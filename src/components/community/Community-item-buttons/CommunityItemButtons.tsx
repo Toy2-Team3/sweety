@@ -9,7 +9,7 @@ const ButtonWrapper = styled.div`
   justify-content: right;
   gap: 1rem;
 
-  @media (max-width: 480px) {
+  ${(props) => props.theme.response.mobile} {
     width: 100%;
   }
 `;
@@ -36,7 +36,7 @@ const Button = styled.button<{ $left?: boolean }>`
     cursor: pointer;
   }
 
-  @media (max-width: 480px) {
+  ${(props) => props.theme.response.mobile} {
     padding: 0.8rem 1rem;
   }
 `;

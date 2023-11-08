@@ -20,7 +20,7 @@ const Container = styled.div`
 
   position: relative;
 
-  @media (max-width: 480px) {
+  ${(props) => props.theme.response.mobile} {
     gap: 1.5rem;
   }
 
@@ -28,7 +28,7 @@ const Container = styled.div`
     display: flex;
     justify-content: left;
 
-    @media (max-width: 480px) {
+    ${(props) => props.theme.response.mobile} {
       justify-content: center;
     }
   }
