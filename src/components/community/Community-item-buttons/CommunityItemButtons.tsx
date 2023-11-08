@@ -4,14 +4,13 @@ import { IButtonType } from '../community-item/CommunityItem';
 
 const ButtonWrapper = styled.div`
   width: 30%;
-  height: 2rem;
   display: flex;
   flex-direction: row;
   justify-content: right;
   gap: 1rem;
 
   @media (max-width: 480px) {
-    width: 50%;
+    width: 100%;
   }
 `;
 
@@ -28,13 +27,17 @@ const Button = styled.button<{ $left?: boolean }>`
 
   width: 100%;
   height: 100%;
-  padding: 0 0.5rem;
+  padding: 0.5rem 1rem;
 
   transition: all 0.3s;
 
   &:hover {
     transform: scale(1.05);
     cursor: pointer;
+  }
+
+  @media (max-width: 480px) {
+    padding: 0.8rem 1rem;
   }
 `;
 
