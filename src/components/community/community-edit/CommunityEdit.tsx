@@ -4,19 +4,21 @@ import styled from 'styled-components';
 import { IButtonType } from '../community-item/CommunityItem';
 
 const EditWrapper = styled.div`
-  width: 80%;
+  width: 100%;
+  min-width: 30%;
   height: 80vh;
-  padding: 5rem;
+  padding: 1rem;
 
   display: flex;
   flex-direction: column;
   gap: 1rem;
 
-  /* background-color: beige; */
+  background-color: beige;
 `;
 
 const InputForm = styled.form`
   width: 100%;
+  /* min-width: 30%; */
 
   display: flex;
   flex-direction: column;
@@ -24,9 +26,6 @@ const InputForm = styled.form`
 `;
 
 const InputWrapper = styled.div`
-  --width: 100%;
-  --padding: 0.5rem;
-
   display: flex;
   flex-direction: row;
   gap: 1rem;
@@ -40,8 +39,8 @@ const InputWrapper = styled.div`
   }
 
   input {
-    width: var(--width);
-    padding: var(--padding);
+    width: 100%;
+    padding: 0.5rem;
 
     border-radius: 0.5rem;
     border: 1px solid #949494;
@@ -50,9 +49,9 @@ const InputWrapper = styled.div`
   }
 
   textarea {
-    width: var(--width);
+    width: 100%;
     height: 10rem;
-    padding: var(--padding);
+    padding: 0.5rem;
 
     border-radius: 0.5rem;
     border: 1px solid #949494;

@@ -7,7 +7,6 @@ const Container = styled.div`
   min-width: 30%;
   max-height: 15rem;
   padding: 2rem;
-  margin: 1rem;
 
   display: flex;
   flex-direction: column;
@@ -21,9 +20,17 @@ const Container = styled.div`
 
   position: relative;
 
+  @media (max-width: 480px) {
+    gap: 1.5rem;
+  }
+
   div {
     display: flex;
     justify-content: left;
+
+    @media (max-width: 480px) {
+      justify-content: center;
+    }
   }
 
   h1,
@@ -34,7 +41,7 @@ const Container = styled.div`
   }
 
   h1 {
-    font-size: 2rem;
+    font-size: 1.6rem;
     font-weight: bold;
   }
 

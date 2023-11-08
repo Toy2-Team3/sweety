@@ -47,11 +47,6 @@ const ModalWrapper = styled.div`
     font-weight: normal;
     line-height: 1.5rem;
   }
-
-  div {
-    display: flex;
-    justify-content: right;
-  }
 `;
 
 const CloseButton = styled.div`
@@ -60,8 +55,37 @@ const CloseButton = styled.div`
   top: 1rem;
 
   img {
-    width: 20px;
+    width: 2rem;
   }
+`;
+
+const ModalTop = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: left;
+  align-items: center;
+  gap: 1rem;
+
+  img {
+    width: 4rem;
+    border: 1px solid black;
+    border-radius: 50%;
+  }
+
+  h3 {
+    font-size: 1.4rem;
+    font-weight: 500;
+    margin-bottom: 0.3rem;
+  }
+
+  p {
+    color: #949494;
+  }
+`;
+
+const ButtonWrapper = styled.div`
+  display: flex;
+  justify-content: right;
 `;
 
 const CommunityModal = () => {
@@ -76,14 +100,21 @@ const CommunityModal = () => {
         <CloseButton>
           <img src={Close} />
         </CloseButton>
+        <ModalTop>
+          <img src={Close} />
+          <div>
+            <h3>이상한 고양이님</h3>
+            <p>서울</p>
+          </div>
+        </ModalTop>
         <h1>매주 월요일 바이크 타실 분 🚴</h1>
         <p>
           안녕하세요, 바이크 소모임 000입니다! 저희 소모임은 매주 월요일 저녁
           8시에 진행됩니다. 많관부~ 어째저째 길다~~~ 내용이 길게 보입니다.
         </p>
-        <div>
+        <ButtonWrapper>
           <CommunityItemButtons buttonText={buttonText} />
-        </div>
+        </ButtonWrapper>
       </ModalWrapper>
     </Modal>
   );
