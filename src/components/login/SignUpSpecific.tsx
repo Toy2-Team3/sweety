@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { DefaultTheme } from 'styled-components';
 import { Container } from './StartPage';
 import { CorrectText, GreetingText, WarnText } from './SignUpIDPW';
 import DatePicker from 'react-datepicker';
@@ -33,7 +33,11 @@ interface ButtonProps {
   isNameValid: boolean;
 }
 
-function SignUpSpecific() {
+interface SignUpSpecificProps {
+  theme: DefaultTheme;
+}
+
+function SignUpSpecific({ theme }: SignUpSpecificProps) {
   const [profileImage, setProfileImage] = useState<string | null>(null);
   const [name, setName] = useState<string>('');
   const [birthday, setBirthday] = useState<Date | null>(null);
@@ -102,7 +106,10 @@ function SignUpSpecific() {
           <GenderButton
             onClick={() => setSelectedGender('male')}
             style={{
-              background: selectedGender === 'male' ? '#d94e28' : '#efefef',
+              background:
+                selectedGender === 'male'
+                  ? theme.color.primary
+                  : theme.color.darkGray,
               marginRight: '18px',
             }}
           >
@@ -111,7 +118,10 @@ function SignUpSpecific() {
           <GenderButton
             onClick={() => setSelectedGender('female')}
             style={{
-              background: selectedGender === 'female' ? '#d94e28' : '#efefef',
+              background:
+                selectedGender === 'female'
+                  ? theme.color.primary
+                  : theme.color.darkGray,
             }}
           >
             여성
@@ -129,7 +139,7 @@ function SignUpSpecific() {
             disabled
             selected
             hidden
-            style={{ color: '#BFBFBF' }}
+            style={{ color: theme.color.darkGray }}
           >
             거주지역을 선택해주세요
           </option>
@@ -164,7 +174,7 @@ const ProfileUploadButton = styled.div`
   width: 125px;
   height: 125px;
   border-radius: 50%;
-  background: #efefef;
+  background: ${(props) => props.theme.color.darkGray};
   cursor: pointer;
   background-size: cover;
   background-position: center;
@@ -177,11 +187,11 @@ const NameInput = styled.input`
   width: 340px;
   height: 50px;
   border-radius: 12px;
-  border: 1px solid #949494;
+  border: 1px solid ${(props) => props.theme.color.borderGray};
   background: #fff;
   padding-left: 16px;
   &:focus {
-    border: #d94e28 1px solid;
+    border: ${(props) => props.theme.color.primary} 1px solid;
     outline: none;
   }
 `;
@@ -201,7 +211,7 @@ const CustomDatePicker = styled(DatePicker)`
   border-radius: 12px;
   background: #fff;
   &:focus {
-    border: #d94e28 1px solid;
+    border: ${(props) => props.theme.color.primary} 1px solid;
     outline: none;
   }
 `;
@@ -212,18 +222,18 @@ const GenderButton = styled.button`
   border-radius: 12px;
   border: none;
   cursor: pointer;
-  background: #efefef;
+  background: ${(props) => props.theme.color.darkGray};
 `;
 
 const RegionSelect = styled.select`
   width: 340px;
   height: 50px;
   border-radius: 12px;
-  border: 1px solid #949494;
+  border: 1px solid ${(props) => props.theme.color.borderGray};
   background: #fff;
   padding-left: 16px;
   &:focus {
-    border: #d94e28 1px solid;
+    border: ${(props) => props.theme.color.primary} 1px solid;
     outline: none;
   }
 `;
@@ -232,7 +242,7 @@ const RegionOption = styled.option`
   width: 340px;
   height: 150px;
   border-radius: 12px;
-  border: 1px solid #949494;
+  border: 1px solid ${(props) => props.theme.color.borderGray};
   background: #fff;
 `;
 
@@ -250,8 +260,8 @@ const SignUpButton = styled.button<ButtonProps>`
     selectedRegion,
   }) =>
     profileImage && isNameValid && birthday && selectedGender && selectedRegion
-      ? '#d94e28'
-      : '#dfdfdf'};
+      ? (props) => props.theme.color.primary
+      : (props) => props.theme.color.darkGray};
   cursor: ${({
     profileImage,
     isNameValid,

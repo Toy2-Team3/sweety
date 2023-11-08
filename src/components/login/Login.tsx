@@ -55,10 +55,10 @@ export const IdPwInput = styled.input`
   width: 340px;
   height: 50px;
   padding-left: 16px;
-  border: 1px solid #949494;
+  border: 1px solid ${(props) => props.theme.color.darkGray};
   border-radius: 12px;
   &:focus {
-    border: #d94e28 1px solid;
+    border: ${(props) => props.theme.color.primary} 1px solid;
     outline: none;
   }
 `;
@@ -66,7 +66,10 @@ export const IdPwInput = styled.input`
 export const LoginButton = styled.button<ButtonProps>`
   width: 340px;
   height: 50px;
-  background-color: ${({ Id, Pw }) => (Id && Pw ? '#d94e28' : '#dfdfdf')};
+  background-color: ${({ Id, Pw }) =>
+    Id && Pw
+      ? (props) => props.theme.color.primary
+      : (props) => props.theme.color.darkGray};
   cursor: ${({ Id, Pw }) => (Id && Pw ? 'pointer' : 'default')};
   border: none;
   border-radius: 12px;

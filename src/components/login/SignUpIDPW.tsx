@@ -129,7 +129,9 @@ export const NextButton = styled.button<ButtonProps>`
   width: 340px;
   height: 50px;
   background-color: ${({ isInputValid, Pw, PwCheck }) =>
-    isInputValid && Pw === PwCheck ? '#d94e28' : '#dfdfdf'};
+    isInputValid && Pw === PwCheck
+      ? (props) => props.theme.color.primary
+      : (props) => props.theme.color.darkGray};
   cursor: ${({ isInputValid, Pw, PwCheck }) =>
     isInputValid && Pw === PwCheck ? 'pointer' : 'default'};
   border: none;
@@ -143,7 +145,7 @@ export const WarnText = styled.div`
   bottom: -16px;
   left: 16px;
   font-size: 14px;
-  color: #d94e28;
+  color: ${(props) => props.theme.color.primary};
 `;
 
 export const CorrectText = styled.div`
@@ -151,7 +153,7 @@ export const CorrectText = styled.div`
   bottom: -16px;
   left: 16px;
   font-size: 14px;
-  color: #132f8b;
+  color: ${(props) => props.theme.color.successMessage};
 `;
 
 export const ShowPasswordButton = styled.div`

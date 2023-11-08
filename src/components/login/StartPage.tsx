@@ -45,7 +45,7 @@ export const SignUpButton = styled.button`
   width: 340px;
   height: 50px;
   margin: 40px 0;
-  background-color: #d94e28;
+  background-color: ${(props) => props.theme.color.primary};
   border-radius: 12px;
   border: none;
   cursor: pointer;
@@ -56,7 +56,7 @@ export const SignInButton = styled.button`
   width: 340px;
   height: 50px;
   margin: 0 0 30px 0;
-  background-color: #d94e28;
+  background-color: ${(props) => props.theme.color.primary};
   border-radius: 12px;
   border: none;
   cursor: pointer;
@@ -64,6 +64,6 @@ export const SignInButton = styled.button`
 `;
 
 export const IntroLink = styled.a`
-  color: #b3b3b3;
+  color: ${(props) => props.theme.color.borderGray};
   font-size: 14px;
 `;
