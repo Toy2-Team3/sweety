@@ -57,6 +57,10 @@ export const IdPwInput = styled.input`
   padding-left: 16px;
   border: 1px solid #949494;
   border-radius: 12px;
+  &:focus {
+    border: #d94e28 1px solid;
+    outline: none;
+  }
 `;
 
 export const LoginButton = styled.button<ButtonProps>`

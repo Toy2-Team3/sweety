@@ -100,18 +100,18 @@ function SignUpSpecific() {
         <div>
           <p>성별</p>
           <GenderButton
-            onClick={() => setSelectedGender('남성')}
+            onClick={() => setSelectedGender('male')}
             style={{
-              background: selectedGender === '남성' ? '#d94e28' : '#efefef',
+              background: selectedGender === 'male' ? '#d94e28' : '#efefef',
               marginRight: '18px',
             }}
           >
             남성
           </GenderButton>
           <GenderButton
-            onClick={() => setSelectedGender('여성')}
+            onClick={() => setSelectedGender('female')}
             style={{
-              background: selectedGender === '여성' ? '#d94e28' : '#efefef',
+              background: selectedGender === 'female' ? '#d94e28' : '#efefef',
             }}
           >
             여성
@@ -180,6 +180,10 @@ const NameInput = styled.input`
   border: 1px solid #949494;
   background: #fff;
   padding-left: 16px;
+  &:focus {
+    border: #d94e28 1px solid;
+    outline: none;
+  }
 `;
 
 const BirthGenderWrapper = styled.div`
@@ -196,6 +200,10 @@ const CustomDatePicker = styled(DatePicker)`
   border: 1px solid #949494;
   border-radius: 12px;
   background: #fff;
+  &:focus {
+    border: #d94e28 1px solid;
+    outline: none;
+  }
 `;
 
 const GenderButton = styled.button`
@@ -214,6 +222,10 @@ const RegionSelect = styled.select`
   border: 1px solid #949494;
   background: #fff;
   padding-left: 16px;
+  &:focus {
+    border: #d94e28 1px solid;
+    outline: none;
+  }
 `;
 
 const RegionOption = styled.option`
