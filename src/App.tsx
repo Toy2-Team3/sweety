@@ -7,6 +7,7 @@ import HomePage from './pages/HomePage';
 import CommunityPage from './pages/CommunityPage';
 import ChatPage from './pages/chatting/index';
 import MyPage from './pages/MyPage';
+import styled from 'styled-components';
 import StartPage from './components/login/StartPage';
 import SignUpSpecific from './components/login/SignUpSpecific';
 import Login from './components/login/Login';
@@ -35,5 +36,19 @@ function App() {
     </ThemeProvider>
   );
 }
+
+const PageWrap = styled.div`
+  flex: 1;
+  margin-left: 300px;
+
+  ${(props) => props.theme.response.tablet} {
+    margin-left: 100px;
+  }
+
+  ${(props) => props.theme.response.mobile} {
+    margin-left: 0;
+    margin-bottom: 120px;
+  }
+`;
 
 export default App;

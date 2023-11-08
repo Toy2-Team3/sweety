@@ -178,12 +178,14 @@ export default function NavigationBar() {
 const NavigationWrap = styled.div`
   border-right: 1px solid ${props => props.theme.color.borderGray};
   background: ${props => props.theme.color.white};
+  position: fixed;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
   width: 300px;
   height: 100vh;
+  z-index: 9999;
 
   ${props => props.theme.response.tablet} {
     width: 100px;
@@ -194,7 +196,7 @@ const NavigationWrap = styled.div`
     border-right: none;
     width: 100%;
     height: auto; 
-    position: absolute;
+    position: fixed;
     bottom: 0;
   }
 `;
