@@ -207,7 +207,7 @@ const CustomDatePicker = styled(DatePicker)`
   width: 140px;
   height: 50px;
   padding: 0 23px;
-  border: 1px solid #949494;
+  border: 1px solid ${(props) => props.theme.color.borderGray};
   border-radius: 12px;
   background: #fff;
   &:focus {

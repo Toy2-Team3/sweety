@@ -25,12 +25,14 @@ function App() {
         </Routes>
         <div className="App" style={{ display: 'flex' }}>
           <NavigationBar></NavigationBar>
-          <Routes>
-            <Route path="/" element={<HomePage />} />
-            <Route path="/community" element={<CommunityPage />} />
-            <Route path="/chat" element={<ChatPage />} />
-            <Route path="/mypage" element={<MyPage />} />
-          </Routes>
+          <PageWrap>
+            <Routes>
+              <Route path="/" element={<HomePage />} />
+              <Route path="/community" element={<CommunityPage />} />
+              <Route path="/chat" element={<ChatPage />} />
+              <Route path="/mypage" element={<MyPage />} />
+            </Routes>
+          </PageWrap>
         </div>
       </BrowserRouter>
     </ThemeProvider>
