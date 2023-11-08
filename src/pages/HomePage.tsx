@@ -31,6 +31,7 @@ const Header = styled.div`
 `;
 
 const UsersInfo = styled.div`
+  width: 100%;
   margin-top: 6rem;
   display: flex;
   justify-content: space-between;

@@ -9,7 +9,7 @@ interface UserInfoProps {
 const UserImage = styled.div`
   position: relative;
   height: 675px;
-  width: 450px;
+  min-width: 450px;
 
   margin: 1rem;
   margin-bottom: 6rem;
