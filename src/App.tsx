@@ -1,11 +1,12 @@
 import './App.css';
+import { ThemeProvider } from 'styled-components';
+import theme from '../src/styles/theme';
 
 function App() {
   return (
-    <div className="App">
-      <button>asdfsdas</button>
-      <input type="text" />
-    </div>
+    <ThemeProvider theme={theme}>
+      hello
+    </ThemeProvider>
   );
 }
 
