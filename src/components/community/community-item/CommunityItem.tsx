@@ -48,7 +48,7 @@ const Container = styled.div`
   transition: all 0.3s;
 
   &:hover {
-    transform: scale(1.05);
+    transform: scale(1.03);
     cursor: pointer;
   }
 

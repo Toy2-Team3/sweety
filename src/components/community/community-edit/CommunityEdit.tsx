@@ -15,11 +15,11 @@ const CommunityEdit = () => {
       <InputForm>
         <InputWrapper>
           <label htmlFor="title">제목</label>
-          <input type="text" placeholder="제목을 입력하세요." id="title" />
+          <input type="text" placeholder="제목..." id="title" />
         </InputWrapper>
         <InputWrapper>
           <label htmlFor="content">내용</label>
-          <textarea placeholder="내용을 입력하세요." id="content" />
+          <textarea placeholder="내용..." id="content" />
         </InputWrapper>
       </InputForm>
       <ButtonWrapper>
@@ -79,6 +79,7 @@ const InputWrapper = styled.div`
     border: 1px solid #949494;
 
     font-size: 1.3rem;
+    font-weight: bold;
   }
 
   textarea {

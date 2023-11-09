@@ -5,7 +5,7 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import NavigationBar from './components/NavigationBar';
 import HomePage from './pages/HomePage';
 import CommunityListPage from './pages/CommunityListPage';
-import CommunityCreatePage from './pages/CommunityCreatePage';
+import CommunityEditPage from './pages/CommunityEditPage';
 import ChatPage from './pages/chatting/index';
 import MyPage from './pages/MyPage';
 import styled from 'styled-components';
@@ -20,10 +20,7 @@ function App() {
             <Routes>
               <Route path="/" element={<HomePage />} />
               <Route path="/community" element={<CommunityListPage />} />
-              <Route
-                path="/community/create"
-                element={<CommunityCreatePage />}
-              />
+              <Route path="/community/edit" element={<CommunityEditPage />} />
               <Route path="/chat" element={<ChatPage />} />
               <Route path="/mypage" element={<MyPage />} />
             </Routes>

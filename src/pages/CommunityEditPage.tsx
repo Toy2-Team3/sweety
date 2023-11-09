@@ -1,8 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
-import CommunityEdit from './community-edit/CommunityEdit';
+import CommunityEdit from '../components/community/community-edit/CommunityEdit';
 
-const CommunityCreate = () => {
+const CommunityEditPage = () => {
   return (
     <Wrapper>
       <Header>
@@ -14,7 +14,7 @@ const CommunityCreate = () => {
   );
 };
 
-export default CommunityCreate;
+export default CommunityEditPage;
 
 const Wrapper = styled.div`
   width: calc(100vw - 300px);
