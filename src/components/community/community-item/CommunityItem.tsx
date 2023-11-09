@@ -1,11 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
 
-export interface IButtonType {
-  left: string;
-  right: string;
-}
-
 const CommunityItem = () => {
   return (
     <Container>

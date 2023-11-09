@@ -1,12 +1,16 @@
 import React from 'react';
 import styled from 'styled-components';
-import { IButtonType } from '../community-item/CommunityItem';
 
-interface IButtonProps {
-  buttonText: IButtonType;
+export interface ButtonType {
+  left: string;
+  right: string;
 }
 
-const CommunityItemButtons: React.FC<IButtonProps> = ({ buttonText }) => {
+interface ButtonProps {
+  buttonText: ButtonType;
+}
+
+const CommunityItemButtons: React.FC<ButtonProps> = ({ buttonText }) => {
   return (
     <ButtonWrapper>
       <Button $left>{buttonText.left}</Button>

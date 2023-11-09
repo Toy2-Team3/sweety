@@ -1,12 +1,13 @@
 import React from 'react';
 import styled from 'styled-components';
-import CommunityItemButtons from '../Community-item-buttons/CommunityItemButtons';
+import CommunityItemButtons, {
+  ButtonType,
+} from '../Community-item-buttons/CommunityItemButtons';
 import Close from '../../../assets/close.png';
-import { IButtonType } from '../community-item/CommunityItem';
 import Chat from '../../../assets/comments-solid.svg';
 
 const CommunityModal = () => {
-  const buttonText: IButtonType = {
+  const buttonText: ButtonType = {
     left: '삭제',
     right: '수정',
   };
