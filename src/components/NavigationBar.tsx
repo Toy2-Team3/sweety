@@ -47,7 +47,7 @@ const categories = [
 
 export default function NavigationBar() {
   const navigate = useNavigate();
-  const [activeCategory, setActiveCategory] = useState('home');
+  const [activeCategory, setActiveCategory] = useState('');
   const [isSettingClicked, setIsSettingClicked] = useState(false);
 
   const handleCategoryClick = (categoryId: string) => {
