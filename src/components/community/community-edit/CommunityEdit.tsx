@@ -1,10 +1,11 @@
 import React from 'react';
-import CommunityItemButtons from '../Community-item-buttons/CommunityItemButtons';
+import CommunityItemButtons, {
+  ButtonType,
+} from '../Community-item-buttons/CommunityItemButtons';
 import styled from 'styled-components';
-import { IButtonType } from '../community-item/CommunityItem';
 
 const CommunityEdit = () => {
-  const buttonText: IButtonType = {
+  const buttonText: ButtonType = {
     left: '초기화',
     right: '등록',
   };
