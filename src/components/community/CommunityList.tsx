@@ -31,9 +31,11 @@ export default CommunityList;
 const Wrapper = styled.div`
   width: calc(100vw - 300px);
   padding: 5rem;
+
   display: flex;
   flex-direction: column;
   gap: 1rem;
+
   ${(props) => props.theme.response.tablet} {
     width: calc(100vw - 100px);
     padding: 3rem;
