@@ -1,8 +1,10 @@
-import styled from 'styled-components';
-import { Container } from './StartPage';
-import { IdPwInput, InputWrapper } from './Login';
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import styled from "styled-components";
+import { Container } from "./StartPage";
+import { IdPwInput, InputWrapper } from "./Login";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { idState, pwState } from "../../recoil/atoms";
+import { useRecoilState } from "recoil";
 
 interface ButtonProps {
   isInputValid: boolean;
@@ -11,11 +13,12 @@ interface ButtonProps {
 }
 
 function SignUp() {
-  const [Id, setId] = useState('');
-  const [Pw, setPw] = useState('');
-  const [PwCheck, setPwCheck] = useState('');
+  const [Id, setId] = useRecoilState(idState);
+  const [Pw, setPw] = useRecoilState(pwState);
+  const [PwCheck, setPwCheck] = useState("");
   const [showPw, setShowPw] = useState(false);
   const [showPwCheck, setShowPwCheck] = useState(false);
+  const [isIdDuplicated, setIsIdDuplicated] = useState(false);
 
   const isIdentificationValid = (identification: string) => {
     return (
@@ -36,17 +39,42 @@ function SignUp() {
   };
   const isInputValid = isIdentificationPasswordValid(Id, Pw);
 
+  const checkIdDuplication = async (id: string) => {
+    try {
+      const response = await fetch("https://fastcampus-chat.net/check/id", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          serverId: "649f1163",
+        },
+        body: JSON.stringify({ id }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setIsIdDuplicated(data.isDuplicated);
+        console.log("아이디 중복 여부:", data.isDuplicated);
+      }
+    } catch (error) {
+      console.log("다음과 같은 이유로 중복검사를 할 수 없습니다 :", error);
+    }
+  };
+
   const navigate = useNavigate();
-  const navigateToSignUpSpecific = () => {
+  const navigateToSignUpSpecific = async () => {
     if (isInputValid && Pw === PwCheck) {
-      navigate('/signup2');
+      await checkIdDuplication(Id);
+
+      if (!isIdDuplicated) {
+        navigate("/signup2");
+      }
     }
   };
 
   return (
     <Container>
       <GreetingText>환영합니다🎉</GreetingText>
-      <InputWrapper style={{ position: 'relative' }}>
+      <InputWrapper style={{ position: "relative" }}>
         <p>아이디</p>
         <IdPwInput
           value={Id}
@@ -63,10 +91,10 @@ function SignUp() {
           )
         ) : null}
       </InputWrapper>
-      <InputWrapper style={{ position: 'relative' }}>
+      <InputWrapper style={{ position: "relative" }}>
         <p>비밀번호</p>
         <IdPwInput
-          type={showPw ? 'text' : 'password'}
+          type={showPw ? "text" : "password"}
           value={Pw}
           onChange={(e) => {
             setPw(e.target.value);
@@ -83,13 +111,13 @@ function SignUp() {
           )
         ) : null}
         <ShowPasswordButton onClick={() => setShowPw(!showPw)}>
-          {showPw ? '🙂' : '😌'}
+          {showPw ? "🙂" : "😌"}
         </ShowPasswordButton>
       </InputWrapper>
-      <InputWrapper style={{ position: 'relative' }}>
+      <InputWrapper style={{ position: "relative" }}>
         <p>비밀번호 확인</p>
         <IdPwInput
-          type={showPwCheck ? 'text' : 'password'}
+          type={showPwCheck ? "text" : "password"}
           value={PwCheck}
           onChange={(e) => {
             setPwCheck(e.target.value);
@@ -104,7 +132,7 @@ function SignUp() {
           )
         ) : null}
         <ShowPasswordButton onClick={() => setShowPwCheck(!showPwCheck)}>
-          {showPwCheck ? '🙂' : '😌'}
+          {showPwCheck ? "🙂" : "😌"}
         </ShowPasswordButton>
       </InputWrapper>
       <NextButton
@@ -133,7 +161,7 @@ export const NextButton = styled.button<ButtonProps>`
       ? (props) => props.theme.color.primary
       : (props) => props.theme.color.darkGray};
   cursor: ${({ isInputValid, Pw, PwCheck }) =>
-    isInputValid && Pw === PwCheck ? 'pointer' : 'default'};
+    isInputValid && Pw === PwCheck ? "pointer" : "default"};
   border: none;
   border-radius: 12px;
   color: white;
