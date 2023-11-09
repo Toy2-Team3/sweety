@@ -67,7 +67,7 @@ const UserImage = styled.div`
 
   ${(props) => props.theme.response.mobile} {
     height: 450px;
-    width: 250px;
+    width: 200px;
   }
 `;
 

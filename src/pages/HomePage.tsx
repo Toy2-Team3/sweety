@@ -46,18 +46,23 @@ const Home = () => {
 export default Home;
 
 const Wrapper = styled.div`
-  margin: 0 auto;
-  padding: 5rem 5rem 0 5rem;
-  width: 100%;
-  @media (max-width: 480px) {
-    padding: 1rem 1rem 0 1rem; /* Removes the padding when the screen size is 768px or less */
-  }
+  width: calc(100vw - 300px);
+  padding: 5rem;
+
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 
   ${(props) => props.theme.response.tablet} {
-    padding: 1.5rem 1.5rem 0 1.5rem; /* Removes the padding when the screen size is 768px or less */
+    width: calc(100vw - 100px);
+    padding: 3rem;
+  }
+
+  ${(props) => props.theme.response.mobile} {
+    width: 100%;
+    padding: 2rem;
   }
 `;
-
 const Header = styled.div`
   > div:first-child {
     font-size: 3.5rem;
