@@ -31,6 +31,7 @@ function App() {
 
 const PageWrap = styled.div`
   flex: 1;
+  margin-left: 300px;
 
   ${(props) => props.theme.response.tablet} {
     margin-left: 100px;

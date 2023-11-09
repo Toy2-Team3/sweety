@@ -11,10 +11,13 @@ interface User {
 const Wrapper = styled.div`
   margin: 0 auto;
   padding: 5rem 5rem 0 5rem;
-  height: 100%;
   width: 100%;
   @media (max-width: 480px) {
     padding: 1rem 1rem 0 1rem; /* Removes the padding when the screen size is 768px or less */
+  }
+
+  ${(props) => props.theme.response.tablet} {
+    padding: 1.5rem 1.5rem 0 1.5rem; /* Removes the padding when the screen size is 768px or less */
   }
 `;
 
@@ -23,7 +26,11 @@ const Header = styled.div`
     font-size: 3.5rem;
     font-weight: 700;
     color: #d94e28;
+    ${(props) => props.theme.response.mobile} {
+      font-size: 2rem;
+    }
   }
+
   > div:nth-child(2) {
     font-size: 1rem;
     font-weight: 600;
@@ -32,11 +39,18 @@ const Header = styled.div`
 
 const UsersInfo = styled.div`
   width: 100%;
-  margin-top: 6rem;
+  height: 100%;
+  margin-top: 4rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
+  ${(props) => props.theme.response.mobile} {
+    justify-content: center;
+  }
+  ${(props) => props.theme.response.tablet} {
+    justify-content: center;
+  }
 `;
 
 const Home = () => {
