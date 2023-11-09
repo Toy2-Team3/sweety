@@ -12,7 +12,7 @@ import SignUpSpecific from "./components/login/SignUpSpecific";
 import Login from "./components/login/Login";
 import SignUpIDPW from "./components/login/SignUpIDPW";
 import CommunityListPage from "./pages/CommunityListPage";
-import CommunityCreatePage from "./pages/CommunityCreatePage";
+import CommunityEditPage from "./pages/CommunityEditPage";
 // import { useRecoilState } from "recoil";
 // import { loginState } from "./recoil/atoms";
 
@@ -29,10 +29,7 @@ function App() {
             <Routes>
               <Route path="/" element={<HomePage />} />
               <Route path="/community" element={<CommunityListPage />} />
-              <Route
-                path="/community/create"
-                element={<CommunityCreatePage />}
-              />
+              <Route path="/community/edit" element={<CommunityEditPage />} />
               <Route path="/chat" element={<ChatPage />} />
               <Route path="/mypage" element={<MyPage />} />
             </Routes>
