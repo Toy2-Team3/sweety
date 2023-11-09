@@ -146,10 +146,6 @@ const ImageWrapper = styled.div`
     height: 100%;
     object-fit: cover;
   }
-  ${(props) => props.theme.response.mobile} {
-    width: 3.3rem;
-    height: 3.3rem;
-  }
 `;
 
 const ButtonWrapper = styled.div`
