@@ -1,8 +1,8 @@
-import React from 'react';
-import CommunityEdit from './community-edit/CommunityEdit';
-import CommunityItem from './community-item/CommunityItem';
-import CommunityModal from './community-modal/CommunityModal';
-import styled from 'styled-components';
+import React from "react";
+import CommunityEdit from "./community-edit/CommunityEdit";
+import CommunityItem from "./community-item/CommunityItem";
+import CommunityModal from "./community-modal/CommunityModal";
+import styled from "styled-components";
 
 const Container = styled.div`
   width: 100vw;
