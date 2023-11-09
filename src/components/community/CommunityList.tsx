@@ -1,9 +1,32 @@
 import React from 'react';
 import CommunityItem from './community-item/CommunityItem';
-import CommunityEdit from './community-edit/CommunityEdit';
-import CommunityModal from './community-modal/CommunityModal';
 import styled from 'styled-components';
 import { Button } from './Community-item-buttons/CommunityItemButtons';
+
+const CommunityList = () => {
+  return (
+    <Wrapper>
+      <Header>
+        <div>Community</div>
+        <div>당신의 관심사를 공유해보세요</div>
+      </Header>
+      <AddButtonWrapper>
+        <AddButton>새 글 등록</AddButton>
+      </AddButtonWrapper>
+      <ItemWrapper>
+        <CommunityItem />
+        <CommunityItem />
+        <CommunityItem />
+        <CommunityItem />
+        <CommunityItem />
+        <CommunityItem />
+        <CommunityItem />
+      </ItemWrapper>
+    </Wrapper>
+  );
+};
+
+export default CommunityList;
 
 const Wrapper = styled.div`
   display: flex;
@@ -58,30 +81,3 @@ const ItemWrapper = styled.div`
   flex-direction: column;
   gap: 2rem;
 `;
-
-const index = () => {
-  return (
-    <Wrapper>
-      <Header>
-        <div>Community</div>
-        <div>당신의 관심사를 공유해보세요</div>
-      </Header>
-      <AddButtonWrapper>
-        <AddButton>새 글 등록</AddButton>
-      </AddButtonWrapper>
-      <ItemWrapper>
-        <CommunityItem />
-        <CommunityItem />
-        <CommunityItem />
-        <CommunityItem />
-        <CommunityItem />
-        <CommunityItem />
-        <CommunityItem />
-      </ItemWrapper>
-      <CommunityModal />
-      <CommunityEdit />
-    </Wrapper>
-  );
-};
-
-export default index;

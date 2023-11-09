@@ -2,6 +2,21 @@ import React from 'react';
 import styled from 'styled-components';
 import { IButtonType } from '../community-item/CommunityItem';
 
+interface IButtonProps {
+  buttonText: IButtonType;
+}
+
+const CommunityItemButtons: React.FC<IButtonProps> = ({ buttonText }) => {
+  return (
+    <ButtonWrapper>
+      <Button $left>{buttonText.left}</Button>
+      <Button>{buttonText.right}</Button>
+    </ButtonWrapper>
+  );
+};
+
+export default CommunityItemButtons;
+
 const ButtonWrapper = styled.div`
   display: flex;
   flex-direction: row;
@@ -39,18 +54,3 @@ export const Button = styled.button<{ $left?: boolean }>`
     font-size: ${(props) => props.theme.font.mediumSize};
   }
 `;
-
-interface IButtonProps {
-  buttonText: IButtonType;
-}
-
-const CommunityItemButtons: React.FC<IButtonProps> = ({ buttonText }) => {
-  return (
-    <ButtonWrapper>
-      <Button $left>{buttonText.left}</Button>
-      <Button>{buttonText.right}</Button>
-    </ButtonWrapper>
-  );
-};
-
-export default CommunityItemButtons;
