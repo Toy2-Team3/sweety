@@ -4,7 +4,6 @@ import theme from "../src/styles/theme";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import NavigationBar from "./components/NavigationBar";
 import HomePage from "./pages/HomePage";
-import CommunityPage from "./pages/CommunityPage";
 import ChatPage from "./pages/chatting/index";
 import MyPage from "./pages/MyPage";
 import styled from "styled-components";
@@ -12,6 +11,8 @@ import StartPage from "./components/login/StartPage";
 import SignUpSpecific from "./components/login/SignUpSpecific";
 import Login from "./components/login/Login";
 import SignUpIDPW from "./components/login/SignUpIDPW";
+import CommunityListPage from "./pages/CommunityListPage";
+import CommunityCreatePage from "./pages/CommunityCreatePage";
 // import { useRecoilState } from "recoil";
 // import { loginState } from "./recoil/atoms";
 
@@ -27,7 +28,11 @@ function App() {
           <PageWrap>
             <Routes>
               <Route path="/" element={<HomePage />} />
-              <Route path="/community" element={<CommunityPage />} />
+              <Route path="/community" element={<CommunityListPage />} />
+              <Route
+                path="/community/create"
+                element={<CommunityCreatePage />}
+              />
               <Route path="/chat" element={<ChatPage />} />
               <Route path="/mypage" element={<MyPage />} />
             </Routes>

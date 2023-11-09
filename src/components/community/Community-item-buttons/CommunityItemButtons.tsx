@@ -1,51 +1,16 @@
-import React from 'react';
-import styled from 'styled-components';
-import { IButtonType } from '../community-item/CommunityItem';
+import React from "react";
+import styled from "styled-components";
 
-const ButtonWrapper = styled.div`
-  width: 30%;
-  display: flex;
-  flex-direction: row;
-  justify-content: right;
-  gap: 1rem;
-
-  @media (max-width: 480px) {
-    width: 100%;
-  }
-`;
-
-const Button = styled.button<{ $left?: boolean }>`
-  background: ${(props) => (props.$left ? '#777777' : '#D94E28')};
-
-  white-space: nowrap;
-  color: white;
-  font-size: 1.1rem;
-
-  border: transparent;
-  border-radius: 0.5rem;
-  box-shadow: 1px 1px 2px 1px rgba(0, 0, 0, 0.3);
-
-  width: 100%;
-  height: 100%;
-  padding: 0.5rem 1rem;
-
-  transition: all 0.3s;
-
-  &:hover {
-    transform: scale(1.05);
-    cursor: pointer;
-  }
-
-  @media (max-width: 480px) {
-    padding: 0.8rem 1rem;
-  }
-`;
-
-interface IButtonProps {
-  buttonText: IButtonType;
+export interface ButtonType {
+  left: string;
+  right: string;
 }
 
-const CommunityItemButtons: React.FC<IButtonProps> = ({ buttonText }) => {
+interface ButtonProps {
+  buttonText: ButtonType;
+}
+
+const CommunityItemButtons: React.FC<ButtonProps> = ({ buttonText }) => {
   return (
     <ButtonWrapper>
       <Button $left>{buttonText.left}</Button>
@@ -55,3 +20,33 @@ const CommunityItemButtons: React.FC<IButtonProps> = ({ buttonText }) => {
 };
 
 export default CommunityItemButtons;
+
+const ButtonWrapper = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: right;
+  gap: 1rem;
+  ${(props) => props.theme.response.mobile} {
+    width: 100%;
+  }
+`;
+
+export const Button = styled.button<{ $left?: boolean }>`
+  background: ${(props) => (props.$left ? "#777777" : "#D94E28")};
+  flex: 1;
+  white-space: nowrap;
+  color: white;
+  font-size: 1.1rem;
+  border: transparent;
+  border-radius: 0.5rem;
+  box-shadow: 1px 1px 2px 1px rgba(0, 0, 0, 0.3);
+  padding: 0.6rem 1rem;
+  transition: all 0.3s;
+  &:hover {
+    transform: scale(1.05);
+    cursor: pointer;
+  }
+  ${(props) => props.theme.response.tablet} {
+    font-size: ${(props) => props.theme.font.mediumSize};
+  }
+`;
