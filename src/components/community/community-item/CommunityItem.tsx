@@ -1,11 +1,8 @@
 import React from 'react';
-import CommunityItemButtons from '../Community-item-buttons/CommunityItemButtons';
 import styled from 'styled-components';
 
 const Container = styled.div`
   width: 100%;
-  min-width: 30%;
-  max-height: 15rem;
   padding: 2rem;
 
   display: flex;
@@ -20,11 +17,14 @@ const Container = styled.div`
 
   position: relative;
 
-  ${(props) => props.theme.response.mobile} {
-    gap: 1.5rem;
+  transition: all 0.3s;
+
+  &:hover {
+    transform: scale(1.05);
+    cursor: pointer;
   }
 
-  div {
+  > div:last-child {
     display: flex;
     justify-content: left;
 
@@ -43,11 +43,57 @@ const Container = styled.div`
   h1 {
     font-size: 1.6rem;
     font-weight: bold;
+
+    ${(props) => props.theme.response.mobile} {
+      font-size: 1.4rem;
+    }
   }
 
   p {
     font-size: 1.1rem;
     font-weight: normal;
+
+    ${(props) => props.theme.response.mobile} {
+      font-size: ${(props) => props.theme.font.mediumSize};
+    }
+  }
+`;
+
+const ItemTop = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+`;
+
+const ItemLeft = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: left;
+  align-items: center;
+  gap: 1rem;
+
+  img {
+    width: 3rem;
+    height: 3rem;
+    border-radius: 50%;
+  }
+
+  div {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+
+    h3 {
+      font-size: 1.3rem;
+      font-weight: 600;
+      margin-right: 0.5rem;
+    }
+
+    span {
+      color: #949494;
+      font-size: 1rem;
+    }
   }
 `;
 
@@ -57,21 +103,25 @@ export interface IButtonType {
 }
 
 const CommunityItem = () => {
-  const buttonText: IButtonType = {
-    left: '자세히 보기',
-    right: '그룹 채팅 참여',
-  };
-
   return (
     <Container>
+      <ItemTop>
+        <ItemLeft>
+          <img
+            src="https://www.handmk.com/news/photo/202306/16714_40371_5250.jpg"
+            alt="user profile"
+          />
+          <div>
+            <h3>이상한 고양이님</h3>
+            <span>서울</span>
+          </div>
+        </ItemLeft>
+      </ItemTop>
       <h1>매주 월요일 바이크 타실 분 🚴</h1>
       <p>
         안녕하세요, 바이크 소모임 000입니다! 저희 소모임은 매주 월요일 저녁
         8시에 진행됩니다. 많관부~ 어째저째 길다~~~ 내용이 길게 보입니다.
       </p>
-      <div>
-        <CommunityItemButtons buttonText={buttonText} />
-      </div>
     </Container>
   );
 };

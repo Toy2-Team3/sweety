@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import { IButtonType } from '../community-item/CommunityItem';
 
 const ButtonWrapper = styled.div`
-  width: 30%;
   display: flex;
   flex-direction: row;
   justify-content: right;
@@ -14,8 +13,10 @@ const ButtonWrapper = styled.div`
   }
 `;
 
-const Button = styled.button<{ $left?: boolean }>`
+export const Button = styled.button<{ $left?: boolean }>`
   background: ${(props) => (props.$left ? '#777777' : '#D94E28')};
+
+  flex: 1;
 
   white-space: nowrap;
   color: white;
@@ -25,9 +26,7 @@ const Button = styled.button<{ $left?: boolean }>`
   border-radius: 0.5rem;
   box-shadow: 1px 1px 2px 1px rgba(0, 0, 0, 0.3);
 
-  width: 100%;
-  height: 100%;
-  padding: 0.5rem 1rem;
+  padding: 0.6rem 1rem;
 
   transition: all 0.3s;
 
@@ -36,8 +35,8 @@ const Button = styled.button<{ $left?: boolean }>`
     cursor: pointer;
   }
 
-  ${(props) => props.theme.response.mobile} {
-    padding: 0.8rem 1rem;
+  ${(props) => props.theme.response.tablet} {
+    font-size: ${(props) => props.theme.font.mediumSize};
   }
 `;
 
