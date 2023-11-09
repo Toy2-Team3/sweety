@@ -14,165 +14,101 @@ import { ReactComponent as ActivedChatIcon } from "../assets/activedChattingIcon
 import { ReactComponent as ActivedMyPageIcon } from "../assets/activedMypageIcon.svg"
 import { ReactComponent as ActivedSettingIcon } from "../assets/activedSettingIcon.svg"
 
+const categories = [
+  {
+    id: 'home',
+    label: 'Home',
+    defaultClicked: true,
+    icon: <HomeIcon />,
+    activeIcon: <ActivedHomeIcon />,
+  },
+  {
+    id: 'community',
+    label: 'Community',
+    defaultClicked: false,
+    icon: <CommunityIcon />,
+    activeIcon: <ActivedCommunityIcon />,
+  },
+  {
+    id: 'chat',
+    label: 'Chat',
+    defaultClicked: false,
+    icon: <ChatIcon />,
+    activeIcon: <ActivedChatIcon />,
+  },
+  {
+    id: 'mypage',
+    label: 'MyPage',
+    defaultClicked: false,
+    icon: <MyPageIcon />,
+    activeIcon: <ActivedMyPageIcon />,
+  },
+];
+
 export default function NavigationBar() {
   const navigate = useNavigate();
-  const [isHomeClicked, setIsHomeClicked] = useState(false);
-  const [isCommunityClicked, setIsCommunityClicked] = useState(false);
-  const [isChatClicked, setIsChatClicked] = useState(false);
-  const [isMyPageClicked, setIsMyPageClicked] = useState(false);
+  const [activeCategory, setActiveCategory] = useState('');
   const [isSettingClicked, setIsSettingClicked] = useState(false);
 
-  const handleCategoryButton = ( category: string ) => {
-    if(category === 'home')
-      navigate(`/`);
-    if(category === 'community')
-      navigate(`/community`);
-    if(category === 'chat')
-      navigate(`/chat`);
-    if(category === 'mypage')
-      navigate(`/mypage`);
-  } 
-
-  const handleLinkToHomePage= () => {
-    setIsHomeClicked(true);
-    setIsCommunityClicked(false);
-    setIsChatClicked(false);
-    setIsMyPageClicked(false);
-
-    localStorage.setItem('isHomeClicked', 'true');
-    localStorage.setItem('isCommunityClicked', 'false');
-    localStorage.setItem('isChatClicked', 'false');
-    localStorage.setItem('isMyPageClicked', 'false');
-
-    handleCategoryButton('home');
-  }
-  const handleLinkToCommunityPage= () => {
-    setIsCommunityClicked(true);
-    setIsHomeClicked(false);
-    setIsChatClicked(false);
-    setIsMyPageClicked(false);
-
-    localStorage.setItem('isCommunityClicked', 'true');
-    localStorage.setItem('isHomeClicked', 'false');
-    localStorage.setItem('isChatClicked', 'false');
-    localStorage.setItem('isMyPageClicked', 'false');
-
-    handleCategoryButton('community');
-  }
-
-  const handleLinkToChatPage= () => {
-    setIsChatClicked(true);
-    setIsHomeClicked(false);
-    setIsCommunityClicked(false);
-    setIsMyPageClicked(false);
-
-    localStorage.setItem('isChatClicked', 'true');
-    localStorage.setItem('isCommunityClicked', 'false');
-    localStorage.setItem('isHomeClicked', 'false');
-    localStorage.setItem('isMyPageClicked', 'false');
-
-    handleCategoryButton('chat');
-  }
-
-  const handleLinkToMyPage= () => {
-    setIsMyPageClicked(true);
-    setIsHomeClicked(false);
-    setIsCommunityClicked(false);
-    setIsChatClicked(false);
-   
-    localStorage.setItem('isMyPageClicked', 'true');
-    localStorage.setItem('isHomeClicked', 'false');
-    localStorage.setItem('isCommunityClicked', 'false');
-    localStorage.setItem('isChatClicked', 'false');
-    
-    handleCategoryButton('mypage');
-    
-  }
+  const handleCategoryClick = (categoryId: string) => {
+    setActiveCategory(categoryId);
+    navigate(categoryId === 'home' ? `/` : `/${categoryId}`);
+  };
 
   const handleOpenSettingBox = () => {
     setIsSettingClicked(!isSettingClicked);
-  }
+  };
 
-  // 새로고침 시 현재 페이지 clicked state 저장
+  // 새로고침 시 저장되도록
   useEffect(() => {
-    const isHomeClicked = localStorage.getItem('isHomeClicked') === 'true';
-    const isCommunityClicked = localStorage.getItem('isCommunityClicked') === 'true';
-    const isChatClicked = localStorage.getItem('isChatClicked') === 'true';
-    const isMyPageClicked = localStorage.getItem('isMyPageClicked') === 'true';
-  
-    setIsHomeClicked(isHomeClicked);
-    setIsCommunityClicked(isCommunityClicked);
-    setIsChatClicked(isChatClicked);
-    setIsMyPageClicked(isMyPageClicked);
+    const savedCategory = localStorage.getItem('activeCategory');
+
+    if (savedCategory) {
+      setActiveCategory(savedCategory);
+    }
   }, []);
-  
+
+  useEffect(() => {
+    localStorage.setItem('activeCategory', activeCategory);
+  }, [activeCategory]);
 
   return (
     <NavigationWrap>
       <TopDiv>
-        <LogoWrap onClick={handleLinkToHomePage}>
-          <Logo style={{fill: 'red'}}/>
+        <LogoWrap onClick={() => handleCategoryClick('home')}>
+          <Logo style={{ fill: 'red' }} />
         </LogoWrap>
-        <IconWrap onClick={handleLinkToHomePage}>
+        <IconWrap onClick={() => handleCategoryClick('home')}>
           <Icon />
         </IconWrap>
         <CategoryWrap>
-          <ClickedBox $isClicked={isHomeClicked}>
-            <CategoryButton onClick={handleLinkToHomePage}>
-              { 
-                isHomeClicked ?
-                  <ActivedHomeIcon/> : <HomeIcon/>
-              } 
-            <CategoryTitle $isClicked={isHomeClicked}>Home</CategoryTitle>
-          </CategoryButton>
-          </ClickedBox>
-          <ClickedBox $isClicked={isCommunityClicked}>
-            <CategoryButton onClick={handleLinkToCommunityPage}>
-              { 
-                isCommunityClicked ?
-                  <ActivedCommunityIcon/> : <CommunityIcon/>
-              } 
-              <CategoryTitle $isClicked={isCommunityClicked}>Community</CategoryTitle>
-            </CategoryButton>
-          </ClickedBox>
-          <ClickedBox $isClicked={isChatClicked}>
-            <CategoryButton onClick={handleLinkToChatPage}>
-              { 
-                isChatClicked ?
-                  <ActivedChatIcon/> : <ChatIcon/>
-              } 
-              <CategoryTitle $isClicked={isChatClicked}>Chat</CategoryTitle>
-            </CategoryButton>
-          </ClickedBox>
-          <ClickedBox $isClicked={isMyPageClicked}>
-            <CategoryButton onClick={handleLinkToMyPage}>
-              { 
-                isMyPageClicked ?
-                  <ActivedMyPageIcon/> : <MyPageIcon/>
-              } 
-              <CategoryTitle $isClicked={isMyPageClicked}>MyPage</CategoryTitle>
-            </CategoryButton>
-          </ClickedBox>
+          {categories.map((category) => (
+            <ClickedBox key={category.id} $isClicked={activeCategory === category.id}>
+              <CategoryButton onClick={() => handleCategoryClick(category.id)}>
+                {activeCategory === category.id ? category.activeIcon : category.icon}
+                <CategoryTitle $isClicked={activeCategory === category.id}>
+                  {category.label}
+                </CategoryTitle>
+              </CategoryButton>
+            </ClickedBox>
+          ))}
         </CategoryWrap>
       </TopDiv>
       <BottomDiv>
         <SettingBox $isClicked={isSettingClicked}>
           <SettingMenu>로그아웃</SettingMenu>
-          <Divider></Divider>
+          <Divider />
           <SettingMenu>다른 설정...</SettingMenu>
         </SettingBox>
         <ClickedBox $isClicked={isSettingClicked}>
           <SettingButton onClick={handleOpenSettingBox}>
-            { 
-              isSettingClicked ?
-                <ActivedSettingIcon/> : <SettingIcon/>
-            } 
+            {isSettingClicked ? <ActivedSettingIcon /> : <SettingIcon />}
             <CategoryTitle $isClicked={isSettingClicked}>Settings</CategoryTitle>
           </SettingButton>
         </ClickedBox>
       </BottomDiv>
     </NavigationWrap>
-  )
+  );
 }
 
 const NavigationWrap = styled.div`
