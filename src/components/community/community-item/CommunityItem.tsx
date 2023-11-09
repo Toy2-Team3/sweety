@@ -72,12 +72,6 @@ const ItemLeft = styled.div`
   align-items: center;
   gap: 1rem;
 
-  img {
-    width: 3rem;
-    height: 3rem;
-    border-radius: 50%;
-  }
-
   div {
     display: flex;
     flex-direction: row;
@@ -97,6 +91,24 @@ const ItemLeft = styled.div`
   }
 `;
 
+const ImageWrapper = styled.div`
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+  overflow: hidden;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  ${(props) => props.theme.response.mobile} {
+    width: 3.3rem;
+    height: 3.3rem;
+  }
+`;
+
 export interface IButtonType {
   left: string;
   right: string;
@@ -107,10 +119,12 @@ const CommunityItem = () => {
     <Container>
       <ItemTop>
         <ItemLeft>
-          <img
-            src="https://www.handmk.com/news/photo/202306/16714_40371_5250.jpg"
-            alt="user profile"
-          />
+          <ImageWrapper>
+            <img
+              src="https://www.handmk.com/news/photo/202306/16714_40371_5250.jpg"
+              alt="user profile"
+            />
+          </ImageWrapper>
           <div>
             <h3>이상한 고양이님</h3>
             <span>서울</span>

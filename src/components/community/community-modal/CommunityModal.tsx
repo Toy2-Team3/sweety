@@ -38,10 +38,9 @@ const ModalWrapper = styled.div`
   left: 50%;
   transform: translate(-50%, -50%);
 
-  ${(props) => props.theme.response.mobile} {
-    width: 100%;
-    max-width: 90%;
-    padding: 1.5rem;
+  ${(props) => props.theme.response.tablet} {
+    min-width: 80%;
+    padding: 2rem;
   }
 
   h1 {
@@ -53,7 +52,7 @@ const ModalWrapper = styled.div`
     }
 
     ${(props) => props.theme.response.mobile} {
-      font-size: 1.5rem;
+      font-size: 1.3rem;
     }
   }
 
@@ -61,6 +60,10 @@ const ModalWrapper = styled.div`
     font-size: 1.1rem;
     font-weight: normal;
     line-height: 1.5rem;
+
+    ${(props) => props.theme.response.mobile} {
+      font-size: 1rem;
+    }
   }
 `;
 
@@ -73,7 +76,7 @@ const CloseButton = styled.div`
     width: 1.5rem;
     height: 1.5rem;
 
-    ${(props) => props.theme.response.mobile} {
+    ${(props) => props.theme.response.tablet} {
       width: 1.2rem;
       height: 1.2rem;
     }
@@ -86,17 +89,6 @@ const ModalTop = styled.div`
   justify-content: left;
   align-items: center;
   gap: 1rem;
-
-  img {
-    width: 4rem;
-    height: 4rem;
-    border-radius: 50%;
-
-    ${(props) => props.theme.response.mobile} {
-      width: 3.3rem;
-      height: 3.3rem;
-    }
-  }
 
   h3 {
     font-size: 1.4rem;
@@ -111,6 +103,24 @@ const ModalTop = styled.div`
   span {
     color: #949494;
     font-size: 1rem;
+  }
+`;
+
+const ImageWrapper = styled.div`
+  width: 4rem;
+  height: 4rem;
+  border-radius: 50%;
+  overflow: hidden;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  ${(props) => props.theme.response.mobile} {
+    width: 3.3rem;
+    height: 3.3rem;
   }
 `;
 
@@ -153,6 +163,10 @@ const GoToChatButton = styled.button`
     width: 1.5rem;
     height: 1.5rem;
   }
+
+  ${(props) => props.theme.response.mobile} {
+    font-size: 1rem;
+  }
 `;
 
 const CommunityModal = () => {
@@ -168,10 +182,12 @@ const CommunityModal = () => {
           <img src={Close} />
         </CloseButton>
         <ModalTop>
-          <img
-            src="https://www.handmk.com/news/photo/202306/16714_40371_5250.jpg"
-            alt="user profile"
-          />
+          <ImageWrapper>
+            <img
+              src="https://www.handmk.com/news/photo/202306/16714_40371_5250.jpg"
+              alt="user profile"
+            />
+          </ImageWrapper>
           <div>
             <h3>이상한 고양이</h3>
             <span>서울</span>

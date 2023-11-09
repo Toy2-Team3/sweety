@@ -31,10 +31,18 @@ const InputWrapper = styled.div`
   justify-content: left;
   align-items: top;
 
+  ${(props) => props.theme.response.mobile} {
+    flex-direction: column;
+  }
+
   label {
     font-size: 2rem;
     font-weight: bold;
     white-space: nowrap;
+
+    ${(props) => props.theme.response.mobile} {
+      font-size: 1.5rem;
+    }
   }
 
   input {

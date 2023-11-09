@@ -1,6 +1,6 @@
 import React from 'react';
-// import CommunityItem from './community-item/CommunityItem';
-// import CommunityEdit from './community-edit/CommunityEdit';
+import CommunityItem from './community-item/CommunityItem';
+import CommunityEdit from './community-edit/CommunityEdit';
 import CommunityModal from './community-modal/CommunityModal';
 import styled from 'styled-components';
 import { Button } from './Community-item-buttons/CommunityItemButtons';
@@ -70,16 +70,16 @@ const index = () => {
         <AddButton>새 글 등록</AddButton>
       </AddButtonWrapper>
       <ItemWrapper>
-        {/* <CommunityItem />
         <CommunityItem />
         <CommunityItem />
         <CommunityItem />
         <CommunityItem />
         <CommunityItem />
-        <CommunityItem /> */}
+        <CommunityItem />
+        <CommunityItem />
       </ItemWrapper>
       <CommunityModal />
-      {/* <CommunityEdit /> */}
+      <CommunityEdit />
     </Wrapper>
   );
 };
