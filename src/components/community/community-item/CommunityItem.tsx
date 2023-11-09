@@ -81,9 +81,19 @@ const Container = styled.div`
     font-size: 1.1rem;
     font-weight: normal;
 
-    ${(props) => props.theme.response.mobile} {
-      font-size: ${(props) => props.theme.font.mediumSize};
+    ${(props) => props.theme.response.tablet} {
+      width: 100%;
+      line-height: 1.3rem;
+      white-space: normal;
+      word-break: break-word;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
     }
+  }
+
+  ${(props) => props.theme.response.mobile} {
+    font-size: ${(props) => props.theme.font.mediumSize};
   }
 `;
 

@@ -35,7 +35,6 @@ function App() {
 }
 
 const PageWrap = styled.div`
-  width: calc(100vw - 350px);
   flex: 1;
   margin-left: 300px;
 
