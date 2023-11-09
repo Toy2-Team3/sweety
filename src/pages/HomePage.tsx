@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import styled from 'styled-components';
-import UserInfo from '../components/Home/UserInfo';
+import React, { useState, useEffect } from "react";
+import styled from "styled-components";
+import UserInfo from "../components/Home/UserInfo";
 interface User {
   id: string;
   password: string;
@@ -8,6 +8,43 @@ interface User {
   picture: string;
   chats: string[];
 }
+
+const Home = () => {
+  const [users, setUsers] = useState<User[]>([]);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch("/users.json");
+        console.log("Response:", response);
+        const data = await response.json();
+        console.log(data);
+        console.log("Data:", data);
+        setUsers(data);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
+  console.log(users);
+  return (
+    <Wrapper>
+      <Header>
+        <div>Home</div>
+        <div> 좋은 사람과 좋은 날을 만들어보세요.</div>
+      </Header>
+      <UsersInfo>
+        {users.map((user, index) => (
+          <UserInfo key={index} name={user.name} picture={user.picture} />
+        ))}
+      </UsersInfo>
+    </Wrapper>
+  );
+};
+
+export default Home;
+
 const Wrapper = styled.div`
   margin: 0 auto;
   padding: 5rem 5rem 0 5rem;
@@ -52,39 +89,3 @@ const UsersInfo = styled.div`
     justify-content: center;
   }
 `;
-
-const Home = () => {
-  const [users, setUsers] = useState<User[]>([]);
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch('/users.json');
-        console.log('Response:', response);
-        const data = await response.json();
-        console.log(data);
-        console.log('Data:', data);
-        setUsers(data);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    };
-
-    fetchData();
-  }, []);
-  console.log(users);
-  return (
-    <Wrapper>
-      <Header>
-        <div>Home</div>
-        <div> 좋은 사람과 좋은 날을 만들어보세요.</div>
-      </Header>
-      <UsersInfo>
-        {users.map((user, index) => (
-          <UserInfo key={index} name={user.name} picture={user.picture} />
-        ))}
-      </UsersInfo>
-    </Wrapper>
-  );
-};
-
-export default Home;
