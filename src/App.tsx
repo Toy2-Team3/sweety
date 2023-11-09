@@ -54,11 +54,10 @@ function App() {
 const PageWrap = styled.div`
   flex: 1;
   margin-left: 300px;
-
   ${(props) => props.theme.response.tablet} {
+    min-width: 30%;
     margin-left: 100px;
   }
-
   ${(props) => props.theme.response.mobile} {
     margin-left: 0;
     margin-bottom: 120px;

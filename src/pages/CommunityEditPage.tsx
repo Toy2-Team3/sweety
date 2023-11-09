@@ -19,11 +19,9 @@ export default CommunityEditPage;
 const Wrapper = styled.div`
   width: calc(100vw - 300px);
   padding: 5rem;
-
   display: flex;
   flex-direction: column;
   gap: 1rem;
-
   ${(props) => props.theme.response.tablet} {
     width: calc(100vw - 100px);
     padding: 3rem;
@@ -36,7 +34,6 @@ const Wrapper = styled.div`
 
 const Header = styled.div`
   margin-bottom: 3rem;
-
   > div:first-child {
     margin-bottom: 1rem;
     font-size: 50px;

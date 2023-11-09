@@ -1,13 +1,13 @@
-import React from 'react';
+import React from "react";
 import CommunityItemButtons, {
   ButtonType,
-} from '../Community-item-buttons/CommunityItemButtons';
-import styled from 'styled-components';
+} from "../Community-item-buttons/CommunityItemButtons";
+import styled from "styled-components";
 
 const CommunityEdit = () => {
   const buttonText: ButtonType = {
-    left: '초기화',
-    right: '등록',
+    left: "초기화",
+    right: "등록",
   };
 
   return (
@@ -35,7 +35,6 @@ const EditWrapper = styled.div`
   width: 100%;
   min-width: 30%;
   height: 80vh;
-
   display: flex;
   flex-direction: column;
   gap: 1rem;
@@ -43,8 +42,6 @@ const EditWrapper = styled.div`
 
 const InputForm = styled.form`
   width: 100%;
-  /* min-width: 30%; */
-
   display: flex;
   flex-direction: column;
   gap: 1rem;
@@ -56,41 +53,32 @@ const InputWrapper = styled.div`
   gap: 1rem;
   justify-content: left;
   align-items: center;
-
   ${(props) => props.theme.response.mobile} {
     flex-direction: column;
     align-items: start;
   }
-
   label {
     font-size: 1.8rem;
     font-weight: bold;
     white-space: nowrap;
-
     ${(props) => props.theme.response.mobile} {
       font-size: 1.5rem;
     }
   }
-
   input {
     width: 100%;
     padding: 0.5rem;
-
     border-radius: 0.5rem;
     border: 1px solid #949494;
-
     font-size: 1.3rem;
     font-weight: bold;
   }
-
   textarea {
     width: 100%;
     height: 10rem;
     padding: 0.5rem;
-
     border-radius: 0.5rem;
     border: 1px solid #949494;
-
     font-size: 1rem;
     font-weight: normal;
   }
