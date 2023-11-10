@@ -59,6 +59,9 @@ const Wrapper = styled.div`
   }
 
   ${(props) => props.theme.response.mobile} {
+    display: flex;
+    justify-content: center;
+    align-items: center;
     width: 100%;
     padding: 2rem;
   }
@@ -80,17 +83,13 @@ const Header = styled.div`
 `;
 
 const UsersInfo = styled.div`
-  width: 100%;
-  height: 100%;
   margin-top: 4rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  padding: 1rem;
+
   ${(props) => props.theme.response.mobile} {
-    justify-content: center;
-  }
-  ${(props) => props.theme.response.tablet} {
-    justify-content: center;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   }
 `;
