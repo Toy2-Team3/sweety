@@ -2,18 +2,14 @@ import styled, { DefaultTheme } from "styled-components";
 import { ReactComponent as SweetLogo } from "../../assets/sweetyLogo.svg";
 import { Container } from "./StartPage";
 import { CorrectText, GreetingText, WarnText } from "./SignUpIDPW";
+import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import { useState } from "react";
 import { useRecoilState } from "recoil";
+import { idState, pwState } from "../../recoil/atoms";
 import { useNavigate } from "react-router-dom";
-import {
-  birthdayState,
-  idState,
-  profileImageState,
-  pwState,
-  selectedGenderState,
-  selectedRegionState,
-  userNameState,
-} from "../../recoil/atoms";
+import { UploadImage, getImageDownloadURL } from "../../utils/firebase";
+import axios from "axios";
 
 const regions = [
   { value: "강원", label: "강원" },
@@ -53,16 +49,22 @@ interface SignUpSpecificProps {
   theme: DefaultTheme;
 }
 
+interface signUpProps {
+  id: string;
+  password: string;
+  name: string;
+  picture: string;
+}
+
 function SignUpSpecific({ theme }: SignUpSpecificProps) {
   const [id] = useRecoilState(idState);
   const [pw] = useRecoilState(pwState);
-  const [profileImage, setProfileImage] = useRecoilState(profileImageState);
-  const [userName, setUserName] = useRecoilState(userNameState);
-  const [birthday, setBirthday] = useRecoilState(birthdayState);
-  const [selectedGender, setSelectedGender] =
-    useRecoilState(selectedGenderState);
-  const [selectedRegion, setSelectedRegion] =
-    useRecoilState(selectedRegionState);
+  const [profileImage, setProfileImage] = useState<File>();
+  const [profileImageUrl, setProfileImageUrl] = useState<string>("");
+  const [userName, setUserName] = useState<string>("");
+  const [birthday, setBirthday] = useState<Date | null>(null);
+  const [selectedGender, setSelectedGender] = useState("");
+  const [selectedRegion, setSelectedRegion] = useState("");
 
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
@@ -79,16 +81,60 @@ function SignUpSpecific({ theme }: SignUpSpecificProps) {
   };
 
   const navigate = useNavigate();
-  const navigateToSignUpSpecific = () => {
-    if (
-      profileImage &&
-      isNameValid(userName) &&
-      birthday &&
-      selectedGender &&
-      selectedRegion
-    ) {
-      navigate("/signup3");
+
+  const signUp = async (
+    id: string,
+    password: string,
+    name: string,
+    picture: string,
+  ): Promise<signUpProps> => {
+    try {
+      const response = await axios.post(
+        "https://fastcampus-chat.net/signup",
+        {
+          id,
+          password,
+          name,
+          picture,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            serverId: process.env.REACT_APP_SERVER_ID,
+          },
+        },
+      );
+
+      if (response.status === 200 && response.data.message === "User created") {
+        if (profileImage) {
+          try {
+            // TODO: 파일 업로드 로직 작성
+
+            // 이미지 다운로드 URL을 가져오는 부분
+            const downloadURL = await getImageDownloadURL(id);
+            setProfileImageUrl(downloadURL);
+          } catch (error) {
+            console.error("Error getting image download URL:", error);
+            // 이미지 업로드에 실패했을 때의 처리를 여기에 추가하세요.
+          }
+        }
+      } else {
+        // 회원가입이 실패한 경우에 대한 처리를 여기에 추가하세요.
+        console.error("User creation failed:", response.data.message);
+      }
+    } catch (error) {
+      console.error("Sign-up error:", error);
+      // 오류가 발생한 경우에 대한 처리를 여기에 추가하세요.
     }
+
+    // 여기에 반환할 값이 없는 경우에 대한 처리를 추가하세요.
+    return {
+      id,
+      password,
+      name,
+      picture,
+      // 반환할 값
+    };
   };
 
   return id && pw ? (
@@ -109,15 +155,15 @@ function SignUpSpecific({ theme }: SignUpSpecificProps) {
         />
       </ProfileWrapper>
       <div style={{ position: "relative" }}>
-        <p>닉네임</p>
+        <p>이름</p>
         <NameInput
-          placeholder="닉네임을 입력해주세요"
+          placeholder="이름을 입력해주세요"
           value={userName}
           onChange={(e) => setUserName(e.target.value)}
         />
         {userName ? (
           isNameValid(userName) ? (
-            <CorrectText>정말 매력적인 닉네임이네요!</CorrectText>
+            <CorrectText>정말 매력적인 이름이네요!</CorrectText>
           ) : (
             <WarnText>영문, 한글 조합 20자 이하입니다</WarnText>
           )
@@ -126,10 +172,11 @@ function SignUpSpecific({ theme }: SignUpSpecificProps) {
       <BirthGenderWrapper>
         <div>
           <p>생년월일</p>
-          <Birthday
-            value={birthday ? birthday.toISOString().split("T")[0] : ""}
-            type="date"
-            onChange={(e) => setBirthday(new Date(e.target.value))}
+
+          <CustomDatePicker
+            selected={birthday}
+            onChange={(date: Date | null) => setBirthday(date)}
+            dateFormat="yyyy-MM-dd"
           />
         </div>
         <div>
@@ -180,9 +227,23 @@ function SignUpSpecific({ theme }: SignUpSpecificProps) {
         birthday={birthday}
         selectedGender={selectedGender}
         selectedRegion={selectedRegion}
-        onClick={navigateToSignUpSpecific}
+        onClick={async () => {
+          if (profileImage) {
+            try {
+              await UploadImage({
+                imageName: id,
+                file: profileImage,
+              });
+              const downloadURL = await getImageDownloadURL(id);
+              setProfileImageUrl(downloadURL);
+              await signUp(id, pw, userName, profileImageUrl);
+            } catch (error) {
+              console.error("Image upload error:", error);
+            }
+          }
+        }}
       >
-        다음
+        회원가입
       </SignUpButton>
     </Container>
   ) : (
@@ -239,7 +300,7 @@ const BirthGenderWrapper = styled.div`
   width: 340px;
 `;
 
-const Birthday = styled.input`
+const CustomDatePicker = styled(DatePicker)`
   width: 140px;
   height: 50px;
   padding: 0 23px;
@@ -334,5 +395,4 @@ const GobackLink = styled.button`
   border: none;
   cursor: pointer;
 `;
-
 export default SignUpSpecific;

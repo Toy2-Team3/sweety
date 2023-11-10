@@ -1,21 +1,23 @@
 import styled from "styled-components";
 import { Container } from "./StartPage";
 import { IdPwInput, InputWrapper } from "./Login";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { idState, pwState } from "../../recoil/atoms";
 import { useRecoilState } from "recoil";
+import axios from "axios";
 
 interface ButtonProps {
   isInputValid: boolean;
-  Pw: string;
-  PwCheck: string;
+  pw: string;
+  pwCheck: string;
+  isIdDuplicated: boolean;
 }
 
-function SignUp() {
-  const [Id, setId] = useRecoilState(idState);
-  const [Pw, setPw] = useRecoilState(pwState);
-  const [PwCheck, setPwCheck] = useState("");
+function SignUpIDPW() {
+  const [id, setId] = useRecoilState(idState);
+  const [pw, setPw] = useRecoilState(pwState);
+  const [pwCheck, setPwCheck] = useState("");
   const [showPw, setShowPw] = useState(false);
   const [showPwCheck, setShowPwCheck] = useState(false);
   const [isIdDuplicated, setIsIdDuplicated] = useState(false);
@@ -37,38 +39,54 @@ function SignUp() {
   ) => {
     return isIdentificationValid(idendtification) && isPasswordValid(password);
   };
-  const isInputValid = isIdentificationPasswordValid(Id, Pw);
+  const isInputValid = isIdentificationPasswordValid(id, pw);
 
   const checkIdDuplication = async (id: string) => {
     try {
-      const response = await fetch("https://fastcampus-chat.net/check/id", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          serverId: "649f1163",
+      const response = await axios.post(
+        "https://fastcampus-chat.net/check/id",
+        { id },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            serverId: process.env.REACT_APP_SERVER_ID,
+          },
         },
-        body: JSON.stringify({ id }),
-      });
+      );
 
-      if (response.ok) {
-        const data = await response.json();
+      if (response.status === 200 && response.data.isDuplicated) {
+        const data = response.data;
         setIsIdDuplicated(data.isDuplicated);
-        console.log("아이디 중복 여부:", data.isDuplicated);
+        console.log("중복검사함");
       }
     } catch (error) {
       console.log("다음과 같은 이유로 중복검사를 할 수 없습니다 :", error);
     }
   };
 
-  const navigate = useNavigate();
-  const navigateToSignUpSpecific = async () => {
-    if (isInputValid && Pw === PwCheck) {
-      await checkIdDuplication(Id);
+  const debounce = <F extends (...args: string[]) => void>(
+    func: F,
+    delay: number,
+  ) => {
+    let timeoutId: NodeJS.Timeout;
 
-      if (!isIdDuplicated) {
-        navigate("/signup2");
-      }
+    return function (this: object, ...args: Parameters<F>) {
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(() => func.apply(this, args), delay);
+    };
+  };
+
+  const debouncedCheckIdDuplication = debounce(checkIdDuplication, 1500);
+
+  useEffect(() => {
+    if (id) {
+      debouncedCheckIdDuplication.call({}, id);
     }
+  }, [id, debouncedCheckIdDuplication]);
+
+  const navigate = useNavigate();
+  const navigateToNextPage = () => {
+    navigate("/signup2");
   };
 
   return (
@@ -77,14 +95,16 @@ function SignUp() {
       <InputWrapper style={{ position: "relative" }}>
         <p>아이디</p>
         <IdPwInput
-          value={Id}
+          value={id}
           onChange={(e) => {
             setId(e.target.value);
           }}
           placeholder="아이디를 입력해주세요"
         />
-        {Id ? (
-          isIdentificationValid(Id) ? (
+        {id ? (
+          isIdentificationValid(id) && isIdDuplicated ? (
+            <WarnText>*이미 사용중인 아이디 입니다😢</WarnText>
+          ) : !isIdDuplicated ? (
             <CorrectText>정말 멋진 아이디네요!</CorrectText>
           ) : (
             <WarnText>*영문 소문자, 대문자 조합 8자 이상입니다.</WarnText>
@@ -95,14 +115,14 @@ function SignUp() {
         <p>비밀번호</p>
         <IdPwInput
           type={showPw ? "text" : "password"}
-          value={Pw}
+          value={pw}
           onChange={(e) => {
             setPw(e.target.value);
           }}
           placeholder="비밀번호를 입력해주세요"
         />
-        {Pw ? (
-          isPasswordValid(Pw) ? (
+        {pw ? (
+          isPasswordValid(pw) ? (
             <CorrectText>강력한 비밀번호입니다</CorrectText>
           ) : (
             <WarnText>
@@ -118,14 +138,14 @@ function SignUp() {
         <p>비밀번호 확인</p>
         <IdPwInput
           type={showPwCheck ? "text" : "password"}
-          value={PwCheck}
+          value={pwCheck}
           onChange={(e) => {
             setPwCheck(e.target.value);
           }}
           placeholder="비밀번호를 다시 입력해주세요"
         />
-        {PwCheck ? (
-          Pw === PwCheck ? (
+        {pwCheck ? (
+          pw === pwCheck ? (
             <CorrectText>정확히 입력하셨습니다</CorrectText>
           ) : (
             <WarnText>*비밀번호가 다릅니다</WarnText>
@@ -137,9 +157,10 @@ function SignUp() {
       </InputWrapper>
       <NextButton
         isInputValid={isInputValid}
-        Pw={Pw}
-        PwCheck={PwCheck}
-        onClick={navigateToSignUpSpecific}
+        pw={pw}
+        pwCheck={pwCheck}
+        isIdDuplicated={isIdDuplicated}
+        onClick={navigateToNextPage}
       >
         다음
       </NextButton>
@@ -147,7 +168,7 @@ function SignUp() {
   );
 }
 
-export default SignUp;
+export default SignUpIDPW;
 
 export const GreetingText = styled.h1`
   font-size: 64px;
@@ -156,12 +177,12 @@ export const GreetingText = styled.h1`
 export const NextButton = styled.button<ButtonProps>`
   width: 340px;
   height: 50px;
-  background-color: ${({ isInputValid, Pw, PwCheck }) =>
-    isInputValid && Pw === PwCheck
+  background-color: ${({ isInputValid, pw, pwCheck, isIdDuplicated }) =>
+    isInputValid && pw === pwCheck && !isIdDuplicated
       ? (props) => props.theme.color.primary
       : (props) => props.theme.color.darkGray};
-  cursor: ${({ isInputValid, Pw, PwCheck }) =>
-    isInputValid && Pw === PwCheck ? "pointer" : "default"};
+  cursor: ${({ isInputValid, pw, pwCheck, isIdDuplicated }) =>
+    isInputValid && pw === pwCheck && !isIdDuplicated ? "pointer" : "default"};
   border: none;
   border-radius: 12px;
   color: white;
