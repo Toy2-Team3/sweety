@@ -12,7 +12,7 @@ interface User {
 
 const Home = () => {
   const fireFetch = useFireFetch();
-  const userId = "kimchulsoo";
+  const userId: string | null = "kimchulsoo";
   useEffect(() => {
     fireFetch.get("user", userId, "gender");
   }, []);
@@ -25,7 +25,6 @@ const Home = () => {
         const data = await response.json();
         console.log(data);
         console.log("Data:", data);
-        setUsers(data);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -33,7 +32,6 @@ const Home = () => {
 
     fetchData();
   }, []);
-
   console.log(users);
   return (
     <Wrapper>
