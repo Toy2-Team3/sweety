@@ -51,10 +51,10 @@ const UserInfo: React.FC<UserInfoProps> = ({ picture, name }) => {
 export default UserInfo;
 
 const UserCover = styled.div`
-  cursor:pointer  ;
+  cursor:pointer;
   width: 100%;
   padding-top: 100%;
-  background-color: red;
+  background-color:red;
   position: relative;
   overflow: hidden;
   @media screen and (max-width: 480px) {

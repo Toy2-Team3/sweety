@@ -13,9 +13,6 @@ interface User {
 const Home = () => {
   const fireFetch = useFireFetch();
   const userId: string | null = "kimchulsoo";
-  useEffect(() => {
-    fireFetch.get("user", userId, "gender");
-  }, []);
   const [users, setUsers] = useState<User[]>([]);
   useEffect(() => {
     const fetchData = async () => {
@@ -25,6 +22,7 @@ const Home = () => {
         const data = await response.json();
         console.log(data);
         console.log("Data:", data);
+        setUsers(data);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
