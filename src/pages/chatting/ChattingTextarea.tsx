@@ -66,6 +66,13 @@ const InputContainer = styled.div`
     left: 20px;
   }
 
+  @media screen and (max-width: 480px) {
+    width: calc(100% - 40px);
+    position: fixed;
+    bottom: 123px;
+    left: 20px;
+  }
+
   textarea {
     font-family: Arial, Helvetica, sans-serif;
     width: 100%;

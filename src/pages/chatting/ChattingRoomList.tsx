@@ -1,32 +1,28 @@
 import styled from "styled-components";
 import ChattingRoom from "./ChattingRoom";
 
-interface ChattingRoomProps {
+export interface ChattingRoomProps {
   name: string;
   online: boolean;
   roomId: number;
 }
 
 const ChattingRoomList = ({
+  roomData,
   currentRoomNumber,
   setCurrentRoomNumber,
   setShowRoomList,
 }: {
+  roomData: ChattingRoomProps[];
   currentRoomNumber: number;
   setCurrentRoomNumber: React.Dispatch<React.SetStateAction<number>>;
   setShowRoomList?: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
-  const dummyData: ChattingRoomProps[] = [
-    { name: "User 1과의 채팅", online: true, roomId: 1 },
-    { name: "User 2과의 채팅", online: true, roomId: 2 },
-    { name: "바이크 소모임 그룹 채팅", online: false, roomId: 3 },
-  ];
-
   return (
     <MainContainer>
       <PaddingBox />
       {/* 인덱스 추가하기 */}
-      {dummyData.map((item, index) => {
+      {roomData.map((item, index) => {
         const isCurrentRoom = index === currentRoomNumber;
         return (
           <ChattingRoom

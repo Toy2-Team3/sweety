@@ -3,8 +3,9 @@ import ChatBox from "./ChatBox";
 import defaultImage from "../../assets/ex.jpg";
 import ChattingTextarea from "./ChattingTextarea";
 import hamburgerButton from "../../assets/hamburger.svg";
-import ChattingRoomList from "./ChattingRoomList";
-import { useState } from "react";
+import exitButton from "../../assets/exitChattingRoom.svg";
+import ChattingRoomList, { ChattingRoomProps } from "./ChattingRoomList";
+import { useState, useEffect } from "react";
 
 export interface ChatProps {
   isMine: boolean;
@@ -13,9 +14,11 @@ export interface ChatProps {
 }
 
 const ChattingSection = ({
+  roomData,
   currentRoomNumber,
   setCurrentRoomNumber,
 }: {
+  roomData: ChattingRoomProps[];
   currentRoomNumber: number;
   setCurrentRoomNumber: React.Dispatch<React.SetStateAction<number>>;
 }) => {
@@ -66,16 +69,31 @@ const ChattingSection = ({
 
   const [showRoomList, setShowRoomList] = useState<boolean>(false);
 
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 1024) {
+        setShowRoomList(false);
+      }
+    };
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
   return (
     <MainContainer>
-      {showRoomList && (
-        <ChattingRoomList
-          currentRoomNumber={currentRoomNumber}
-          setCurrentRoomNumber={setCurrentRoomNumber}
-          setShowRoomList={setShowRoomList}
-        />
-      )}
-      <TabletMobileHeader>
+      <div className="chatting-room-controller">
+        {showRoomList && (
+          <ChattingRoomList
+            roomData={roomData}
+            currentRoomNumber={currentRoomNumber}
+            setCurrentRoomNumber={setCurrentRoomNumber}
+            setShowRoomList={setShowRoomList}
+          />
+        )}
+      </div>
+      <Header>
         <img
           onClick={() => {
             setShowRoomList(true);
@@ -83,13 +101,15 @@ const ChattingSection = ({
           src={hamburgerButton}
           alt=""
         />
-      </TabletMobileHeader>
+        <h1>{roomData[currentRoomNumber].name}</h1>
+        <img src={exitButton} alt="" />
+      </Header>
       <div onClick={() => setShowRoomList(false)}>
-        <main>
+        <ChattingViewArea>
           {chatDummy.map((item, index) => {
             return <ChatBox key={index} {...item} />;
           })}
-        </main>
+        </ChattingViewArea>
         <ChattingTextarea />
       </div>
     </MainContainer>
@@ -97,49 +117,82 @@ const ChattingSection = ({
 };
 
 const MainContainer = styled.section`
-  padding: 30px 0 0;
   width: 100%;
   min-width: 376px;
   position: relative;
 
   @media screen and (max-width: 1024px) {
-    padding: 0px;
     height: 100vh;
   }
-  main {
-    height: calc(100vh - 133px);
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    overflow: scroll;
-    padding: 0 30px 10px;
 
-    @media screen and (max-width: 1024px) {
-      padding: 0 20px 10px;
-      display: flex;
-      padding-top: 73px;
-      height: calc(100vh - 83px);
-    }
+  @media screen and (max-width: 480px) {
+    height: auto;
   }
 `;
 
-const TabletMobileHeader = styled.div`
-  display: none;
-  height: 63px;
-  position: fixed;
-  left: 104px;
-  width: 100%;
-  padding-left: 16px;
-  background-color: white;
-  box-shadow: 0px 4px 3px rgba(0, 0, 0, 0.1);
+const ChattingViewArea = styled.main`
+  height: calc(100vh - 83px);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  overflow: scroll;
+  padding: 73px 30px 10px;
 
   @media screen and (max-width: 1024px) {
-    display: flex;
-    align-items: center;
+    padding: 73px 20px 10px;
+  }
+
+  @media screen and (max-width: 480px) {
+    height: calc(100vh - 183px);
+  }
+`;
+
+const Header = styled.header`
+  position: fixed;
+  display: flex;
+  width: calc(100% - 564px);
+  height: 63px;
+  padding: 0 16px;
+  background-color: white;
+  box-shadow: 0px 4px 3px rgba(0, 0, 0, 0.1);
+  justify-content: space-between;
+  align-items: center;
+
+  > img:first-child {
+    display: none;
+  }
+
+  @media screen and (max-width: 1024px) {
+    width: calc(100% - 104px);
+    left: 104px;
+
+    > img:first-child {
+      display: block;
+    }
+  }
+
+  @media screen and (max-width: 480px) {
+    width: 100%;
+    left: 0;
   }
 
   img {
     cursor: pointer;
+    flex-shrink: 0;
+  }
+
+  h1 {
+    font-size: 20px;
+    font-weight: 600;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    word-break: break-all;
+    line-height: 24px;
+
+    @media screen and (max-width: 480px) {
+      font-size: 18px;
+    }
   }
 `;
 
