@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { Container } from "./StartPage";
 import { IdPwInput, InputWrapper } from "./Login";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { idState, pwState } from "../../recoil/atoms";
 import { useRecoilState } from "recoil";
@@ -13,6 +13,24 @@ interface ButtonProps {
   pwCheck: string;
   isIdDuplicated: boolean;
 }
+
+const debounce = <F extends (...args: string[]) => void>(
+  func: F,
+  delay: number,
+) => {
+  let timeoutId: NodeJS.Timeout | null = null;
+
+  return function (this: object, ...args: Parameters<F>) {
+    if (timeoutId) {
+      clearTimeout(timeoutId);
+    }
+
+    timeoutId = setTimeout(() => {
+      func.apply(this, args);
+      timeoutId = null;
+    }, delay);
+  };
+};
 
 function SignUpIDPW() {
   const [id, setId] = useRecoilState(idState);
@@ -54,30 +72,21 @@ function SignUpIDPW() {
         },
       );
 
-      if (response.status === 200 && response.data.isDuplicated) {
+      if (response.status === 200) {
         const data = response.data;
         setIsIdDuplicated(data.isDuplicated);
         console.log("중복검사함");
+        console.log(data.isDuplicated);
       }
     } catch (error) {
       console.log("다음과 같은 이유로 중복검사를 할 수 없습니다 :", error);
     }
   };
 
-  const debounce = <F extends (...args: string[]) => void>(
-    func: F,
-    delay: number,
-  ) => {
-    let timeoutId: NodeJS.Timeout;
-
-    return function (this: object, ...args: Parameters<F>) {
-      clearTimeout(timeoutId);
-      timeoutId = setTimeout(() => func.apply(this, args), delay);
-    };
-  };
-
-  const debouncedCheckIdDuplication = debounce(checkIdDuplication, 1500);
-
+  const debouncedCheckIdDuplication = useCallback(
+    debounce(checkIdDuplication, 1500),
+    [checkIdDuplication],
+  );
   useEffect(() => {
     if (id) {
       debouncedCheckIdDuplication.call({}, id);
@@ -86,7 +95,9 @@ function SignUpIDPW() {
 
   const navigate = useNavigate();
   const navigateToNextPage = () => {
-    navigate("/signup2");
+    if (isIdDuplicated === false) {
+      navigate("/signup2");
+    }
   };
 
   return (
@@ -103,11 +114,11 @@ function SignUpIDPW() {
         />
         {id ? (
           isIdentificationValid(id) && isIdDuplicated ? (
-            <WarnText>*이미 사용중인 아이디 입니다😢</WarnText>
+            <WarnText>이미 사용중인 아이디 입니다😢</WarnText>
           ) : !isIdDuplicated ? (
             <CorrectText>정말 멋진 아이디네요!</CorrectText>
           ) : (
-            <WarnText>*영문 소문자, 대문자 조합 8자 이상입니다.</WarnText>
+            <WarnText>영문 소문자, 대문자 조합 8자 이상입니다.</WarnText>
           )
         ) : null}
       </InputWrapper>
@@ -126,7 +137,7 @@ function SignUpIDPW() {
             <CorrectText>강력한 비밀번호입니다</CorrectText>
           ) : (
             <WarnText>
-              *비밀번호는 특수문자, 영어, 숫자 조합 5자 이상입니다.
+              비밀번호는 특수문자, 영어, 숫자 조합 5자 이상입니다.
             </WarnText>
           )
         ) : null}
@@ -148,7 +159,7 @@ function SignUpIDPW() {
           pw === pwCheck ? (
             <CorrectText>정확히 입력하셨습니다</CorrectText>
           ) : (
-            <WarnText>*비밀번호가 다릅니다</WarnText>
+            <WarnText>비밀번호가 다릅니다</WarnText>
           )
         ) : null}
         <ShowPasswordButton onClick={() => setShowPwCheck(!showPwCheck)}>

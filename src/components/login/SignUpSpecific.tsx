@@ -95,11 +95,11 @@ function SignUpSpecific({ theme }: SignUpSpecificProps) {
     <Container style={{ gap: "18px" }}>
       <GreetingText>환영합니다🎉</GreetingText>
       <ProfileWrapper>
-        <p>프로필</p>
         <label htmlFor="profile">
           <ProfileUploadButton
             style={{ backgroundImage: `url(${profileImage})` }}
           />
+          {/*카메라 아이콘 넣기 */}
         </label>
         <ProfileInput
           type="file"
@@ -240,7 +240,7 @@ const BirthGenderWrapper = styled.div`
 `;
 
 const Birthday = styled.input`
-  width: 140px;
+  width: 170px;
   height: 50px;
   padding: 0 23px;
   border: 1px solid ${(props) => props.theme.color.borderGray};
