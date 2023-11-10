@@ -67,43 +67,43 @@ const ModalWrap = styled.div<{ $isOpen: boolean }>`
 `;
 
 const Modal = styled.div`
-    width: 28rem;
-    height: 20rem;
-    border-radius: 20px;
-    border: 1px solid ${(props) => props.theme.color.lightGray};
-    background: #FFF;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 1rem;
+  width: 28rem;
+  height: 20rem;
+  border-radius: 20px;
+  border: 1px solid ${(props) => props.theme.color.lightGray};
+  background: #FFF;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1rem;
 `;
 
 const TitleWrap = styled.div`
-    margin-top: 36px;
+  margin-top: 36px;
 `;
 
 const Title = styled.span`
-    color: ${(props) => props.theme.color.primary};
-    font-size: ${(props) => props.theme.font.largeSize};
-    font-style: normal;
-    font-weight: 800;
-    line-height: 140%; 
+  color: ${(props) => props.theme.color.primary};
+  font-size: ${(props) => props.theme.font.largeSize};
+  font-style: normal;
+  font-weight: 800;
+  line-height: 140%; 
 `;
 
 const ContentWrap = styled.div`
-    margin-top: 20px;
+  margin-top: 20px;
 `;
 
 const Content = styled.span`
-    color: ${(props) => props.theme.color.black};
-    font-size: ${(props) => props.theme.font.middleSize};
-    font-weight: 500;
-    line-height: 140%; 
-    white-space: pre-wrap;
+  color: ${(props) => props.theme.color.black};
+  font-size: ${(props) => props.theme.font.middleSize};
+  font-weight: 500;
+  line-height: 140%; 
+  white-space: pre-wrap;
 `;
 
 const InputWrap = styled.div`
-    margin-top: 28px;
+  margin-top: 28px;
 `;
 
 const Input = styled.input`
@@ -114,43 +114,43 @@ const Input = styled.input`
 `;
 
 const ButtonWrap = styled.div`
-    margin: 32px 0 28px 0;
-    color: ${(props) => props.theme.color.borderGray};
-    font-size: ${(props) => props.theme.font.middleSize};
-    font-weight: 500;
-    line-height: 140%; 
-    display: flex;
-    gap: 8px;
+  margin: 32px 0 28px 0;
+  color: ${(props) => props.theme.color.borderGray};
+  font-size: ${(props) => props.theme.font.middleSize};
+  font-weight: 500;
+  line-height: 140%; 
+  display: flex;
+  gap: 8px;
 `;
 
 const CancelButton = styled.button`
-    display: flex;
-    padding: 8px 16px;
-    justify-content: center;
-    align-items: flex-start;
-    gap: 8px;
-    border-radius: 21px;
-    border: 1px solid ${(props) => props.theme.color.darkGray};
-    background: #FFF;
-    color: ${(props) => props.theme.color.borderGray};
+  display: flex;
+  padding: 8px 16px;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 8px;
+  border-radius: 21px;
+  border: 1px solid ${(props) => props.theme.color.darkGray};
+  background: #FFF;
+  color: ${(props) => props.theme.color.borderGray};
 
-    &:hover {
-        cursor: pointer;
-    }
+  &:hover {
+    cursor: pointer;
+  }
 `;
 
 const DeleteButton = styled.button`
-    display: flex;
-    padding: 8px 16px;
-    justify-content: center;
-    align-items: flex-start;
-    gap: 8px;
-    border: none;
-    border-radius: 21px;
-    background: ${(props) => props.theme.color.primary};
-    color: #FFF;
+  display: flex;
+  padding: 8px 16px;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 8px;
+  border: none;
+  border-radius: 21px;
+  background: ${(props) => props.theme.color.primary};
+  color: #FFF;
 
-    &:hover {
-        cursor: pointer;
-    }
+  &:hover {
+      cursor: pointer;
+  }
 `;
