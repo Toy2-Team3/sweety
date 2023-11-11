@@ -13,11 +13,12 @@ import SignUpSpecific from "./components/login/SignUpSpecific";
 import Login from "./components/login/Login";
 import SignUpIDPW from "./components/login/SignUpIDPW";
 import SignUpSpecific2 from "./components/login/SignUpSpecific2";
-import { useRecoilState } from "recoil";
-import { loginState } from "./recoil/atoms";
+// import { useRecoilState } from "recoil";
+// import { loginState } from "./recoil/atoms";
 
 function App() {
-  const [login] = useRecoilState(loginState);
+  // const [login] = useRecoilState(loginState);
+  const login = true;
   return login ? (
     <ThemeProvider theme={theme}>
       <BrowserRouter>
@@ -38,7 +39,7 @@ function App() {
     <ThemeProvider theme={theme}>
       <BrowserRouter>
         <Routes>
-          <Route path="/startPage" element={<StartPage />} />
+          <Route path="/" element={<StartPage />} />
           <Route path="/signup1" element={<SignUpIDPW />} />
           <Route path="/signup2" element={<SignUpSpecific theme={theme} />} />
           <Route path="/signup3" element={<SignUpSpecific2 theme={theme} />} />

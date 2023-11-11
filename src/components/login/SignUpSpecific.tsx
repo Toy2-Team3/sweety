@@ -168,7 +168,7 @@ function SignUpSpecific({ theme }: SignUpSpecificProps) {
       <RootErrorMessage>
         올바른 경로로 회원가입을 진행해주세요🥲
       </RootErrorMessage>
-      <GobackLink onClick={() => navigate("/startPage")}>
+      <GobackLink onClick={() => navigate("/")}>
         회원가입으로 돌아가기
       </GobackLink>
     </RootErrorMessageWrapper>
