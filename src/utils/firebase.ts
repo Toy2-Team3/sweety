@@ -105,3 +105,15 @@ export async function getUserData(userId: string) {
   const docSnap = await getDoc(docRef);
   return docSnap.data();
 }
+
+export async function signOut(userId: string) {
+  try {
+    const userDocRef = doc(db, "user", userId);
+    await updateDoc(userDocRef, {
+      status: "D",
+    });
+    console.log(`성공적으로 탈퇴되었습니다.`);
+  } catch (error) {
+    console.error("탈퇴 중 오류 발생 :", error);
+  }
+}
