@@ -95,6 +95,7 @@ function Login() {
           onClick={async () => {
             await signIn(id, pw);
           }}
+          disabled={!id || !pw}
         >
           로그인
         </LoginButton>
@@ -102,6 +103,9 @@ function Login() {
           <WarnText>아이디 및 비밀번호를 다시 확인해주세요</WarnText>
         ) : null}
       </div>
+      <RegisterLink onClick={() => navigate("/signup1")}>
+        회원가입하러 가기
+      </RegisterLink>
     </Container>
   );
 }
@@ -134,6 +138,11 @@ export const LoginButton = styled.button<LoginButtonProps>`
   border-radius: 12px;
   color: white;
   font-size: 20px;
+`;
+
+const RegisterLink = styled.div`
+  cursor: pointer;
+  margin-top: 40px;
 `;
 
 export default Login;
