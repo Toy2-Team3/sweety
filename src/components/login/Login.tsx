@@ -2,20 +2,57 @@ import { ReactComponent as SweetLogo } from "../../assets/sweetyLogo.svg";
 import { updateTokenInUserCollection } from "../../utils/firebase";
 import { LoginButtonProps } from "../../constants/constant";
 import { ShowPasswordButton, WarnText } from "./SignUpIDPW";
-import { loginState } from "../../recoil/atoms";
+import {
+  alcholState,
+  birthdayState,
+  idState,
+  jobState,
+  loginState,
+  mbtiState,
+  profileImageState,
+  pwState,
+  selectedGenderState,
+  selectedRegionState,
+  smokingState,
+  tallState,
+  userNameState,
+} from "../../recoil/atoms";
 import { useNavigate } from "react-router-dom";
 import { Container } from "./StartPage";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useResetRecoilState } from "recoil";
 import styled from "styled-components";
 import { useState } from "react";
 import axios from "axios";
 
 function Login() {
-  const [id, setId] = useState("");
-  const [pw, setPw] = useState("");
   const [wrong, setWrong] = useState(false);
   const [showPw, setShowPw] = useState(false);
+  const [id, setId] = useRecoilState(idState);
+  const [pw, setPw] = useRecoilState(pwState);
   const [login, setLogin] = useRecoilState(loginState);
+  const resetUserName = useResetRecoilState(userNameState);
+  const resetBirthday = useResetRecoilState(birthdayState);
+  const resetProfileImage = useResetRecoilState(profileImageState);
+  const resetSelectedGender = useResetRecoilState(selectedGenderState);
+  const resetSelectedRegion = useResetRecoilState(selectedRegionState);
+  const resetJob = useResetRecoilState(jobState);
+  const resetTall = useResetRecoilState(tallState);
+  const resetMbti = useResetRecoilState(mbtiState);
+  const resetAlchol = useResetRecoilState(alcholState);
+  const resetSmoking = useResetRecoilState(smokingState);
+
+  const resetAllStates = () => {
+    resetUserName();
+    resetBirthday();
+    resetProfileImage();
+    resetSelectedGender();
+    resetSelectedRegion();
+    resetJob();
+    resetTall();
+    resetMbti();
+    resetAlchol();
+    resetSmoking();
+  };
 
   const navigate = useNavigate();
 
@@ -47,7 +84,9 @@ function Login() {
       if (response.status === 200) {
         setWrong(true);
         const data = response.data.accessToken;
+        sessionStorage.setItem("accessToken", data);
         updateTokenInUserCollection(id, data);
+        resetAllStates();
         setLogin(true);
         console.log(login);
         navigate("/");

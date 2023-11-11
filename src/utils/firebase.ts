@@ -1,6 +1,12 @@
 import { UserData } from "../constants/constant";
 import { initializeApp } from "firebase/app";
-import { getFirestore, setDoc, doc, updateDoc } from "firebase/firestore";
+import {
+  getFirestore,
+  setDoc,
+  doc,
+  updateDoc,
+  getDoc,
+} from "firebase/firestore";
 import {
   getStorage,
   ref,
@@ -91,4 +97,11 @@ export async function updateTokenInUserCollection(
   } catch (error) {
     console.error("토큰 업데이트 중 오류 발생 :", error);
   }
+}
+
+//리코일 상태관리 아이디로 사용
+export async function getUserData(userId: string) {
+  const docRef = doc(db, "user", userId);
+  const docSnap = await getDoc(docRef);
+  return docSnap.data();
 }
