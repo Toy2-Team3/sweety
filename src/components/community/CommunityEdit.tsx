@@ -1,7 +1,5 @@
 import React from "react";
-import CommunityItemButtons, {
-  ButtonType,
-} from "../Community-item-buttons/CommunityItemButtons";
+import CommunityItemButtons, { ButtonType } from "./CommunityItemButtons";
 import styled from "styled-components";
 
 const CommunityEdit = () => {
