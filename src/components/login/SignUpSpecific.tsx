@@ -8,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 import SignUpStepper from "./SignUpStepper";
 import { Container } from "./StartPage";
 import { useRecoilState } from "recoil";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import {
   activeStepState,
   birthdayState,
@@ -25,6 +25,7 @@ interface SignUpSpecificProps {
 }
 
 function SignUpSpecific({ theme }: SignUpSpecificProps) {
+  const [prevProfileImageUrl, setPrevProfileImageUrl] = useState("");
   const [profileImage, setProfileImage] = useRecoilState(profileImageState);
   const [activeStep, setActiveStep] = useRecoilState(activeStepState);
   const [userName, setUserName] = useRecoilState(userNameState);
@@ -56,10 +57,17 @@ function SignUpSpecific({ theme }: SignUpSpecificProps) {
       navigate("/signup3");
     }
   };
+
   useEffect(() => {
     setActiveStep(1);
     console.log(activeStep);
   });
+
+  useEffect(() => {
+    if (profileImage) {
+      setPrevProfileImageUrl(URL.createObjectURL(profileImage));
+    }
+  }, [profileImage]);
 
   return id && pw ? (
     <Container style={{ gap: "18px" }}>
@@ -67,9 +75,7 @@ function SignUpSpecific({ theme }: SignUpSpecificProps) {
       <GreetingText>환영합니다🎉</GreetingText>
       <ProfileWrapper>
         <ProfileUploadLabel
-          backgroundImage={
-            profileImage ? URL.createObjectURL(profileImage) : ""
-          }
+          backgroundImage={prevProfileImageUrl || ""}
           htmlFor="profile"
         >
           {profileImage ? null : (

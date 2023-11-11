@@ -114,7 +114,7 @@ function SignUpSpecific({ theme }: SignUpSpecificProps) {
             tall: tall,
           };
           await addUserData(userData);
-          await navigate("/login");
+          navigate("/login");
           console.log("가입에 성공했습니다.");
         } catch (error) {
           await deleteImage(id);
