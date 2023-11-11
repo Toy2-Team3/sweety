@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { ReactComponent as Logo } from "../assets/sweetyLogo.svg";
 import { ReactComponent as Icon } from "../assets/sweetyIcon.svg";
 import { ReactComponent as HomeIcon } from "../assets/homeIcon.svg";
@@ -47,6 +47,7 @@ const categories = [
 
 export default function NavigationBar() {
   const navigate = useNavigate();
+  const location = useLocation();
   const [activeCategory, setActiveCategory] = useState("");
   const [isSettingClicked, setIsSettingClicked] = useState(false);
 
@@ -59,18 +60,19 @@ export default function NavigationBar() {
     setIsSettingClicked(!isSettingClicked);
   };
 
+  useEffect(() => {
+    setActiveCategory('home');
+  }, [])
+
   // 새로고침 시 저장되도록
   useEffect(() => {
-    const savedCategory = localStorage.getItem("activeCategory");
+    const savedCategory = location.pathname.replace('/', '');
+    console.log(savedCategory);
 
     if (savedCategory) {
       setActiveCategory(savedCategory);
     }
-  }, []);
-
-  useEffect(() => {
-    localStorage.setItem("activeCategory", activeCategory);
-  }, [activeCategory]);
+  }, [location]);
 
   return (
     <NavigationWrap>

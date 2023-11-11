@@ -62,9 +62,9 @@ const Wrapper = styled.div`
   }
 
   ${(props) => props.theme.response.mobile} {
-    display:flex;
-    justify-content:center;   
-    align-items:center;  
+    display: flex;
+    justify-content: center;
+    align-items: center;
     width: 100%;
     padding: 2rem;
   }
