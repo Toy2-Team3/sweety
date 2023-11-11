@@ -1,16 +1,16 @@
-import { ReactComponent as SweetLogo } from '../../assets/sweetyLogo.svg';
-import styled from 'styled-components';
-import { useNavigate } from 'react-router-dom';
+import { ReactComponent as SweetLogo } from "../../assets/sweetyLogo.svg";
+import { useNavigate } from "react-router-dom";
+import styled from "styled-components";
 
 function StartPage() {
   const navigate = useNavigate();
 
   const navigateToSignUp = () => {
-    navigate('/signup1');
+    navigate("/signup1");
   };
 
   const navigateToLogin = () => {
-    navigate('/login');
+    navigate("/login");
   };
 
   return (

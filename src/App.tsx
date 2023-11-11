@@ -12,6 +12,7 @@ import StartPage from "./components/login/StartPage";
 import SignUpSpecific from "./components/login/SignUpSpecific";
 import Login from "./components/login/Login";
 import SignUpIDPW from "./components/login/SignUpIDPW";
+import SignUpSpecific2 from "./components/login/SignUpSpecific2";
 import { useRecoilState } from "recoil";
 import { loginState } from "./recoil/atoms";
 
@@ -40,6 +41,7 @@ function App() {
           <Route path="/startPage" element={<StartPage />} />
           <Route path="/signup1" element={<SignUpIDPW />} />
           <Route path="/signup2" element={<SignUpSpecific theme={theme} />} />
+          <Route path="/signup3" element={<SignUpSpecific2 theme={theme} />} />
           <Route path="/login" element={<Login />} />
         </Routes>
       </BrowserRouter>
