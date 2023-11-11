@@ -1,6 +1,6 @@
 import { ReactComponent as SweetLogo } from "../../assets/sweetyLogo.svg";
-import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import { useNavigate } from "react-router-dom";
 
 function StartPage() {
   const navigate = useNavigate();
