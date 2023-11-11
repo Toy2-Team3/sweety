@@ -74,7 +74,7 @@ function Login() {
 
   return (
     <Container>
-      <SweetLogo />
+      <SweetLogo onClick={() => navigate("/")} style={{ cursor: "pointer" }} />
       <InputWrapper>
         <p>아이디</p>
         <IdPwInput
