@@ -13,12 +13,12 @@ import HomePage from "./pages/HomePage";
 import styled from "styled-components";
 import MyPage from "./pages/MyPage";
 import "./App.css";
-// import { useRecoilState } from "recoil";
-// import { loginState } from "./recoil/atoms";
+import { useRecoilState } from "recoil";
+import { loginState } from "./recoil/atoms";
 
 function App() {
-  // const [login] = useRecoilState(loginState);
-  const login = true; // 로그인 완성되기 전까지 임시 status
+  const [login] = useRecoilState(loginState);
+  // const login = true; // 로그인 완성되기 전까지 임시 status
 
   return login ? (
     <ThemeProvider theme={theme}>

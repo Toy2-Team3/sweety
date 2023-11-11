@@ -106,3 +106,5 @@ export interface SignUpButtonProps {
   alchol: string;
   smoking: boolean;
 }
+
+export const steps = ["아이디 비밀번호", "기본 프로필 정보", "매칭 필수 정보"];

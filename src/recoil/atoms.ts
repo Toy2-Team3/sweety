@@ -59,7 +59,12 @@ export const mbtiState = atom<string>({
   default: "",
 });
 
-export const loginState = atom({
+export const loginState = atom<boolean>({
   key: "loginState",
   default: false,
+});
+
+export const activeStepState = atom<number>({
+  key: "activeStepState",
+  default: 0,
 });

@@ -5,9 +5,12 @@ import { ReactComponent as SweetLogo } from "../../assets/sweetyLogo.svg";
 import { CorrectText, GreetingText, WarnText } from "./SignUpIDPW";
 import styled, { DefaultTheme } from "styled-components";
 import { useNavigate } from "react-router-dom";
+import SignUpStepper from "./SignUpStepper";
 import { Container } from "./StartPage";
 import { useRecoilState } from "recoil";
+import { useEffect } from "react";
 import {
+  activeStepState,
   birthdayState,
   idState,
   profileImageState,
@@ -23,6 +26,7 @@ interface SignUpSpecificProps {
 
 function SignUpSpecific({ theme }: SignUpSpecificProps) {
   const [profileImage, setProfileImage] = useRecoilState(profileImageState);
+  const [activeStep, setActiveStep] = useRecoilState(activeStepState);
   const [userName, setUserName] = useRecoilState(userNameState);
   const [birthday, setBirthday] = useRecoilState(birthdayState);
   const [selectedGender, setSelectedGender] =
@@ -52,9 +56,14 @@ function SignUpSpecific({ theme }: SignUpSpecificProps) {
       navigate("/signup3");
     }
   };
+  useEffect(() => {
+    setActiveStep(1);
+    console.log(activeStep);
+  });
 
   return id && pw ? (
     <Container style={{ gap: "18px" }}>
+      <SignUpStepper />
       <GreetingText>환영합니다🎉</GreetingText>
       <ProfileWrapper>
         <ProfileUploadLabel

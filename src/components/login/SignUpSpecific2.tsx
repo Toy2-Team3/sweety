@@ -1,9 +1,12 @@
 import { ReactComponent as SweetLogo } from "../../assets/sweetyLogo.svg";
 import { CorrectText, GreetingText, WarnText } from "./SignUpIDPW";
+import { isTallValid } from "../../utils/registerFunction";
 import styled, { DefaultTheme } from "styled-components";
 import { useNavigate } from "react-router-dom";
+import SignUpStepper from "./SignUpStepper";
 import { useRecoilState } from "recoil";
 import { Container } from "./StartPage";
+import { useEffect } from "react";
 import {
   idState,
   pwState,
@@ -17,6 +20,7 @@ import {
   profileImageState,
   selectedGenderState,
   selectedRegionState,
+  activeStepState,
 } from "../../recoil/atoms";
 import {
   SelectBox,
@@ -35,7 +39,6 @@ import {
   mbtiTypes,
   smokingOptions,
 } from "../../constants/constant";
-import { isTallValid } from "../../utils/registerFunction";
 
 interface SignUpSpecificProps {
   theme: DefaultTheme;
@@ -54,6 +57,7 @@ function SignUpSpecific({ theme }: SignUpSpecificProps) {
   const [mbti, setMbti] = useRecoilState(mbtiState);
   const [alchol, setAlchol] = useRecoilState(alcholState);
   const [smoking, setSmoking] = useRecoilState(smokingState);
+  const [activeStep, setActiveStep] = useRecoilState(activeStepState);
 
   const navigate = useNavigate();
 
@@ -112,6 +116,11 @@ function SignUpSpecific({ theme }: SignUpSpecificProps) {
   //     };
   //   };
 
+  useEffect(() => {
+    setActiveStep(2);
+    console.log(activeStep);
+  });
+
   return id &&
     pw &&
     userName &&
@@ -120,6 +129,7 @@ function SignUpSpecific({ theme }: SignUpSpecificProps) {
     selectedGender &&
     selectedRegion ? (
     <Container style={{ gap: "18px" }}>
+      <SignUpStepper />
       <GreetingText>환영합니다🎉</GreetingText>
 
       <div style={{ position: "relative" }}>
