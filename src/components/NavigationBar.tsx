@@ -13,6 +13,8 @@ import { ReactComponent as ActivedCommunityIcon } from "../assets/activedCommuni
 import { ReactComponent as ActivedChatIcon } from "../assets/activedChattingIcon.svg";
 import { ReactComponent as ActivedMyPageIcon } from "../assets/activedMypageIcon.svg";
 import { ReactComponent as ActivedSettingIcon } from "../assets/activedSettingIcon.svg";
+import { useSetRecoilState } from "recoil";
+import { loginState } from "../recoil/atoms";
 
 const categories = [
   {

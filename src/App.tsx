@@ -1,27 +1,21 @@
 import SignUpSpecific2 from "./components/login/SignUpSpecific2";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import SignUpSpecific from "./components/login/SignUpSpecific";
+import CommunityEditPage from "./pages/CommunityEditPage";
+import CommunityListPage from "./pages/CommunityListPage";
 import NavigationBar from "./components/NavigationBar";
-import HomePage from "./pages/HomePage";
 import SignUpIDPW from "./components/login/SignUpIDPW";
 import StartPage from "./components/login/StartPage";
 import { ThemeProvider } from "styled-components";
-import CommunityPage from "./pages/CommunityPage";
 import ChatPage from "./pages/chatting/index";
-import MyPage from "./pages/MyPage";
-import styled from "styled-components";
-import StartPage from "./components/login/StartPage";
 import Login from "./components/login/Login";
-import theme from "../src/styles/theme";
+import { loginState } from "./recoil/atoms";
+import { useRecoilState } from "recoil";
 import HomePage from "./pages/HomePage";
+import theme from "../src/styles/theme";
 import styled from "styled-components";
-import SignUpSpecific from "./components/login/SignUpSpecific";
 import MyPage from "./pages/MyPage";
 import "./App.css";
-import CommunityListPage from "./pages/CommunityListPage";
-import CommunityEditPage from "./pages/CommunityEditPage";
-import { useRecoilState } from "recoil";
-import { loginState } from "./recoil/atoms";
 
 function App() {
   const [login] = useRecoilState(loginState);
