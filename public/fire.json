@@ -1,0 +1,30 @@
+[
+  {
+    "id": "1",
+    "password": "1234",
+    "name": "채민석",
+    "picture": "https://cdn.pixabay.com/photo/2017/11/19/07/30/girl-2961959_640.jpg",
+    "chats": []
+  },
+  {
+    "id": "2",
+    "password": "1234",
+    "name": "손흥민",
+    "picture": "https://cdn.pixabay.com/photo/2015/03/03/20/42/man-657869_640.jpg",
+    "chats": []
+  },
+  {
+    "id": "3",
+    "password": "1234",
+    "name": "황희찬",
+    "picture": "https://cdn.pixabay.com/photo/2023/10/25/07/29/woman-8339755_640.jpg",
+    "chats": []
+  },
+  {
+    "id": "4",
+    "password": "1234",
+    "name": "김민재",
+    "picture": "https://cdn.pixabay.com/photo/2015/07/20/12/57/ambassador-852766_640.jpg",
+    "chats": []
+  }
+]

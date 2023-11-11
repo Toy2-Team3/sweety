@@ -20,7 +20,7 @@ const theme: DefaultTheme = {
   },
   response: {
     tablet: "@media screen and (max-width: 1024px)",
-    mobile: "@media screen and (max-width: 480px)"
+    mobile: "@media screen and (max-width: 480px)",
   },
 };
 
