@@ -8,18 +8,17 @@ import ChatPage from "./pages/chatting/index";
 import MyPage from "./pages/MyPage";
 import styled from "styled-components";
 import StartPage from "./components/login/StartPage";
-import SignUpSpecific from "./components/login/SignUpSpecific";
 import Login from "./components/login/Login";
 import SignUpIDPW from "./components/login/SignUpIDPW";
+import SignUpSpecific from "./components/login/SignUpSpecific";
+import SignUpSpecific2 from "./components/login/SignUpSpecific2";
 import CommunityListPage from "./pages/CommunityListPage";
 import CommunityEditPage from "./pages/CommunityEditPage";
-// import { useRecoilState } from "recoil";
-// import { loginState } from "./recoil/atoms";
+import { useRecoilState } from "recoil";
+import { loginState } from "./recoil/atoms";
 
 function App() {
-  // const [login] = useRecoilState(loginState);
-  const login = true; // 로그인 완성되기 전까지 임시 status
-
+  const [login] = useRecoilState(loginState);
   return login ? (
     <ThemeProvider theme={theme}>
       <BrowserRouter>
@@ -41,9 +40,10 @@ function App() {
     <ThemeProvider theme={theme}>
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<StartPage />} />
+          <Route path="/startPage" element={<StartPage />} />
           <Route path="/signup1" element={<SignUpIDPW />} />
           <Route path="/signup2" element={<SignUpSpecific theme={theme} />} />
+          <Route path="/signup3" element={<SignUpSpecific2 theme={theme} />} />
           <Route path="/login" element={<Login />} />
         </Routes>
       </BrowserRouter>
@@ -54,10 +54,11 @@ function App() {
 const PageWrap = styled.div`
   flex: 1;
   margin-left: 300px;
+
   ${(props) => props.theme.response.tablet} {
-    min-width: 30%;
     margin-left: 100px;
   }
+
   ${(props) => props.theme.response.mobile} {
     margin-left: 0;
     margin-bottom: 120px;

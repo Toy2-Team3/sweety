@@ -1,16 +1,16 @@
-import styled from 'styled-components';
-import { ReactComponent as SweetLogo } from '../../assets/sweetyLogo.svg';
-import { Container } from './StartPage';
-import { useState } from 'react';
-import { ShowPasswordButton } from './SignUpIDPW';
+import { ReactComponent as SweetLogo } from "../../assets/sweetyLogo.svg";
+import { ShowPasswordButton } from "./SignUpIDPW";
+import { Container } from "./StartPage";
+import styled from "styled-components";
+import { useState } from "react";
 
 interface ButtonProps {
-  Id: string;
-  Pw: string;
+  id: string;
+  pw: string;
 }
 function Login() {
-  const [Id, setId] = useState('');
-  const [Pw, setPw] = useState('');
+  const [id, setId] = useState("");
+  const [pw, setPw] = useState("");
   const [showPw, setShowPw] = useState(false);
 
   return (
@@ -19,28 +19,28 @@ function Login() {
       <InputWrapper>
         <p>아이디</p>
         <IdPwInput
-          value={Id}
+          value={id}
           onChange={(e) => {
             setId(e.target.value);
           }}
           placeholder="아이디를 입력해주세요."
         />
       </InputWrapper>
-      <InputWrapper style={{ position: 'relative' }}>
+      <InputWrapper style={{ position: "relative" }}>
         <p>비밀번호</p>
         <IdPwInput
-          type={showPw ? 'text' : 'password'}
-          value={Pw}
+          type={showPw ? "text" : "password"}
+          value={pw}
           onChange={(e) => {
             setPw(e.target.value);
           }}
           placeholder="비밀변호를 입력해주세요."
         />
         <ShowPasswordButton onClick={() => setShowPw(!showPw)}>
-          {showPw ? '🙂' : '😌'}
+          {showPw ? "🙂" : "😌"}
         </ShowPasswordButton>
       </InputWrapper>
-      <LoginButton Id={Id} Pw={Pw}>
+      <LoginButton id={id} pw={pw}>
         로그인
       </LoginButton>
     </Container>
@@ -66,11 +66,11 @@ export const IdPwInput = styled.input`
 export const LoginButton = styled.button<ButtonProps>`
   width: 340px;
   height: 50px;
-  background-color: ${({ Id, Pw }) =>
-    Id && Pw
+  background-color: ${({ id, pw }) =>
+    id && pw
       ? (props) => props.theme.color.primary
       : (props) => props.theme.color.darkGray};
-  cursor: ${({ Id, Pw }) => (Id && Pw ? 'pointer' : 'default')};
+  cursor: ${({ id, pw }) => (id && pw ? "pointer" : "default")};
   border: none;
   border-radius: 12px;
   color: white;
