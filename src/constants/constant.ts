@@ -107,6 +107,11 @@ export interface SignUpButtonProps {
   smoking: boolean;
 }
 
+export interface LoginButtonProps {
+  id: string;
+  pw: string;
+}
+
 export interface UserData {
   userId: string;
   password: string;

@@ -1,6 +1,6 @@
 import { UserData } from "../constants/constant";
 import { initializeApp } from "firebase/app";
-import { getFirestore, setDoc, doc } from "firebase/firestore";
+import { getFirestore, setDoc, doc, updateDoc } from "firebase/firestore";
 import {
   getStorage,
   ref,
@@ -73,5 +73,22 @@ export async function addUserData(userData: UserData): Promise<void> {
   } catch (error) {
     console.error("유저 데이터 업로드에 실패했습니다 : ", error);
     throw error;
+  }
+}
+
+export async function updateTokenInUserCollection(
+  userId: string,
+  newToken: string,
+) {
+  try {
+    const userDocRef = doc(db, "user", userId);
+
+    await updateDoc(userDocRef, {
+      token: newToken,
+    });
+
+    console.log(`토큰이 성공적으로 업데이트되었습니다.`);
+  } catch (error) {
+    console.error("토큰 업데이트 중 오류 발생 :", error);
   }
 }
