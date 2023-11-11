@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import UserInfo from "../components/Home/UserInfo";
-import { useFireFetch } from "../utils/useFireFetch";
+// import { useFireFetch } from "../utils/useFireFetch";
 interface User {
   id: string;
   password: string;
@@ -11,7 +11,7 @@ interface User {
 }
 
 const Home = () => {
-  const fireFetch = useFireFetch();
+  // const fireFetch = useFireFetch();
   const userId: string | null = "kimchulsoo";
   const [users, setUsers] = useState<User[]>([]);
   useEffect(() => {
@@ -88,11 +88,11 @@ const Header = styled.div`
 const UsersInfo = styled.div`
   margin-top: 4rem;
   display: grid;
-  gap:1rem;
+  gap: 1rem;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  padding:1rem;
-  ${(props) => props.theme.response.mobile} {
-    grid-template-columns: repeat(auto-fill, calc(100% - 1rem)  , 1fr));
-  }
+  padding: 1rem;
 
+  ${(props) => props.theme.response.mobile} {
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  }
 `;
