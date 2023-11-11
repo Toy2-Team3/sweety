@@ -1,5 +1,4 @@
 import { ReactComponent as SweetLogo } from "../../assets/sweetyLogo.svg";
-import { SelectBox, OptionBox, TwoColumnWrapper } from "./SignUpSpecific";
 import { CorrectText, GreetingText, WarnText } from "./SignUpIDPW";
 import styled, { DefaultTheme } from "styled-components";
 import { useNavigate } from "react-router-dom";
@@ -19,84 +18,28 @@ import {
   selectedGenderState,
   selectedRegionState,
 } from "../../recoil/atoms";
-
-const mbtiTypes = [
-  { value: "ISTJ", label: "ISTJ" },
-  { value: "ISFJ", label: "ISFJ" },
-  { value: "INFJ", label: "INFJ" },
-  { value: "INTJ", label: "INTJ" },
-  { value: "ISTP", label: "ISTP" },
-  { value: "ISFP", label: "ISFP" },
-  { value: "INFP", label: "INFP" },
-  { value: "INTP", label: "INTP" },
-  { value: "ESTP", label: "ESTP" },
-  { value: "ESFP", label: "ESFP" },
-  { value: "ENFP", label: "ENFP" },
-  { value: "ENTP", label: "ENTP" },
-  { value: "ESTJ", label: "ESTJ" },
-  { value: "ESFJ", label: "ESFJ" },
-  { value: "ENFJ", label: "ENFJ" },
-  { value: "ENTJ", label: "ENTJ" },
-];
-
-const jobOptions = [
-  { value: "무직", label: "무직" },
-  { value: "학생", label: "학생" },
-  { value: "회사원", label: "회사원" },
-  { value: "자영업", label: "자영업" },
-  { value: "전문직", label: "전문직" },
-  { value: "공무원", label: "공무원" },
-  { value: "기타", label: "기타" },
-];
-
-const alcholOptions = [
-  { value: "N", label: "안마셔요" },
-  { value: "S", label: "가끔 마셔요" },
-  { value: "O", label: "자주 마셔요" },
-];
-
-const smokingOptions = [
-  { value: false, label: "안해요" },
-  { value: true, label: "해요" },
-];
-
-const compatibilityMessages: { [key: string]: string } = {
-  ISTJ: "ESFP, ESTP와 가장 안정적인 궁합을 이룬대요!",
-  ISFJ: "ESFP, ESTP와는 서로를 보완해주는 짝이 된대요!",
-  ISTP: "ESFJ, ESTJ와 꽤나 잘어울리는 짝이 될 수 있을 거 같아요!",
-  ISFP: "ESFJ, ESTJ, ESTP와 오래가는 커플이 될 수 있어요!",
-  INFJ: "그거 아셨나요? ENFP, ENTP와 환상의 궁합이래요!",
-  INFP: "그거 아세요? ENTJ, ENFJ와 궁합이 가장 좋대요!",
-  INTJ: "ENTJ와는 비전과 목표를 공유해 궁합이 좋아요!",
-  INTP: "그거 아세요? ENTJ, ESTJ와 궁합이 가장 좋습니다!",
-  ESTJ: "저기...사랑이 뭔지 아시나요?",
-  ESFJ: "그거 아세요? ISFP, ISTP와 궁합이 정말 좋대요!",
-  ESTP: "ISFJ, ISTJ와는 실용주의적 성향이 잘 맞는다고 하네요!",
-  ESFP: "ISFJ, ISTJ와 함꼐라면 항상 즐거울 겁니다!",
-  ENFJ: "그거 아세요? ISFP,INFP와 특히 잘 어울린대요!",
-  ENTJ: "INTJ, INTP와는 비슷한 가치관을 가져서 궁합이 좋대요!",
-  ENFP: "INFJ, INTJ와는 창의적인 아이디어가 넘치는 커플이래요!",
-  ENTP: "그거 아세요? INTJ, INTP와 최고의 궁합이래요!",
-};
-
-interface ButtonProps {
-  job: string;
-  isTallValid: boolean;
-  mbti: string;
-  alchol: string;
-  smoking: boolean;
-}
+import {
+  SelectBox,
+  OptionBox,
+  TwoColumnWrapper,
+  RootErrorMessageWrapper,
+  RootErrorMessage,
+  GobackLink,
+  NameInput,
+} from "./SignUpSpecific";
+import {
+  SignUpButtonProps,
+  alcholOptions,
+  compatibilityMessages,
+  jobOptions,
+  mbtiTypes,
+  smokingOptions,
+} from "../../constants/constant";
+import { isTallValid } from "../../utils/registerFunction";
 
 interface SignUpSpecificProps {
   theme: DefaultTheme;
 }
-
-const isTallValid = (tall: string) => {
-  const heightRegex = /^[0-9]+$/;
-  const heightNumber = parseInt(tall, 10);
-
-  return heightRegex.test(tall) && heightNumber >= 100 && heightNumber <= 250;
-};
 
 function SignUpSpecific({ theme }: SignUpSpecificProps) {
   const [id] = useRecoilState(idState);
@@ -308,22 +251,7 @@ function SignUpSpecific({ theme }: SignUpSpecificProps) {
   );
 }
 
-const NameInput = styled.input`
-  display: flex;
-  justify-content: center;
-  width: 340px;
-  height: 50px;
-  border-radius: 12px;
-  border: 1px solid ${(props) => props.theme.color.borderGray};
-  background: #fff;
-  padding-left: 16px;
-  &:focus {
-    border: ${(props) => props.theme.color.primary} 1px solid;
-    outline: none;
-  }
-`;
-
-const SignUpButton = styled.button<ButtonProps>`
+const SignUpButton = styled.button<SignUpButtonProps>`
   font-size: 20px;
   width: 340px;
   height: 50px;
@@ -338,28 +266,4 @@ const SignUpButton = styled.button<ButtonProps>`
     job && isTallValid && mbti && alchol && smoking ? "pointer" : "default"};
 `;
 
-const RootErrorMessageWrapper = styled.div`
-  width: 100vw;
-  height: 100vh;
-  display: flex;
-  gap: 20px;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-`;
-
-const RootErrorMessage = styled.h1`
-  font-size: 32px;
-`;
-
-const GobackLink = styled.button`
-  padding: 10px;
-  width: 200px;
-  height: 50px;
-  border-radius: 12px;
-  background-color: ${(props) => props.theme.color.primary};
-  color: white;
-  border: none;
-  cursor: pointer;
-`;
 export default SignUpSpecific;

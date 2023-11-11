@@ -1,8 +1,8 @@
-import styled from "styled-components";
 import { ReactComponent as SweetLogo } from "../../assets/sweetyLogo.svg";
-import { Container } from "./StartPage";
-import { useState } from "react";
 import { ShowPasswordButton } from "./SignUpIDPW";
+import { Container } from "./StartPage";
+import styled from "styled-components";
+import { useState } from "react";
 
 interface ButtonProps {
   id: string;

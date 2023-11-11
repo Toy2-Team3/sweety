@@ -1,3 +1,4 @@
+import { NextButtonProps } from "../../constants/constant";
 import { useCallback, useEffect, useState } from "react";
 import { idState, pwState } from "../../recoil/atoms";
 import { IdPwInput, InputWrapper } from "./Login";
@@ -6,31 +7,12 @@ import { Container } from "./StartPage";
 import { useRecoilState } from "recoil";
 import styled from "styled-components";
 import axios from "axios";
-
-interface ButtonProps {
-  isInputValid: boolean;
-  pw: string;
-  pwCheck: string;
-  isIdDuplicated: boolean;
-}
-
-const debounce = <F extends (...args: string[]) => void>(
-  func: F,
-  delay: number,
-) => {
-  let timeoutId: NodeJS.Timeout | null = null;
-
-  return function (this: object, ...args: Parameters<F>) {
-    if (timeoutId) {
-      clearTimeout(timeoutId);
-    }
-
-    timeoutId = setTimeout(() => {
-      func.apply(this, args);
-      timeoutId = null;
-    }, delay);
-  };
-};
+import {
+  debounce,
+  isIdentificationPasswordValid,
+  isIdentificationValid,
+  isPasswordValid,
+} from "../../utils/registerFunction";
 
 function SignUpIDPW() {
   const [id, setId] = useRecoilState(idState);
@@ -40,23 +22,6 @@ function SignUpIDPW() {
   const [showPwCheck, setShowPwCheck] = useState(false);
   const [isIdDuplicated, setIsIdDuplicated] = useState(false);
 
-  const isIdentificationValid = (identification: string) => {
-    return (
-      identification.length >= 8 &&
-      /[a-z]/.test(identification) &&
-      /[A-Z]/.test(identification)
-    );
-  };
-  const isPasswordValid = (password: string) => {
-    const passwordRegex = /^(?=.*[!@#$%^&*])(?=.*[a-zA-Z])(?=.*[0-9]).{5,}$/;
-    return passwordRegex.test(password);
-  };
-  const isIdentificationPasswordValid = (
-    idendtification: string,
-    password: string,
-  ) => {
-    return isIdentificationValid(idendtification) && isPasswordValid(password);
-  };
   const isInputValid = isIdentificationPasswordValid(id, pw);
 
   const checkIdDuplication = async (id: string) => {
@@ -76,9 +41,11 @@ function SignUpIDPW() {
         const data = response.data;
         setIsIdDuplicated(data.isDuplicated);
         console.log("중복검사함");
-        console.log(data.isDuplicated);
+        console.log("중복", data.isDuplicated);
+        console.log(isIdentificationValid(id));
       }
     } catch (error) {
+      console.log(isIdentificationValid(id));
       console.log("다음과 같은 이유로 중복검사를 할 수 없습니다 :", error);
     }
   };
@@ -114,12 +81,12 @@ function SignUpIDPW() {
           placeholder="아이디를 입력해주세요"
         />
         {id ? (
-          isIdentificationValid(id) && isIdDuplicated ? (
+          isIdentificationValid(id) === true && isIdDuplicated === true ? (
             <WarnText>이미 사용중인 아이디 입니다😢</WarnText>
-          ) : isIdentificationValid(id) && !isIdDuplicated ? (
-            <CorrectText>정말 멋진 아이디네요!</CorrectText>
+          ) : isIdentificationValid(id) === false ? (
+            <WarnText>숫자, 영문 소문자, 대문자 조합 8자 이상입니다.</WarnText>
           ) : (
-            <WarnText>영문 소문자, 대문자 조합 8자 이상입니다.</WarnText>
+            <CorrectText>정말 멋진 아이디네요!</CorrectText>
           )
         ) : null}
       </InputWrapper>
@@ -168,9 +135,10 @@ function SignUpIDPW() {
         </ShowPasswordButton>
       </InputWrapper>
       <NextButton
-        isInputValid={isInputValid}
         pw={pw}
         pwCheck={pwCheck}
+        isIdentificationValid={isIdentificationValid(id)}
+        isInputValid={isInputValid}
         isIdDuplicated={isIdDuplicated}
         onClick={navigateToNextPage}
       >
@@ -186,15 +154,29 @@ export const GreetingText = styled.h1`
   font-size: 64px;
 `;
 
-export const NextButton = styled.button<ButtonProps>`
+export const NextButton = styled.button<NextButtonProps>`
   width: 340px;
   height: 50px;
-  background-color: ${({ isInputValid, pw, pwCheck, isIdDuplicated }) =>
-    isInputValid && pw === pwCheck && !isIdDuplicated
+  background-color: ${({
+    isIdentificationValid,
+    isInputValid,
+    pw,
+    pwCheck,
+    isIdDuplicated,
+  }) =>
+    isIdentificationValid && isInputValid && pw === pwCheck && !isIdDuplicated
       ? (props) => props.theme.color.primary
       : (props) => props.theme.color.darkGray};
-  cursor: ${({ isInputValid, pw, pwCheck, isIdDuplicated }) =>
-    isInputValid && pw === pwCheck && !isIdDuplicated ? "pointer" : "default"};
+  cursor: ${({
+    isIdentificationValid,
+    isInputValid,
+    pw,
+    pwCheck,
+    isIdDuplicated,
+  }) =>
+    isIdentificationValid && isInputValid && pw === pwCheck && !isIdDuplicated
+      ? "pointer"
+      : "default"};
   border: none;
   border-radius: 12px;
   color: white;

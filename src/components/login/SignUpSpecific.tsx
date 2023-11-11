@@ -1,4 +1,6 @@
 import { ReactComponent as ProfileCamera } from "../../assets/profileCamera.svg";
+import { regions, genderOptions, ButtonProps } from "../../constants/constant";
+import { calculateMaxDate, isNameValid } from "../../utils/registerFunction";
 import { ReactComponent as SweetLogo } from "../../assets/sweetyLogo.svg";
 import { CorrectText, GreetingText, WarnText } from "./SignUpIDPW";
 import styled, { DefaultTheme } from "styled-components";
@@ -15,47 +17,11 @@ import {
   userNameState,
 } from "../../recoil/atoms";
 
-const regions = [
-  { value: "강원", label: "강원" },
-  { value: "경기", label: "경기" },
-  { value: "광주", label: "광주" },
-  { value: "대구", label: "대구" },
-  { value: "대전", label: "대전" },
-  { value: "부산", label: "부산" },
-  { value: "서울", label: "서울" },
-  { value: "세종", label: "세종" },
-  { value: "울산", label: "울산" },
-  { value: "인천", label: "인천" },
-  { value: "전남", label: "전남" },
-  { value: "전북", label: "전북" },
-  { value: "제주", label: "제주" },
-  { value: "충남", label: "충남" },
-  { value: "충북", label: "충북" },
-  { value: "해외", label: "해외" },
-];
-
-const genderOptions = [
-  { value: "male", label: "남성" },
-  { value: "female", label: "여성" },
-  // 더 많은 성별 옵션을 추가할 수 있습니다.
-];
-
-interface ButtonProps {
-  profileImage: File | undefined;
-  userName: string;
-  birthday: string | null;
-  selectedGender: string;
-  selectedRegion: string;
-  isNameValid: boolean;
-}
-
 interface SignUpSpecificProps {
   theme: DefaultTheme;
 }
 
 function SignUpSpecific({ theme }: SignUpSpecificProps) {
-  const [id] = useRecoilState(idState);
-  const [pw] = useRecoilState(pwState);
   const [profileImage, setProfileImage] = useRecoilState(profileImageState);
   const [userName, setUserName] = useRecoilState(userNameState);
   const [birthday, setBirthday] = useRecoilState(birthdayState);
@@ -63,6 +29,8 @@ function SignUpSpecific({ theme }: SignUpSpecificProps) {
     useRecoilState(selectedGenderState);
   const [selectedRegion, setSelectedRegion] =
     useRecoilState(selectedRegionState);
+  const [id] = useRecoilState(idState);
+  const [pw] = useRecoilState(pwState);
 
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
@@ -70,12 +38,6 @@ function SignUpSpecific({ theme }: SignUpSpecificProps) {
       const imageFile = files[0];
       setProfileImage(imageFile);
     }
-  };
-
-  const isNameValid = (userName: string) => {
-    if (userName.length > 20) return false;
-    const nameRegex = /^[A-Za-z가-힣]+$/;
-    return nameRegex.test(userName);
   };
 
   const navigate = useNavigate();
@@ -91,23 +53,16 @@ function SignUpSpecific({ theme }: SignUpSpecificProps) {
     }
   };
 
-  const calculateMaxDate = () => {
-    const currentDate = new Date();
-    const maxDate = new Date(
-      currentDate.getFullYear() - 19,
-      currentDate.getMonth(),
-      currentDate.getDate(),
-    );
-    return maxDate.toISOString().split("T")[0];
-  };
-
-  const profileImageUrl = profileImage ? URL.createObjectURL(profileImage) : "";
-
   return id && pw ? (
     <Container style={{ gap: "18px" }}>
       <GreetingText>환영합니다🎉</GreetingText>
       <ProfileWrapper>
-        <ProfileUploadLabel backgroundImage={profileImageUrl} htmlFor="profile">
+        <ProfileUploadLabel
+          backgroundImage={
+            profileImage ? URL.createObjectURL(profileImage) : ""
+          }
+          htmlFor="profile"
+        >
           {profileImage ? null : (
             <ProfileCamera
               style={{
@@ -246,7 +201,7 @@ const ProfileInput = styled.input`
   display: none;
 `;
 
-const NameInput = styled.input`
+export const NameInput = styled.input`
   display: flex;
   justify-content: center;
   width: 340px;
@@ -341,7 +296,7 @@ const SignUpButton = styled.button<ButtonProps>`
       : "default"};
 `;
 
-const RootErrorMessageWrapper = styled.div`
+export const RootErrorMessageWrapper = styled.div`
   width: 100vw;
   height: 100vh;
   display: flex;
@@ -351,11 +306,11 @@ const RootErrorMessageWrapper = styled.div`
   justify-content: center;
 `;
 
-const RootErrorMessage = styled.h1`
+export const RootErrorMessage = styled.h1`
   font-size: 32px;
 `;
 
-const GobackLink = styled.button`
+export const GobackLink = styled.button`
   padding: 10px;
   width: 200px;
   height: 50px;
