@@ -1,24 +1,25 @@
-import "./App.css";
-import { ThemeProvider } from "styled-components";
-import theme from "../src/styles/theme";
+import SignUpSpecific2 from "./components/login/SignUpSpecific2";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
+import SignUpSpecific from "./components/login/SignUpSpecific";
 import NavigationBar from "./components/NavigationBar";
-import HomePage from "./pages/HomePage";
+import SignUpIDPW from "./components/login/SignUpIDPW";
+import StartPage from "./components/login/StartPage";
+import { ThemeProvider } from "styled-components";
 import CommunityPage from "./pages/CommunityPage";
 import ChatPage from "./pages/chatting/index";
-import MyPage from "./pages/MyPage";
-import styled from "styled-components";
-import StartPage from "./components/login/StartPage";
-import SignUpSpecific from "./components/login/SignUpSpecific";
 import Login from "./components/login/Login";
-import SignUpIDPW from "./components/login/SignUpIDPW";
-import SignUpSpecific2 from "./components/login/SignUpSpecific2";
+import theme from "../src/styles/theme";
+import HomePage from "./pages/HomePage";
+import styled from "styled-components";
+import MyPage from "./pages/MyPage";
+import "./App.css";
 // import { useRecoilState } from "recoil";
 // import { loginState } from "./recoil/atoms";
 
 function App() {
   // const [login] = useRecoilState(loginState);
-  const login = true;
+  const login = true; // 로그인 완성되기 전까지 임시 status
+
   return login ? (
     <ThemeProvider theme={theme}>
       <BrowserRouter>
