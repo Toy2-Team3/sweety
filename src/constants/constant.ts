@@ -83,7 +83,7 @@ export const compatibilityMessages: { [key: string]: string } = {
 };
 
 export interface ButtonProps {
-  profileImage: File | undefined;
+  profileImage: File | null;
   userName: string;
   birthday: string | null;
   selectedGender: string;
@@ -105,6 +105,26 @@ export interface SignUpButtonProps {
   mbti: string;
   alchol: string;
   smoking: boolean;
+}
+
+export interface UserData {
+  userId: string;
+  password: string;
+  token: string;
+  nickName: string;
+  birth: string | null;
+  gender: string;
+  region: string;
+  profileUrl: string;
+  myChats: string[];
+  introduction: string;
+  interested: string[];
+  status: string;
+  alchol: string;
+  smoking: boolean;
+  mbti: string;
+  job: string;
+  tall: string;
 }
 
 export const steps = ["아이디 비밀번호", "기본 프로필 정보", "매칭 필수 정보"];

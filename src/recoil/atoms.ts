@@ -9,9 +9,14 @@ export const pwState = atom<string>({
   default: "",
 });
 
-export const profileImageState = atom<File | undefined>({
+export const profileImageState = atom<File | null>({
   key: "profileImageState",
-  default: undefined,
+  default: null,
+});
+
+export const profileImageUrlState = atom<string>({
+  key: "profileImageUrlState",
+  default: "",
 });
 
 export const userNameState = atom<string>({

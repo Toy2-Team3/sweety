@@ -1,7 +1,13 @@
 import { ReactComponent as SweetLogo } from "../../assets/sweetyLogo.svg";
+import {
+  addUserData,
+  deleteImage,
+  getImageDownloadURL,
+} from "../../utils/firebase";
 import { CorrectText, GreetingText, WarnText } from "./SignUpIDPW";
 import { isTallValid } from "../../utils/registerFunction";
 import styled, { DefaultTheme } from "styled-components";
+import { UploadImage } from "../../utils/firebase";
 import { useNavigate } from "react-router-dom";
 import SignUpStepper from "./SignUpStepper";
 import { useRecoilState } from "recoil";
@@ -39,6 +45,7 @@ import {
   mbtiTypes,
   smokingOptions,
 } from "../../constants/constant";
+import axios from "axios";
 
 interface SignUpSpecificProps {
   theme: DefaultTheme;
@@ -61,60 +68,83 @@ function SignUpSpecific({ theme }: SignUpSpecificProps) {
 
   const navigate = useNavigate();
 
-  //   const signUp = async (
-  //     id: string,
-  //     password: string,
-  //     name: string,
-  //     picture: string,
-  //   ): Promise<signUpProps> => {
-  //     try {
-  //       const response = await axios.post(
-  //         "https://fastcampus-chat.net/signup",
-  //         {
-  //           id,
-  //           password,
-  //           name,
-  //           picture,
-  //         },
-  //         {
-  //           headers: {
-  //             "Content-Type": "application/json",
-  //             serverId: process.env.REACT_APP_SERVER_ID,
-  //           },
-  //         },
-  //       );
+  const handleSignUpClick = async (
+    id: string,
+    password: string,
+    name: string,
+    picture: string,
+  ): Promise<void> => {
+    try {
+      const response = await axios.post(
+        "https://fastcampus-chat.net/signup",
+        {
+          id,
+          password,
+          name,
+          picture,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            serverId: process.env.REACT_APP_SERVER_ID,
+          },
+        },
+      );
+      if (response.status === 200 && response.data.message === "User created") {
+        try {
+          const imageUrl = await getImageDownloadURL(id);
+          await UploadImage({ imageName: id, file: profileImage as File });
+          const userData = {
+            userId: id,
+            password: pw,
+            token: "",
+            nickName: userName,
+            birth: birthday,
+            gender: selectedGender,
+            region: selectedRegion,
+            profileUrl: imageUrl,
+            myChats: [],
+            introduction: "",
+            interested: [],
+            status: "A",
+            alchol: alchol,
+            smoking: smoking,
+            mbti: mbti,
+            job: job,
+            tall: tall,
+          };
+          await addUserData(userData);
+          await navigate("/login");
+          console.log("가입에 성공했습니다.");
+        } catch (error) {
+          await deleteImage(id);
+          console.error("유저 데이터 업로드를 실패했습니다 : ", error);
+        }
+      } else {
+        await deleteImage(id);
+        console.error("회원가입에 실패했습니다 :", response.data.message);
+        window.alert(
+          "서버와의 연결이 불안정 합니다. 잠시후 다시 시도해 주세요.",
+        );
+      }
+    } catch (error) {
+      console.error("회원가입 중 서와와의 에러가 발생했습니다 :", error);
+    }
+  };
 
-  //       if (response.status === 200 && response.data.message === "User created") {
-  //         if (profileImage) {
-  //           try {
-  //             // TODO: 파일 업로드 로직 작성
-
-  //             // 이미지 다운로드 URL을 가져오는 부분
-  //             const downloadURL = await getImageDownloadURL(id);
-  //             setProfileImageUrl(downloadURL);
-  //           } catch (error) {
-  //             console.error("Error getting image download URL:", error);
-  //             // 이미지 업로드에 실패했을 때의 처리를 여기에 추가하세요.
-  //           }
-  //         }
-  //       } else {
-  //         // 회원가입이 실패한 경우에 대한 처리를 여기에 추가하세요.
-  //         console.error("User creation failed:", response.data.message);
-  //       }
-  //     } catch (error) {
-  //       console.error("Sign-up error:", error);
-  //       // 오류가 발생한 경우에 대한 처리를 여기에 추가하세요.
-  //     }
-
-  //     // 여기에 반환할 값이 없는 경우에 대한 처리를 추가하세요.
-  //     return {
-  //       id,
-  //       password,
-  //       name,
-  //       picture,
-  //       // 반환할 값
-  //     };
-  //   };
+  const handleSignUpClickWrapper = async () => {
+    if (profileImage) {
+      try {
+        await UploadImage({ imageName: id, file: profileImage as File });
+        const imageUrl = await getImageDownloadURL(id);
+        await handleSignUpClick(id, pw, userName, imageUrl);
+      } catch (error) {
+        console.error("유저 데이터 업로드 실패", error);
+      }
+    } else {
+      console.error("프로필 이미지가 없습니다");
+    }
+  };
 
   useEffect(() => {
     setActiveStep(2);
@@ -140,7 +170,7 @@ function SignUpSpecific({ theme }: SignUpSpecificProps) {
           onChange={(e) => setTall(e.target.value)}
         />
         {tall ? (
-          isTallValid(tall) ? (
+          isTallValid(String(tall)) ? (
             <CorrectText>{tall}cm</CorrectText>
           ) : (
             <WarnText>100~250사이의 숫자만 입력해 주세요</WarnText>
@@ -243,7 +273,7 @@ function SignUpSpecific({ theme }: SignUpSpecificProps) {
         mbti={mbti}
         alchol={alchol}
         smoking={smoking}
-        onClick={() => console.log(job, alchol, smoking)}
+        onClick={handleSignUpClickWrapper}
       >
         달콤한 만남 시작하기!
       </SignUpButton>
@@ -269,11 +299,13 @@ const SignUpButton = styled.button<SignUpButtonProps>`
   border: none;
   border-radius: 12px;
   background: ${({ job, isTallValid, mbti, alchol, smoking }) =>
-    job && isTallValid && mbti && alchol && smoking
+    job && isTallValid && mbti && alchol && smoking != undefined
       ? (props) => props.theme.color.primary
       : (props) => props.theme.color.darkGray};
   cursor: ${({ job, isTallValid, mbti, alchol, smoking }) =>
-    job && isTallValid && mbti && alchol && smoking ? "pointer" : "default"};
+    job && isTallValid && mbti && alchol && smoking != undefined
+      ? "pointer"
+      : "default"};
 `;
 
 export default SignUpSpecific;

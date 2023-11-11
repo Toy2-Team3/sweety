@@ -42,7 +42,6 @@ function SignUpIDPW() {
       if (response.status === 200) {
         const data = response.data;
         setIsIdDuplicated(data.isDuplicated);
-        console.log("중복검사함");
         console.log("중복", data.isDuplicated);
         console.log(isIdentificationValid(id));
       }
