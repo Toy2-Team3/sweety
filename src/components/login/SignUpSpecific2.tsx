@@ -1,14 +1,24 @@
-import styled, { DefaultTheme } from "styled-components";
 import { ReactComponent as SweetLogo } from "../../assets/sweetyLogo.svg";
-import { Container } from "./StartPage";
+import { SelectBox, OptionBox, TwoColumnWrapper } from "./SignUpSpecific";
 import { CorrectText, GreetingText, WarnText } from "./SignUpIDPW";
-import "react-datepicker/dist/react-datepicker.css";
-import { useState } from "react";
-import { useRecoilState } from "recoil";
-import { idState, pwState } from "../../recoil/atoms";
+import styled, { DefaultTheme } from "styled-components";
 import { useNavigate } from "react-router-dom";
-// import { UploadImage, getImageDownloadURL } from "../../utils/firebase";
-// import axios from "axios";
+import { useRecoilState } from "recoil";
+import { Container } from "./StartPage";
+import {
+  idState,
+  pwState,
+  jobState,
+  tallState,
+  mbtiState,
+  alcholState,
+  smokingState,
+  userNameState,
+  birthdayState,
+  profileImageState,
+  selectedGenderState,
+  selectedRegionState,
+} from "../../recoil/atoms";
 
 const mbtiTypes = [
   { value: "ISTJ", label: "ISTJ" },
@@ -50,49 +60,57 @@ const smokingOptions = [
   { value: true, label: "해요" },
 ];
 
+const compatibilityMessages: { [key: string]: string } = {
+  ISTJ: "ESFP, ESTP와 가장 안정적인 궁합을 이룬대요!",
+  ISFJ: "ESFP, ESTP와는 서로를 보완해주는 짝이 된대요!",
+  ISTP: "ESFJ, ESTJ와 꽤나 잘어울리는 짝이 될 수 있을 거 같아요!",
+  ISFP: "ESFJ, ESTJ, ESTP와 오래가는 커플이 될 수 있어요!",
+  INFJ: "그거 아셨나요? ENFP, ENTP와 환상의 궁합이래요!",
+  INFP: "그거 아세요? ENTJ, ENFJ와 궁합이 가장 좋대요!",
+  INTJ: "ENTJ와는 비전과 목표를 공유해 궁합이 좋아요!",
+  INTP: "그거 아세요? ENTJ, ESTJ와 궁합이 가장 좋습니다!",
+  ESTJ: "저기...사랑이 뭔지 아시나요?",
+  ESFJ: "그거 아세요? ISFP, ISTP와 궁합이 정말 좋대요!",
+  ESTP: "ISFJ, ISTJ와는 실용주의적 성향이 잘 맞는다고 하네요!",
+  ESFP: "ISFJ, ISTJ와 함꼐라면 항상 즐거울 겁니다!",
+  ENFJ: "그거 아세요? ISFP,INFP와 특히 잘 어울린대요!",
+  ENTJ: "INTJ, INTP와는 비슷한 가치관을 가져서 궁합이 좋대요!",
+  ENFP: "INFJ, INTJ와는 창의적인 아이디어가 넘치는 커플이래요!",
+  ENTP: "그거 아세요? INTJ, INTP와 최고의 궁합이래요!",
+};
+
 interface ButtonProps {
-  //   profileImage: File | undefined;
-  userName: string;
-  //   birthday: Date | null;
-  //   selectedGender: string;
-  //   selectedRegion: string;
-  isNameValid: boolean;
+  job: string;
+  isTallValid: boolean;
+  mbti: string;
+  alchol: string;
+  smoking: boolean;
 }
 
 interface SignUpSpecificProps {
   theme: DefaultTheme;
 }
 
-// interface signUpProps {
-//   id: string;
-//   password: string;
-//   name: string;
-//   picture: string;
-// }
+const isTallValid = (tall: string) => {
+  const heightRegex = /^[0-9]+$/;
+  const heightNumber = parseInt(tall, 10);
+
+  return heightRegex.test(tall) && heightNumber >= 100 && heightNumber <= 250;
+};
 
 function SignUpSpecific({ theme }: SignUpSpecificProps) {
   const [id] = useRecoilState(idState);
   const [pw] = useRecoilState(pwState);
-  //   const [profileImage, setProfileImage] = useState<File>();
-  //   const [profileImageUrl, setProfileImageUrl] = useState<string>("");
-  const [userName, setUserName] = useState<string>("");
-  //   const [birthday, setBirthday] = useState<Date | null>(null);
-  //   const [selectedGender, setSelectedGender] = useState("");
-  //   const [selectedRegion, setSelectedRegion] = useState("");
-
-  //   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-  //     const files = event.target.files;
-  //     if (files && files.length > 0) {
-  //       const imageFile = files[0];
-  //       setProfileImage(imageFile);
-  //     }
-  //   };
-
-  const isNameValid = (userName: string) => {
-    if (userName.length > 20) return false;
-    const nameRegex = /^[A-Za-z가-힣]+$/;
-    return nameRegex.test(userName);
-  };
+  const [userName] = useRecoilState(userNameState);
+  const [birthday] = useRecoilState(birthdayState);
+  const [profileImage] = useRecoilState(profileImageState);
+  const [selectedGender] = useRecoilState(selectedGenderState);
+  const [selectedRegion] = useRecoilState(selectedRegionState);
+  const [job, setJob] = useRecoilState(jobState);
+  const [tall, setTall] = useRecoilState(tallState);
+  const [mbti, setMbti] = useRecoilState(mbtiState);
+  const [alchol, setAlchol] = useRecoilState(alcholState);
+  const [smoking, setSmoking] = useRecoilState(smokingState);
 
   const navigate = useNavigate();
 
@@ -151,7 +169,13 @@ function SignUpSpecific({ theme }: SignUpSpecificProps) {
   //     };
   //   };
 
-  return id && pw ? (
+  return id &&
+    pw &&
+    userName &&
+    birthday &&
+    profileImage &&
+    selectedGender &&
+    selectedRegion ? (
     <Container style={{ gap: "18px" }}>
       <GreetingText>환영합니다🎉</GreetingText>
 
@@ -159,23 +183,20 @@ function SignUpSpecific({ theme }: SignUpSpecificProps) {
         <p>키</p>
         <NameInput
           placeholder="키를 입력해주세요"
-          value={userName}
-          onChange={(e) => setUserName(e.target.value)}
+          value={tall}
+          onChange={(e) => setTall(e.target.value)}
         />
-        {userName ? (
-          isNameValid(userName) ? (
-            <CorrectText>정말 매력적인 이름이네요!</CorrectText>
+        {tall ? (
+          isTallValid(tall) ? (
+            <CorrectText>{tall}cm</CorrectText>
           ) : (
-            <WarnText>영문, 한글 조합 20자 이하입니다</WarnText>
+            <WarnText>100~250사이의 숫자만 입력해 주세요</WarnText>
           )
         ) : null}
       </div>
-      <div>
+      <div style={{ position: "relative" }}>
         <p>MBTI</p>
-        <RegionSelect
-          defaultValue=""
-          //   onChange={(e) => setSelectedRegion(e.target.value)}
-        >
+        <SelectBox defaultValue="" onChange={(e) => setMbti(e.target.value)}>
           <option
             value=""
             disabled
@@ -185,19 +206,17 @@ function SignUpSpecific({ theme }: SignUpSpecificProps) {
           >
             MBTI를 선택해주세요
           </option>
-          {mbtiTypes.map((region) => (
-            <RegionOption key={region.value} value={region.value}>
-              {region.label}
-            </RegionOption>
+          {mbtiTypes.map((mbti) => (
+            <OptionBox key={mbti.value} value={mbti.value}>
+              {mbti.label}
+            </OptionBox>
           ))}
-        </RegionSelect>
+        </SelectBox>
+        {mbti ? <CorrectText>{compatibilityMessages[mbti]}</CorrectText> : null}
       </div>
       <div>
         <p>직업</p>
-        <RegionSelect
-          defaultValue=""
-          //   onChange={(e) => setSelectedRegion(e.target.value)}
-        >
+        <SelectBox defaultValue="" onChange={(e) => setJob(e.target.value)}>
           <option
             value=""
             disabled
@@ -207,20 +226,20 @@ function SignUpSpecific({ theme }: SignUpSpecificProps) {
           >
             해당하는 직업을 선택해주세요
           </option>
-          {jobOptions.map((region) => (
-            <RegionOption key={region.value} value={region.value}>
-              {region.label}
-            </RegionOption>
+          {jobOptions.map((job) => (
+            <OptionBox key={job.value} value={job.value}>
+              {job.label}
+            </OptionBox>
           ))}
-        </RegionSelect>
+        </SelectBox>
       </div>
-      <BirthGenderWrapper>
+      <TwoColumnWrapper>
         <div>
           <p>음주</p>
-          <RegionSelect
+          <SelectBox
             style={{ width: "150px" }}
             defaultValue=""
-            // onChange={(e) => setSelectedRegion(e.target.value)}
+            onChange={(e) => setAlchol(e.target.value)}
           >
             <option
               value=""
@@ -231,19 +250,19 @@ function SignUpSpecific({ theme }: SignUpSpecificProps) {
             >
               음주는 하시나요?
             </option>
-            {alcholOptions.map((region) => (
-              <RegionOption key={region.value} value={region.value}>
-                {region.label}
-              </RegionOption>
+            {alcholOptions.map((alchol) => (
+              <OptionBox key={alchol.value} value={alchol.value}>
+                {alchol.label}
+              </OptionBox>
             ))}
-          </RegionSelect>
+          </SelectBox>
         </div>
         <div>
-          <p>흠연</p>
-          <RegionSelect
+          <p>흡연</p>
+          <SelectBox
             style={{ width: "150px" }}
             defaultValue=""
-            // onChange={(e) => setSelectedRegion(e.target.value)}
+            onChange={(e) => setSmoking(e.target.value === "true")}
           >
             <option
               value=""
@@ -252,43 +271,28 @@ function SignUpSpecific({ theme }: SignUpSpecificProps) {
               hidden
               style={{ color: theme.color.darkGray }}
             >
-              흠연은 하시나요?
+              흡연은 하시나요?
             </option>
-            {smokingOptions.map((region) => (
-              <RegionOption
-                key={String(region.value)}
-                value={String(region.value)}
+            {smokingOptions.map((smoking) => (
+              <OptionBox
+                key={String(smoking.value)}
+                value={String(smoking.value)}
               >
-                {region.label}
-              </RegionOption>
+                {smoking.label}
+              </OptionBox>
             ))}
-          </RegionSelect>
+          </SelectBox>
         </div>
-      </BirthGenderWrapper>
+      </TwoColumnWrapper>
       <SignUpButton
-        // profileImage={profileImage}
-        userName={userName}
-        isNameValid={isNameValid(userName)}
-        // birthday={birthday}
-        // selectedGender={selectedGender}
-        // selectedRegion={selectedRegion}
-        // onClick={async () => {
-        //   if (profileImage) {
-        //     try {
-        //       await UploadImage({
-        //         imageName: id,
-        //         file: profileImage,
-        //       });
-        //       const downloadURL = await getImageDownloadURL(id);
-        //       setProfileImageUrl(downloadURL);
-        //       await signUp(id, pw, userName, profileImageUrl);
-        //     } catch (error) {
-        //       console.error("Image upload error:", error);
-        //     }
-        //   }
-        // }}
+        job={job}
+        isTallValid={isTallValid(tall)}
+        mbti={mbti}
+        alchol={alchol}
+        smoking={smoking}
+        onClick={() => console.log(job, alchol, smoking)}
       >
-        회원가입
+        달콤한 만남으로 떠나기!
       </SignUpButton>
     </Container>
   ) : (
@@ -319,54 +323,19 @@ const NameInput = styled.input`
   }
 `;
 
-const BirthGenderWrapper = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  width: 340px;
-`;
-
-const RegionSelect = styled.select`
-  width: 340px;
-  height: 50px;
-  border-radius: 12px;
-  border: 1px solid ${(props) => props.theme.color.borderGray};
-  background: #fff;
-  padding-left: 16px;
-  &:focus {
-    border: ${(props) => props.theme.color.primary} 1px solid;
-    outline: none;
-  }
-`;
-
-const RegionOption = styled.option`
-  width: 340px;
-  height: 150px;
-  border-radius: 12px;
-  border: 1px solid ${(props) => props.theme.color.borderGray};
-  background: #fff;
-`;
-
 const SignUpButton = styled.button<ButtonProps>`
+  font-size: 20px;
   width: 340px;
   height: 50px;
   color: white;
   border: none;
   border-radius: 12px;
-  background: ${({
-    // profileImage,
-    isNameValid,
-    // selectedRegion,
-  }) =>
-    isNameValid
+  background: ${({ job, isTallValid, mbti, alchol, smoking }) =>
+    job && isTallValid && mbti && alchol && smoking
       ? (props) => props.theme.color.primary
       : (props) => props.theme.color.darkGray};
-  cursor: ${({
-    // profileImage,
-    isNameValid,
-
-    // selectedRegion,
-  }) => (isNameValid ? "pointer" : "default")};
+  cursor: ${({ job, isTallValid, mbti, alchol, smoking }) =>
+    job && isTallValid && mbti && alchol && smoking ? "pointer" : "default"};
 `;
 
 const RootErrorMessageWrapper = styled.div`

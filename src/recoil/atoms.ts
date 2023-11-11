@@ -19,7 +19,7 @@ export const userNameState = atom<string>({
   default: "",
 });
 
-export const birthdayState = atom<Date | null>({
+export const birthdayState = atom<string | null>({
   key: "birthdayState",
   default: null,
 });
@@ -44,9 +44,9 @@ export const tallState = atom<string>({
   default: "",
 });
 
-export const smokingState = atom<boolean | null>({
-  key: "smokingStae",
-  default: null,
+export const smokingState = atom<boolean>({
+  key: "smokingState",
+  default: undefined,
 });
 
 export const alcholState = atom<string>({

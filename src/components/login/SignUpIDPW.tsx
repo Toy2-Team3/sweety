@@ -1,10 +1,10 @@
-import styled from "styled-components";
-import { Container } from "./StartPage";
-import { IdPwInput, InputWrapper } from "./Login";
 import { useCallback, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { idState, pwState } from "../../recoil/atoms";
+import { IdPwInput, InputWrapper } from "./Login";
+import { useNavigate } from "react-router-dom";
+import { Container } from "./StartPage";
 import { useRecoilState } from "recoil";
+import styled from "styled-components";
 import axios from "axios";
 
 interface ButtonProps {
@@ -87,6 +87,7 @@ function SignUpIDPW() {
     debounce(checkIdDuplication, 1500),
     [checkIdDuplication],
   );
+
   useEffect(() => {
     if (id) {
       debouncedCheckIdDuplication.call({}, id);
@@ -115,7 +116,7 @@ function SignUpIDPW() {
         {id ? (
           isIdentificationValid(id) && isIdDuplicated ? (
             <WarnText>이미 사용중인 아이디 입니다😢</WarnText>
-          ) : !isIdDuplicated ? (
+          ) : isIdentificationValid(id) && !isIdDuplicated ? (
             <CorrectText>정말 멋진 아이디네요!</CorrectText>
           ) : (
             <WarnText>영문 소문자, 대문자 조합 8자 이상입니다.</WarnText>
@@ -173,7 +174,7 @@ function SignUpIDPW() {
         isIdDuplicated={isIdDuplicated}
         onClick={navigateToNextPage}
       >
-        다음
+        두근거리는 만남이 기다려요!
       </NextButton>
     </Container>
   );

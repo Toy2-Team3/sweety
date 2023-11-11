@@ -1,10 +1,10 @@
-import styled, { DefaultTheme } from "styled-components";
+import { ReactComponent as ProfileCamera } from "../../assets/profileCamera.svg";
 import { ReactComponent as SweetLogo } from "../../assets/sweetyLogo.svg";
-import { Container } from "./StartPage";
 import { CorrectText, GreetingText, WarnText } from "./SignUpIDPW";
-import "react-datepicker/dist/react-datepicker.css";
-import { useRecoilState } from "recoil";
+import styled, { DefaultTheme } from "styled-components";
 import { useNavigate } from "react-router-dom";
+import { Container } from "./StartPage";
+import { useRecoilState } from "recoil";
 import {
   birthdayState,
   idState,
@@ -43,7 +43,7 @@ const genderOptions = [
 interface ButtonProps {
   profileImage: File | undefined;
   userName: string;
-  birthday: Date | null;
+  birthday: string | null;
   selectedGender: string;
   selectedRegion: string;
   isNameValid: boolean;
@@ -91,16 +91,32 @@ function SignUpSpecific({ theme }: SignUpSpecificProps) {
     }
   };
 
+  const calculateMaxDate = () => {
+    const currentDate = new Date();
+    const maxDate = new Date(
+      currentDate.getFullYear() - 19,
+      currentDate.getMonth(),
+      currentDate.getDate(),
+    );
+    return maxDate.toISOString().split("T")[0];
+  };
+
+  const profileImageUrl = profileImage ? URL.createObjectURL(profileImage) : "";
+
   return id && pw ? (
     <Container style={{ gap: "18px" }}>
       <GreetingText>환영합니다🎉</GreetingText>
       <ProfileWrapper>
-        <label htmlFor="profile">
-          <ProfileUploadButton
-            style={{ backgroundImage: `url(${profileImage})` }}
-          />
-          {/*카메라 아이콘 넣기 */}
-        </label>
+        <ProfileUploadLabel backgroundImage={profileImageUrl} htmlFor="profile">
+          {profileImage ? null : (
+            <ProfileCamera
+              style={{
+                width: "50px",
+                height: "50px",
+              }}
+            />
+          )}
+        </ProfileUploadLabel>
         <ProfileInput
           type="file"
           id="profile"
@@ -123,13 +139,14 @@ function SignUpSpecific({ theme }: SignUpSpecificProps) {
           )
         ) : null}
       </div>
-      <BirthGenderWrapper>
+      <TwoColumnWrapper>
         <div>
           <p>생년월일</p>
           <Birthday
-            value={birthday ? birthday.toISOString().split("T")[0] : ""}
+            value={birthday ? birthday : ""}
             type="date"
-            onChange={(e) => setBirthday(new Date(e.target.value))}
+            onChange={(e) => setBirthday(e.target.value)}
+            max={calculateMaxDate()}
           />
         </div>
         <div>
@@ -150,10 +167,15 @@ function SignUpSpecific({ theme }: SignUpSpecificProps) {
             </GenderButton>
           ))}
         </div>
-      </BirthGenderWrapper>
+        {selectedGender && birthday ? (
+          <WarnText>
+            생년월일과 성별은 회원가입 후 변경하실 수 없습니다
+          </WarnText>
+        ) : null}
+      </TwoColumnWrapper>
       <div>
         <p>지역</p>
-        <RegionSelect
+        <SelectBox
           defaultValue=""
           onChange={(e) => setSelectedRegion(e.target.value)}
         >
@@ -167,11 +189,11 @@ function SignUpSpecific({ theme }: SignUpSpecificProps) {
             거주지역을 선택해주세요
           </option>
           {regions.map((region) => (
-            <RegionOption key={region.value} value={region.value}>
+            <OptionBox key={region.value} value={region.value}>
               {region.label}
-            </RegionOption>
+            </OptionBox>
           ))}
-        </RegionSelect>
+        </SelectBox>
       </div>
       <SignUpButton
         profileImage={profileImage}
@@ -182,7 +204,7 @@ function SignUpSpecific({ theme }: SignUpSpecificProps) {
         selectedRegion={selectedRegion}
         onClick={navigateToSignUpSpecific}
       >
-        다음
+        이제 거의 다 되었어요!
       </SignUpButton>
     </Container>
   ) : (
@@ -204,15 +226,22 @@ const ProfileWrapper = styled.div`
   align-items: center;
 `;
 
-const ProfileUploadButton = styled.div`
+const ProfileUploadLabel = styled.label<{ backgroundImage: string }>`
   width: 125px;
   height: 125px;
+  display: flex;
   border-radius: 50%;
-  background: ${(props) => props.theme.color.darkGray};
+  background: ${(props) =>
+    props.backgroundImage
+      ? `url(${props.backgroundImage})`
+      : props.theme.color.darkGray};
   cursor: pointer;
   background-size: cover;
   background-position: center;
+  align-items: center;
+  justify-content: center;
 `;
+
 const ProfileInput = styled.input`
   display: none;
 `;
@@ -232,7 +261,8 @@ const NameInput = styled.input`
   }
 `;
 
-const BirthGenderWrapper = styled.div`
+export const TwoColumnWrapper = styled.div`
+  position: relative;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -261,7 +291,7 @@ const GenderButton = styled.button`
   background: ${(props) => props.theme.color.darkGray};
 `;
 
-const RegionSelect = styled.select`
+export const SelectBox = styled.select`
   width: 340px;
   height: 50px;
   border-radius: 12px;
@@ -274,7 +304,7 @@ const RegionSelect = styled.select`
   }
 `;
 
-const RegionOption = styled.option`
+export const OptionBox = styled.option`
   width: 340px;
   height: 150px;
   border-radius: 12px;
@@ -283,6 +313,7 @@ const RegionOption = styled.option`
 `;
 
 const SignUpButton = styled.button<ButtonProps>`
+  font-size: 20px;
   width: 340px;
   height: 50px;
   color: white;
