@@ -235,7 +235,7 @@ function SignUpSpecific({ theme }: SignUpSpecificProps) {
         smoking={smoking}
         onClick={() => console.log(job, alchol, smoking)}
       >
-        달콤한 만남으로 떠나기!
+        달콤한 만남 시작하기!
       </SignUpButton>
     </Container>
   ) : (

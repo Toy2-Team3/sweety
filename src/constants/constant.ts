@@ -53,13 +53,13 @@ export const jobOptions = [
 ];
 
 export const alcholOptions = [
-  { value: "N", label: "안마셔요" },
+  { value: "N", label: "안 마셔요" },
   { value: "S", label: "가끔 마셔요" },
   { value: "O", label: "자주 마셔요" },
 ];
 
 export const smokingOptions = [
-  { value: false, label: "안해요" },
+  { value: false, label: "안 해요" },
   { value: true, label: "해요" },
 ];
 
