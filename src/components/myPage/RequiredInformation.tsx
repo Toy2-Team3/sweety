@@ -89,11 +89,7 @@ export default function RequiredInformation({ theme }: SignUpSpecificProps) {
       <TwoColumnWrapper>
         <div>
           <p>생년월일</p>
-          <Birthday
-            value={birthday ? birthday : ""}
-            type="date"
-            max={calculateMaxDate()}
-          />
+          <Birthday>YYYY-MM-DD</Birthday>
         </div>
         <div>
           <p>성별</p>
@@ -304,17 +300,18 @@ export const TwoColumnWrapper = styled.div`
   width: 340px;
 `;
 
-const Birthday = styled.input`
+const Birthday = styled.button`
   width: 170px;
   height: 50px;
   padding: 0 23px;
-  border: 1px solid ${(props) => props.theme.color.borderGray};
+  border: none;
   border-radius: 12px;
   background: ${(props) => props.theme.color.lightGray};
-  &:focus {
-    border: ${(props) => props.theme.color.primary} 1px solid;
-    outline: none;
-  }
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: ${(props) => props.theme.color.black};
+  font-size: ${(props) => props.theme.font.smallSize};
 `;
 
 const GenderButton = styled.button`
@@ -322,7 +319,6 @@ const GenderButton = styled.button`
   height: 50px;
   border-radius: 12px;
   border: none;
-  cursor: pointer;
   background: ${(props) => props.theme.color.darkGray};
 `;
 
