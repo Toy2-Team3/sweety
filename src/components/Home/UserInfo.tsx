@@ -21,8 +21,8 @@ const UserInfo: React.FC<UserInfoProps> = ({ picture, name }) => {
     setUserOnOff(true);
   }, []);
   return (
-    <UserImage style={{ backgroundImage: `url(${picture})` }}>
-      <UserInfoWrapper />
+    <UserCover>
+      <UserImage src={picture} />
       {userOnOff && (
         <UserActive>
           <span></span>
@@ -32,8 +32,7 @@ const UserInfo: React.FC<UserInfoProps> = ({ picture, name }) => {
 
       <UserName>
         <div>
-          {name}
-          <span>{first} </span>
+          <span> {name}</span>
           <span>{"(29)"}</span>
         </div>
       </UserName>
@@ -42,97 +41,76 @@ const UserInfo: React.FC<UserInfoProps> = ({ picture, name }) => {
         <WhiteChatIcon />
         {/* <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 512 512"><!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. --><path d="M160 368c26.5 0 48 21.5 48 48v16l72.5-54.4c8.3-6.2 18.4-9.6 28.8-9.6H448c8.8 0 16-7.2 16-16V64c0-8.8-7.2-16-16-16H64c-8.8 0-16 7.2-16 16V352c0 8.8 7.2 16 16 16h96zm48 124l-.2 .2-5.1 3.8-17.1 12.8c-4.8 3.6-11.3 4.2-16.8 1.5s-8.8-8.2-8.8-14.3V474.7v-6.4V468v-4V416H112 64c-35.3 0-64-28.7-64-64V64C0 28.7 28.7 0 64 0H448c35.3 0 64 28.7 64 64V352c0 35.3-28.7 64-64 64H309.3L208 492z"/></svg> */}
       </UserChatButton>
-    </UserImage>
+    </UserCover>
   );
 };
 
 export default UserInfo;
 
-const UserImage = styled.div`
+const UserCover = styled.div`
+  width: 100%;
+  padding-top: 100%;
+  background-color: red;
   position: relative;
-  height: 675px;
-  width: 450px;
-  margin-bottom: 6rem;
-  margin: 0 0.5rem 4rem 0;
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  background-color: #808080; /* Set the default background color to gray */
-
-  ${(props) => props.theme.response.tablet} {
-    min-height: 510px;
-    min-width: 340px;
-    width: 60%;
-  }
-
-  ${(props) => props.theme.response.mobile} {
-    height: 450px;
-    width: 200px;
-  }
+  overflow: hidden;
 `;
 
-const UserInfoWrapper = styled.div`
+const UserImage = styled.img`
+  object-fit: cover;
   position: absolute;
-  bottom: 0;
-  background-color: black;
-  opacity: 0.5;
   width: 100%;
-  height: 10rem;
-  @media screen and (max-width: 480px) {
-    height: 5rem;
-  }
-  ${(props) => props.theme.response.tablet} {
-    height: 7rem;
-  }
+  height: 100%;
+  top: 0;
+  left: 0;
 `;
 
 const UserName = styled.div`
   position: absolute;
-  bottom: 6rem;
+  bottom: 2rem;
   color: rgba(255, 255, 255, 1); // Set color to white with full opacity
-  font-size: 2.5rem;
-  left: 1rem;
+  font-size: 1.5rem;
+  left: 0.5rem;
   display: flex;
 
-  > div:first-child {
-    margin-right: 3rem;
-    span {
-      font-size: 1.5rem;
-    }
-    > span:first-child {
-      font-size: 1.5rem;
-    }
+  span:nth-child(2) {
+    font-size: 1.2rem;
   }
 
+  ${(props) => props.theme.response.tablet} {
+    position: absolute;
+    bottom: 2rem;
+    font-size: 1.2rem;
+    span:nth-child(2) {
+      font-size: 1rem;
+    }
+  }
   ${(props) => props.theme.response.mobile} {
     position: absolute;
     bottom: 2rem;
-    font-size: 1.5rem;
-  }
-  ${(props) => props.theme.response.tablet} {
-    position: absolute;
-    bottom: 3.5rem;
-    font-size: 2rem;
+    font-size: 1.2rem;
+    span:nth-child(2) {
+      font-size: 1rem;
+    }
   }
 `;
+
 const UserRegion = styled.div`
   position: absolute;
-  bottom: 1rem;
-  right: 1rem;
-  font-size: 2rem;
+  bottom: 0.7rem;
+  left: 0.5rem;
+  font-size: 1rem;
   color: white;
 
   ${(props) => props.theme.response.tablet} {
-    font-size: 1.2rem;
+    font-size: 0.8rem;
   }
 `;
 const UserChatButton = styled.button`
   position: absolute;
   bottom: 1rem;
-
   font-size: 2rem;
   color: white;
-  right: 50%;
+  right: 1rem;
   display: flex;
   justify-content: center;
 
@@ -143,20 +121,20 @@ const UserChatButton = styled.button`
 const UserActive = styled.div`
   position: absolute;
   top: 1rem;
-  left: 1rem;
-  font-size: 2rem;
+  left: 0.5rem;
+  font-size: 1rem;
   color: white;
   display: flex;
   align-items: center;
   > span:first-child {
     display: inline-block;
-    width: 1rem;
-    height: 1rem;
+    width: 0.5rem;
+    height: 0.5rem;
     border-radius: 50%;
     background-color: green;
     margin-right: 0.5rem;
   }
   ${(props) => props.theme.response.mobile} {
-    font-size: 1.5rem;
+    font-size: 0.8rem;
   }
 `;
