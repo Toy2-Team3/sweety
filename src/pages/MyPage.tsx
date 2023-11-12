@@ -1,11 +1,13 @@
 import styled from "styled-components";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ByeModal from "../components/myPage/ByeModal";
 import OptionalInformation from "../components/myPage/OptionalInformation";
 import RequiredInformation from "../components/myPage/RequiredInformation";
+import theme from "../styles/theme";
 
 export default function MyPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [atBottom, setAtBottom] = useState(false);
 
   const handleOpenModal = () => {
     setIsModalOpen(true);
@@ -14,6 +16,18 @@ export default function MyPage() {
   const handleCloseModal = () => {
     setIsModalOpen(false);
   };
+
+  const handleScrolling = () => {
+    setAtBottom(window.scrollY > 100 ? true : false);
+  };
+
+  useEffect(() => {
+    window.addEventListener("scroll", handleScrolling);
+
+    return () => {
+      window.removeEventListener("scroll", handleScrolling);
+    };
+  }, []);
 
   // TODO : 
   // default 정보: 파이어베이스에서 가져온 회원 정보 
@@ -24,14 +38,25 @@ export default function MyPage() {
   return (
     <PageWrap>
       <SaveButtonWrap>
-        <SaveButton>
-          프로필 수정
-        </SaveButton>
+        {
+          !atBottom && 
+            <SaveButton>
+              프로필 수정
+            </SaveButton>
+        }
       </SaveButtonWrap>
       <InformationWrap>
-        <RequiredInformation />
+        <RequiredInformation theme={theme}/>
         <OptionalInformation />
       </InformationWrap>
+      {
+        atBottom && 
+          <SaveButton
+            style={{marginTop: '-5.5rem', marginBottom: '5rem'}}
+          >
+            프로필 수정
+          </SaveButton>
+      }
       <ByeButtonWrap>
         <ByeButton onClick={handleOpenModal}>
           회원 탈퇴
@@ -56,8 +81,8 @@ const PageWrap = styled.div`
 
 const SaveButtonWrap = styled.div`
   position: absolute;
-  top: 3rem;
-  right: 3rem;
+  top: 2rem;
+  right: 2.5rem;
 `;
 
 const SaveButton = styled.button`
@@ -71,17 +96,17 @@ const SaveButton = styled.button`
 
 const InformationWrap = styled.div`
   max-width: 342px;
-  border: 1px solid blue;
   margin: 8rem 0;
   display: flex;
   flex-direction: column;
   gap: 1.8rem;
+  border: 1px solid pink;
 `;
 
 const ByeButtonWrap = styled.div`
   position: fixed;
-  right: 0.5rem;
-  bottom: 0.5rem;
+  right: 1rem;
+  bottom: 1rem;
 `;
 
 const ByeButton = styled.button`
