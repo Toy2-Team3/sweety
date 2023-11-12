@@ -18,7 +18,7 @@ import { useRecoilState } from "recoil";
 import { loginState } from "./recoil/atoms";
 
 function App() {
-  const [login] = useRecoilState(loginState);
+  const login = true; // 로그인 완성되기 전까지 임시 status
   return login ? (
     <ThemeProvider theme={theme}>
       <BrowserRouter>

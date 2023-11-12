@@ -1,29 +1,63 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import { ReactComponent as WhiteChatIcon } from "../../assets/chattingWhiteIcon.svg";
+import { ReactComponent as WhiteChatIcon } from "../../assets/chattingIcon.svg";
 
 interface UserInfoProps {
-  picture: string;
-  name: string;
+  id: string;
+  userId?: string;
+  password?: string;
+  token?: string;
+  nickName?: string;
+  birth?: string;
+  gender?: string;
+  region?: string;
+  profileUrl?: string;
+  myChats?: string[];
+  introduction?: string;
+  interested?: string[];
+  status?: string;
+  alcohol?: string;
+  smoking?: boolean;
+  mbti?: string;
+  job?: string;
+  tall?: number;
 }
 
-const UserInfo: React.FC<UserInfoProps> = ({ picture, name }) => {
-  const [first, setfirst] = useState("♂");
-  const [userOnOff, setUserOnOff] = useState(false);
+const calculateAge = (birthDate: string): number => {
+  const currentDate = new Date();
+  const birthDateObject = new Date(birthDate);
+
+  let age = currentDate.getFullYear() - birthDateObject.getFullYear();
+
+  if (
+    currentDate.getMonth() < birthDateObject.getMonth() ||
+    (currentDate.getMonth() === birthDateObject.getMonth() &&
+      currentDate.getDate() < birthDateObject.getDate())
+  ) {
+    age--;
+  }
+
+  return age;
+};
+
+const UserInfo = ({ userinfo }: { userinfo: UserInfoProps }) => {
+  const [userOnOff, setUserOnOff] = useState(true);
   const handleUserChat = (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
   ) => {
     e.preventDefault();
     console.log("userChat");
   };
-  useEffect(() => {
-    setfirst("♀");
-    setUserOnOff(true);
-  }, []);
+  const handleDetailModal = (
+    e: React.MouseEvent<HTMLDivElement, MouseEvent>,
+  ) => {
+    e.preventDefault();
+    console.log("userChat");
+  };
   return (
-    <UserCover>
-    <UserImage src={picture}/>
-    {userOnOff && (
+    <UserCover onClick={handleDetailModal}>
+      <UserImage src={userinfo?.profileUrl} />
+      {userOnOff && (
         <UserActive>
           <span></span>
           <span> 현재 활동중</span>
@@ -32,11 +66,11 @@ const UserInfo: React.FC<UserInfoProps> = ({ picture, name }) => {
 
       <UserName>
         <div>
-          <span> {name}</span>
-          <span>{"(29)"}</span>
+          <span> {userinfo?.nickName}</span>
+          {userinfo?.birth && <span>({calculateAge(userinfo.birth)})</span>}
         </div>
       </UserName>
-      <UserRegion>서울거주</UserRegion>
+      <UserRegion>{userinfo?.region}</UserRegion>
       <UserChatButton onClick={handleUserChat}>
         <WhiteChatIcon />
         {/* <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 512 512"><!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. --><path d="M160 368c26.5 0 48 21.5 48 48v16l72.5-54.4c8.3-6.2 18.4-9.6 28.8-9.6H448c8.8 0 16-7.2 16-16V64c0-8.8-7.2-16-16-16H64c-8.8 0-16 7.2-16 16V352c0 8.8 7.2 16 16 16h96zm48 124l-.2 .2-5.1 3.8-17.1 12.8c-4.8 3.6-11.3 4.2-16.8 1.5s-8.8-8.2-8.8-14.3V474.7v-6.4V468v-4V416H112 64c-35.3 0-64-28.7-64-64V64C0 28.7 28.7 0 64 0H448c35.3 0 64 28.7 64 64V352c0 35.3-28.7 64-64 64H309.3L208 492z"/></svg> */}
@@ -50,9 +84,9 @@ export default UserInfo;
 const UserCover = styled.div`
   width: 100%;
   padding-top: 100%;
-  background-color: red;
   position: relative;
   overflow: hidden;
+  cursor: pointer;
 `;
 
 const UserImage = styled.img`
@@ -63,8 +97,6 @@ const UserImage = styled.img`
   top: 0;
   left: 0;
 `;
-
-
 
 const UserName = styled.div`
   position: absolute;
@@ -77,9 +109,9 @@ const UserName = styled.div`
   span:nth-child(2) {
     font-size: 1.2rem;
   }
-  span:nth-child(2){
+  span:nth-child(2) {
     font-size: 1.2rem;
-}
+  }
 
   ${(props) => props.theme.response.tablet} {
     position: absolute;

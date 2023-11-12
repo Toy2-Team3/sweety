@@ -1,30 +1,50 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import UserInfo from "../components/Home/UserInfo";
-// import { useFireFetch } from "../utils/useFireFetch";
-interface User {
-  id: string;
-  password: string;
-  name: string;
-  picture: string;
-  chats: string[];
-}
-
+import { UserData, get } from "../utils/firebase";
 const Home = () => {
   // const fireFetch = useFireFetch();
+  const [users, setUsers] = useState<UserData[]>([]);
   const userId: string | null = "kimchulsoo";
-  const [users, setUsers] = useState<User[]>([]);
+  const gender: string | null = "female";
+  function shuffleArray(array: UserData[]): UserData[] {
+    const shuffledArray = [...array];
+    for (let i = shuffledArray.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffledArray[i], shuffledArray[j]] = [
+        shuffledArray[j],
+        shuffledArray[i],
+      ];
+    }
+    return shuffledArray;
+  }
+
   useEffect(() => {
     const fetchData = async () => {
-      try {
-        const response = await fetch("/users.json");
-        console.log("Response:", response);
-        const data = await response.json();
-        console.log(data);
-        console.log("Data:", data);
-        setUsers(data);
-      } catch (error) {
-        console.error("Error fetching data:", error);
+      if (gender === "female") {
+        try {
+          const userData = await get(
+            "user",
+            "gender" as keyof UserData,
+            "male",
+          );
+          const shuffledUsers = shuffleArray(userData);
+          setUsers(shuffledUsers);
+        } catch (error) {
+          console.error("Error fetching data:", error);
+        }
+      } else {
+        try {
+          const userData = await get(
+            "user",
+            "gender" as keyof UserData,
+            "female",
+          );
+          const shuffledUsers = shuffleArray(userData);
+          setUsers(shuffledUsers);
+        } catch (error) {
+          console.error("Error fetching data:", error);
+        }
       }
     };
 
@@ -39,7 +59,7 @@ const Home = () => {
       </Header>
       <UsersInfo>
         {users.map((user, index) => (
-          <UserInfo key={index} name={user.name} picture={user.picture} />
+          <UserInfo key={index} userinfo={user} />
         ))}
       </UsersInfo>
     </Wrapper>
