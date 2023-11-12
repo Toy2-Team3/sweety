@@ -8,6 +8,7 @@ import {
   getAllData,
   getAllDataOrderByDate,
 } from "../utils/firebase";
+import { useNavigate } from "react-router-dom";
 
 export interface CommonData {
   id: string;
@@ -22,9 +23,14 @@ export interface CommonData {
 }
 
 const CommunityList = () => {
+  const navigate = useNavigate();
   const [postList, setPostList] = useState<CommunityData[]>([]);
   const [userList, setUserList] = useState<IUserData[]>([]);
   const [commonList, setCommonList] = useState<CommonData[]>([]);
+
+  const handleCreateNewItem = () => {
+    navigate("/community/edit");
+  };
 
   const fetchCommunityData = async () => {
     const response = await getAllDataOrderByDate();
@@ -68,7 +74,7 @@ const CommunityList = () => {
         <div>당신의 관심사를 공유해보세요</div>
       </Header>
       <AddButtonWrapper>
-        <AddButton>새 글 등록</AddButton>
+        <AddButton onClick={handleCreateNewItem}>새 글 등록</AddButton>
       </AddButtonWrapper>
       <ItemWrapper>
         {commonList.map((item) => {
