@@ -33,8 +33,8 @@ export default function RequiredInformation({ theme }: SignUpSpecificProps) {
   const [prevProfileImageUrl, setPrevProfileImageUrl] = useState("");
   const [profileImage, setProfileImage] = useRecoilState(profileImageState);
   const [userName, setUserName] = useRecoilState(userNameState);
-  const [birthday, setBirthday] = useRecoilState(birthdayState);
-  const [selectedGender, setSelectedGender] = useRecoilState(selectedGenderState);
+  const [birthday] = useRecoilState(birthdayState);
+  const [selectedGender] = useRecoilState(selectedGenderState);
   const [selectedRegion, setSelectedRegion] = useRecoilState(selectedRegionState);
   const [job, setJob] = useRecoilState(jobState);
   const [tall, setTall] = useRecoilState(tallState);
@@ -92,7 +92,6 @@ export default function RequiredInformation({ theme }: SignUpSpecificProps) {
           <Birthday
             value={birthday ? birthday : ""}
             type="date"
-            onChange={(e) => setBirthday(e.target.value)}
             max={calculateMaxDate()}
           />
         </div>
@@ -101,12 +100,11 @@ export default function RequiredInformation({ theme }: SignUpSpecificProps) {
           {genderOptions.map((option) => (
             <GenderButton
               key={option.value}
-              onClick={() => setSelectedGender(option.value)}
               style={{
                 background:
                   selectedGender === option.value
                     ? theme.color.primary
-                    : theme.color.darkGray,
+                    : theme.color.lightGray,
                 marginRight: "9px",
               }}
             >
@@ -114,11 +112,9 @@ export default function RequiredInformation({ theme }: SignUpSpecificProps) {
             </GenderButton>
           ))}
         </div>
-        {selectedGender && birthday ? (
-          <WarnText>
-            생년월일과 성별은 회원가입 후 변경하실 수 없습니다
-          </WarnText>
-        ) : null}
+        <WarnText>
+          생년월일과 성별은 회원가입 후 변경하실 수 없습니다
+        </WarnText>
       </TwoColumnWrapper>
       <div>
         <p>지역</p>
@@ -314,7 +310,7 @@ const Birthday = styled.input`
   padding: 0 23px;
   border: 1px solid ${(props) => props.theme.color.borderGray};
   border-radius: 12px;
-  background: #fff;
+  background: ${(props) => props.theme.color.lightGray};
   &:focus {
     border: ${(props) => props.theme.color.primary} 1px solid;
     outline: none;
