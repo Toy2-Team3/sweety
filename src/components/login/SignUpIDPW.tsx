@@ -1,8 +1,9 @@
 import { NextButtonProps } from "../../constants/constant";
 import { useCallback, useEffect, useState } from "react";
-import { idState, pwState } from "../../recoil/atoms";
+import { activeStepState, idState, pwState } from "../../recoil/atoms";
 import { IdPwInput, InputWrapper } from "./Login";
 import { useNavigate } from "react-router-dom";
+import SignUpStepper from "./SignUpStepper";
 import { Container } from "./StartPage";
 import { useRecoilState } from "recoil";
 import styled from "styled-components";
@@ -21,6 +22,7 @@ function SignUpIDPW() {
   const [showPw, setShowPw] = useState(false);
   const [showPwCheck, setShowPwCheck] = useState(false);
   const [isIdDuplicated, setIsIdDuplicated] = useState(false);
+  const [activeStep, setActiveStep] = useRecoilState(activeStepState);
 
   const isInputValid = isIdentificationPasswordValid(id, pw);
 
@@ -40,7 +42,6 @@ function SignUpIDPW() {
       if (response.status === 200) {
         const data = response.data;
         setIsIdDuplicated(data.isDuplicated);
-        console.log("중복검사함");
         console.log("중복", data.isDuplicated);
         console.log(isIdentificationValid(id));
       }
@@ -56,6 +57,8 @@ function SignUpIDPW() {
   );
 
   useEffect(() => {
+    setActiveStep(0);
+    console.log(activeStep);
     if (id) {
       debouncedCheckIdDuplication.call({}, id);
     }
@@ -144,6 +147,7 @@ function SignUpIDPW() {
       >
         두근거리는 만남이 기다려요!
       </NextButton>
+      <SignUpStepper />
     </Container>
   );
 }

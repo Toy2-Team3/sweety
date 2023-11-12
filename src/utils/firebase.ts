@@ -12,11 +12,12 @@ import {
   uploadBytes,
   uploadBytesResumable,
   getDownloadURL,
+  deleteObject,
 } from "firebase/storage";
 import { db, storage } from "./firebase.config";
 
 export interface UserData {
-  id: string;
+  id: string; //doc.id
   userId?: string;
   password?: string;
   token?: string;
@@ -37,7 +38,7 @@ export interface UserData {
 }
 
 export interface CommunityData {
-  id: string;
+  id: string; //doc.id
   chatId?: string;
   userId?: string;
   title?: string;
@@ -55,21 +56,82 @@ export async function UploadImage({
 
   try {
     await uploadBytes(storageRef, file);
-    console.log("Uploaded a blob or file!");
+    console.log("이미지를 업로드 했습니다.");
   } catch (error) {
-    console.error("Upload failed:", error);
+    console.error("업로드에 실패 했습니다 :", error);
   }
 }
 
 export async function getImageDownloadURL(imageName: string): Promise<string> {
   const storageRef = ref(storage, "userProfile/" + imageName);
-
   try {
     const downloadURL = await getDownloadURL(storageRef);
     return downloadURL;
   } catch (error) {
-    console.error("Error getting download URL:", error);
+    console.error("이미지 url을 다운받을 수 없습니다 :", error);
     return "";
+  }
+}
+
+export async function deleteImage(imageName: string): Promise<void> {
+  const storagePath = "userProfile/" + imageName;
+  const imageRef = ref(storage, storagePath);
+
+  try {
+    await deleteObject(imageRef);
+    console.log("이미지를 지웠습니다.");
+  } catch (error) {
+    console.error("이미지를 지우지 못했습니다 :", error);
+  }
+}
+
+export async function addUserData(
+  userData: Omit<UserData, "id">,
+): Promise<void> {
+  const userDocRef = doc(db, "user", userData.userId);
+
+  try {
+    await setDoc(userDocRef, userData);
+    console.log("유저 데이터를 업로드 했습니다");
+  } catch (error) {
+    console.error("유저 데이터 업로드에 실패했습니다 : ", error);
+    throw error;
+  }
+}
+
+export async function updateTokenInUserCollection(
+  userId: string,
+  newToken: string,
+) {
+  try {
+    const userDocRef = doc(db, "user", userId);
+
+    await updateDoc(userDocRef, {
+      token: newToken,
+    });
+
+    console.log(`토큰이 성공적으로 업데이트되었습니다.`);
+  } catch (error) {
+    console.error("토큰 업데이트 중 오류 발생 :", error);
+  }
+}
+
+//리코일 상태관리 아이디로 사용
+export async function getUserData(userId: string) {
+  const docRef = doc(db, "user", userId);
+  const docSnap = await getDoc(docRef);
+  return docSnap.data();
+}
+
+export async function signOut(userId: string) {
+  try {
+    const userDocRef = doc(db, "user", userId);
+    await updateDoc(userDocRef, {
+      status: "D",
+    });
+    console.log(`성공적으로 탈퇴되었습니다.`);
+  } catch (error) {
+    console.error("탈퇴 중 오류 발생 :", error);
   }
 }
 
@@ -100,14 +162,14 @@ export const getSingleData = async (collectionName: string, docId: string) => {
 };
 
 //유저 데이터 추가
-export const setUserData = async (
-  userId: string,
-  props: UserData,
-): Promise<void> => {
-  const docRef = doc(db, "user", userId);
+// export const setUserData = async (
+//   userId: string,
+//   props: UserData,
+// ): Promise<void> => {
+//   const docRef = doc(db, "user", userId);
 
-  await setDoc(docRef, props);
-};
+//   await setDoc(docRef, props);
+// };
 
 //커뮤니티 데이터 추가
 export const setCommunityData = async (props: CommunityData): Promise<void> => {
