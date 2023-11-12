@@ -1,8 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import CommunityItemButtons, {
-  ButtonType,
-} from "../Community-item-buttons/CommunityItemButtons";
+import CommunityItemButtons, { ButtonType } from "./CommunityItemButtons";
 import Close from "../../../assets/close.png";
 import Chat from "../../../assets/comments-solid.svg";
 

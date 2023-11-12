@@ -13,6 +13,8 @@ import { ReactComponent as ActivedCommunityIcon } from "../assets/activedCommuni
 import { ReactComponent as ActivedChatIcon } from "../assets/activedChattingIcon.svg";
 import { ReactComponent as ActivedMyPageIcon } from "../assets/activedMypageIcon.svg";
 import { ReactComponent as ActivedSettingIcon } from "../assets/activedSettingIcon.svg";
+import { useSetRecoilState } from "recoil";
+import { loginState } from "../recoil/atoms";
 
 const categories = [
   {
@@ -50,6 +52,13 @@ export default function NavigationBar() {
   const location = useLocation();
   const [activeCategory, setActiveCategory] = useState("");
   const [isSettingClicked, setIsSettingClicked] = useState(false);
+  const setLogin = useSetRecoilState(loginState);
+
+  const logOut = () => {
+    setLogin(false);
+    sessionStorage.removeItem("accessToken");
+    navigate("/");
+  };
 
   const handleCategoryClick = (categoryId: string) => {
     setActiveCategory(categoryId);
@@ -61,12 +70,12 @@ export default function NavigationBar() {
   };
 
   useEffect(() => {
-    setActiveCategory('home');
-  }, [])
+    setActiveCategory("home");
+  }, []);
 
   // 새로고침 시 저장되도록
   useEffect(() => {
-    const savedCategory = location.pathname.replace('/', '');
+    const savedCategory = location.pathname.replace("/", "");
     console.log(savedCategory);
 
     if (savedCategory) {
@@ -103,8 +112,8 @@ export default function NavigationBar() {
       </TopDiv>
       <BottomDiv>
         <SettingBox $isClicked={isSettingClicked}>
-          <SettingMenu>로그아웃</SettingMenu>
-          <Divider />
+          <SettingMenu onClick={logOut}>로그아웃</SettingMenu>
+          <Divider></Divider>
           <SettingMenu>다른 설정...</SettingMenu>
         </SettingBox>
         <ClickedBox $isClicked={isSettingClicked}>

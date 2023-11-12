@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
-import CommunityItem from "../components/community/community-item/CommunityItem";
-import { Button } from "../components/community/Community-item-buttons/CommunityItemButtons";
+import CommunityItem from "../components/community/CommunityItem";
+import { Button } from "../components/community/CommunityItemButtons";
 
 const CommunityList = () => {
   return (
