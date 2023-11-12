@@ -54,9 +54,10 @@ export default function NavigationBar() {
   const [isSettingClicked, setIsSettingClicked] = useState(false);
   const setLogin = useSetRecoilState(loginState);
 
-  const logOut = () => {
+  const logOut = async () => {
     setLogin(false);
     sessionStorage.removeItem("accessToken");
+    sessionStorage.removeItem("isLogin");
     navigate("/");
   };
 

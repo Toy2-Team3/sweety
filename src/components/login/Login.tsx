@@ -5,7 +5,7 @@ import { ShowPasswordButton, WarnText } from "./SignUpIDPW";
 import { idState, loginState, pwState } from "../../recoil/atoms";
 import { useNavigate } from "react-router-dom";
 import { Container } from "./StartPage";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useSetRecoilState } from "recoil";
 import styled from "styled-components";
 import { useState } from "react";
 import axios from "axios";
@@ -15,8 +15,8 @@ function Login() {
   const [showPw, setShowPw] = useState(false);
   const [id, setId] = useRecoilState(idState);
   const [pw, setPw] = useRecoilState(pwState);
-  const [login, setLogin] = useRecoilState(loginState);
   const [noneUser, setNoneUser] = useState(false);
+  const setLogin = useSetRecoilState(loginState);
 
   const navigate = useNavigate();
 
@@ -52,9 +52,9 @@ function Login() {
           setWrong(true);
           const data = response.data.accessToken;
           sessionStorage.setItem("accessToken", data);
-          updateTokenInUserCollection(id, data);
+          sessionStorage.setItem("isLogin", "true");
           setLogin(true);
-          console.log(login);
+          updateTokenInUserCollection(id, data);
           navigate("/");
         } else {
           setNoneUser(true);
