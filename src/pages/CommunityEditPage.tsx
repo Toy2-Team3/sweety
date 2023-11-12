@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import CommunityEdit from "../components/community/community-edit/CommunityEdit";
+import CommunityEdit from "../components/community/CommunityEdit";
 
 const CommunityEditPage = () => {
   return (

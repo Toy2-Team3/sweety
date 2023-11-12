@@ -1,41 +1,46 @@
-import { ReactComponent as ProfileCamera } from "../../assets/profileCamera.svg";
-import { regions, genderOptions, ButtonProps } from "../../constants/constant";
-import { calculateMaxDate, isNameValid } from "../../utils/registerFunction";
-import { ReactComponent as SweetLogo } from "../../assets/sweetyLogo.svg";
-import { CorrectText, GreetingText, WarnText } from "./SignUpIDPW";
 import styled, { DefaultTheme } from "styled-components";
-import { useNavigate } from "react-router-dom";
-import SignUpStepper from "./SignUpStepper";
-import { Container } from "./StartPage";
+import { regions, genderOptions } from "../../constants/constant";
+import { calculateMaxDate, isNameValid } from "../../utils/registerFunction";
+import { CorrectText, WarnText } from "../login/SignUpIDPW";
+import { isTallValid } from "../../utils/registerFunction";
 import { useRecoilState } from "recoil";
 import { useEffect, useState } from "react";
 import {
-  activeStepState,
+  jobState,
+  tallState,
+  mbtiState,
+  alcoholState,
+  smokingState,
+  userNameState,
   birthdayState,
-  idState,
   profileImageState,
-  pwState,
   selectedGenderState,
   selectedRegionState,
-  userNameState,
 } from "../../recoil/atoms";
+import {
+  alcoholOptions,
+  compatibilityMessages,
+  jobOptions,
+  mbtiTypes,
+  smokingOptions,
+} from "../../constants/constant";
 
 interface SignUpSpecificProps {
   theme: DefaultTheme;
 }
 
-function SignUpSpecific({ theme }: SignUpSpecificProps) {
+export default function RequiredInformation({ theme }: SignUpSpecificProps) {
   const [prevProfileImageUrl, setPrevProfileImageUrl] = useState("");
   const [profileImage, setProfileImage] = useRecoilState(profileImageState);
-  const [activeStep, setActiveStep] = useRecoilState(activeStepState);
   const [userName, setUserName] = useRecoilState(userNameState);
-  const [birthday, setBirthday] = useRecoilState(birthdayState);
-  const [selectedGender, setSelectedGender] =
-    useRecoilState(selectedGenderState);
-  const [selectedRegion, setSelectedRegion] =
-    useRecoilState(selectedRegionState);
-  const [id] = useRecoilState(idState);
-  const [pw] = useRecoilState(pwState);
+  const [birthday] = useRecoilState(birthdayState);
+  const [selectedGender] = useRecoilState(selectedGenderState);
+  const [selectedRegion, setSelectedRegion] = useRecoilState(selectedRegionState);
+  const [job, setJob] = useRecoilState(jobState);
+  const [tall, setTall] = useRecoilState(tallState);
+  const [mbti, setMbti] = useRecoilState(mbtiState);
+  const [alcohol, setAlcohol] = useRecoilState(alcoholState);
+  const [smoking, setSmoking] = useRecoilState(smokingState);
 
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
@@ -45,47 +50,19 @@ function SignUpSpecific({ theme }: SignUpSpecificProps) {
     }
   };
 
-  const navigate = useNavigate();
-  const navigateToSignUpSpecific = () => {
-    if (
-      profileImage &&
-      isNameValid(userName) &&
-      birthday &&
-      selectedGender &&
-      selectedRegion
-    ) {
-      navigate("/signup3");
-    }
-  };
-
-  useEffect(() => {
-    setActiveStep(1);
-    console.log(activeStep);
-  });
-
   useEffect(() => {
     if (profileImage) {
       setPrevProfileImageUrl(URL.createObjectURL(profileImage));
     }
   }, [profileImage]);
 
-  return id && pw ? (
-    <Container style={{ gap: "18px" }}>
-      <SignUpStepper />
-      <GreetingText>환영합니다🎉</GreetingText>
+  return (
+    <RequiredInformationWrap>
       <ProfileWrapper>
         <ProfileUploadLabel
           backgroundImage={prevProfileImageUrl || ""}
           htmlFor="profile"
         >
-          {profileImage ? null : (
-            <ProfileCamera
-              style={{
-                width: "50px",
-                height: "50px",
-              }}
-            />
-          )}
         </ProfileUploadLabel>
         <ProfileInput
           type="file"
@@ -112,24 +89,18 @@ function SignUpSpecific({ theme }: SignUpSpecificProps) {
       <TwoColumnWrapper>
         <div>
           <p>생년월일</p>
-          <Birthday
-            value={birthday ? birthday : ""}
-            type="date"
-            onChange={(e) => setBirthday(e.target.value)}
-            max={calculateMaxDate()}
-          />
+          <Birthday>YYYY-MM-DD</Birthday>
         </div>
         <div>
           <p>성별</p>
           {genderOptions.map((option) => (
             <GenderButton
               key={option.value}
-              onClick={() => setSelectedGender(option.value)}
               style={{
                 background:
                   selectedGender === option.value
                     ? theme.color.primary
-                    : theme.color.darkGray,
+                    : theme.color.lightGray,
                 marginRight: "9px",
               }}
             >
@@ -137,11 +108,9 @@ function SignUpSpecific({ theme }: SignUpSpecificProps) {
             </GenderButton>
           ))}
         </div>
-        {selectedGender && birthday ? (
-          <WarnText>
-            생년월일과 성별은 회원가입 후 변경하실 수 없습니다
-          </WarnText>
-        ) : null}
+        <WarnText>
+          생년월일과 성별은 변경하실 수 없습니다.
+        </WarnText>
       </TwoColumnWrapper>
       <div>
         <p>지역</p>
@@ -165,30 +134,122 @@ function SignUpSpecific({ theme }: SignUpSpecificProps) {
           ))}
         </SelectBox>
       </div>
-      <SignUpButton
-        profileImage={profileImage}
-        userName={userName}
-        isNameValid={isNameValid(userName)}
-        birthday={birthday}
-        selectedGender={selectedGender}
-        selectedRegion={selectedRegion}
-        onClick={navigateToSignUpSpecific}
-      >
-        이제 거의 다 되었어요!
-      </SignUpButton>
-    </Container>
-  ) : (
-    <RootErrorMessageWrapper>
-      <SweetLogo />
-      <RootErrorMessage>
-        올바른 경로로 회원가입을 진행해주세요🥲
-      </RootErrorMessage>
-      <GobackLink onClick={() => navigate("/")}>
-        회원가입으로 돌아가기
-      </GobackLink>
-    </RootErrorMessageWrapper>
-  );
+      <div style={{ position: "relative" }}>
+        <p>키</p>
+        <NameInput
+          placeholder="키를 입력해주세요"
+          value={tall}
+          onChange={(e) => setTall(e.target.value)}
+        />
+        {tall ? (
+          isTallValid(String(tall)) ? (
+            <CorrectText>{tall}cm</CorrectText>
+          ) : (
+            <WarnText>100~250사이의 숫자만 입력해 주세요</WarnText>
+          )
+        ) : null}
+      </div>
+      <div style={{ position: "relative" }}>
+        <p>MBTI</p>
+        <SelectBox defaultValue="" onChange={(e) => setMbti(e.target.value)}>
+          <option
+            value=""
+            disabled
+            selected
+            hidden
+            style={{ color: theme.color.darkGray }}
+          >
+            MBTI를 선택해주세요
+          </option>
+          {mbtiTypes.map((mbti) => (
+            <OptionBox key={mbti.value} value={mbti.value}>
+              {mbti.label}
+            </OptionBox>
+          ))}
+        </SelectBox>
+        {mbti ? <CorrectText style={{whiteSpace:'nowrap'}}>{compatibilityMessages[mbti]}</CorrectText> : null}
+      </div>
+      <div>
+        <p>직업</p>
+        <SelectBox defaultValue="" onChange={(e) => setJob(e.target.value)}>
+          <option
+            value=""
+            disabled
+            selected
+            hidden
+            style={{ color: theme.color.darkGray }}
+          >
+            해당하는 직업을 선택해주세요
+          </option>
+          {jobOptions.map((job) => (
+            <OptionBox key={job.value} value={job.value}>
+              {job.label}
+            </OptionBox>
+          ))}
+        </SelectBox>
+      </div>
+      <TwoColumnWrapper>
+        <div>
+          <p>음주</p>
+          <SelectBox
+            style={{ width: "150px" }}
+            defaultValue=""
+            onChange={(e) => setAlcohol(e.target.value)}
+          >
+            <option
+              value=""
+              disabled
+              selected
+              hidden
+              style={{ color: theme.color.darkGray }}
+            >
+              음주는 하시나요?
+            </option>
+            {alcoholOptions.map((alcohol) => (
+              <OptionBox key={alcohol.value} value={alcohol.value}>
+                {alcohol.label}
+              </OptionBox>
+            ))}
+          </SelectBox>
+        </div>
+        <div>
+          <p>흡연</p>
+          <SelectBox
+            style={{ width: "150px" }}
+            defaultValue=""
+            onChange={(e) => setSmoking(e.target.value === "true")}
+          >
+            <option
+              value=""
+              disabled
+              selected
+              hidden
+              style={{ color: theme.color.darkGray }}
+            >
+              흡연은 하시나요?
+            </option>
+            {smokingOptions.map((smoking) => (
+              <OptionBox
+                key={String(smoking.value)}
+                value={String(smoking.value)}
+              >
+                {smoking.label}
+              </OptionBox>
+            ))}
+          </SelectBox>
+        </div>
+      </TwoColumnWrapper>
+    </RequiredInformationWrap>
+  )
 }
+
+const RequiredInformationWrap = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.8rem;
+`;
+
 
 const ProfileWrapper = styled.div`
   display: flex;
@@ -239,17 +300,18 @@ export const TwoColumnWrapper = styled.div`
   width: 340px;
 `;
 
-const Birthday = styled.input`
+const Birthday = styled.button`
   width: 170px;
   height: 50px;
   padding: 0 23px;
-  border: 1px solid ${(props) => props.theme.color.borderGray};
+  border: none;
   border-radius: 12px;
-  background: #fff;
-  &:focus {
-    border: ${(props) => props.theme.color.primary} 1px solid;
-    outline: none;
-  }
+  background: ${(props) => props.theme.color.lightGray};
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: ${(props) => props.theme.color.black};
+  font-size: ${(props) => props.theme.font.smallSize};
 `;
 
 const GenderButton = styled.button`
@@ -257,7 +319,6 @@ const GenderButton = styled.button`
   height: 50px;
   border-radius: 12px;
   border: none;
-  cursor: pointer;
   background: ${(props) => props.theme.color.darkGray};
 `;
 
@@ -280,35 +341,6 @@ export const OptionBox = styled.option`
   border-radius: 12px;
   border: 1px solid ${(props) => props.theme.color.borderGray};
   background: #fff;
-`;
-
-const SignUpButton = styled.button<ButtonProps>`
-  font-size: 20px;
-  width: 340px;
-  height: 50px;
-  color: white;
-  border: none;
-  border-radius: 12px;
-  background: ${({
-    profileImage,
-    isNameValid,
-    birthday,
-    selectedGender,
-    selectedRegion,
-  }) =>
-    profileImage && isNameValid && birthday && selectedGender && selectedRegion
-      ? (props) => props.theme.color.primary
-      : (props) => props.theme.color.darkGray};
-  cursor: ${({
-    profileImage,
-    isNameValid,
-    birthday,
-    selectedGender,
-    selectedRegion,
-  }) =>
-    profileImage && isNameValid && birthday && selectedGender && selectedRegion
-      ? "pointer"
-      : "default"};
 `;
 
 export const RootErrorMessageWrapper = styled.div`
@@ -335,5 +367,3 @@ export const GobackLink = styled.button`
   border: none;
   cursor: pointer;
 `;
-
-export default SignUpSpecific;
