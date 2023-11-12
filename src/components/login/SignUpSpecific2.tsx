@@ -12,7 +12,7 @@ import { useNavigate } from "react-router-dom";
 import SignUpStepper from "./SignUpStepper";
 import { useRecoilState } from "recoil";
 import { Container } from "./StartPage";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import {
   idState,
   pwState,
@@ -65,6 +65,7 @@ function SignUpSpecific({ theme }: SignUpSpecificProps) {
   const [alcohol, setAlcohol] = useRecoilState(alcoholState);
   const [smoking, setSmoking] = useRecoilState(smokingState);
   const [activeStep, setActiveStep] = useRecoilState(activeStepState);
+  const [isSignUp, setIsSignUp] = useState(false);
 
   const navigate = useNavigate();
 
@@ -92,6 +93,7 @@ function SignUpSpecific({ theme }: SignUpSpecificProps) {
       );
       if (response.status === 200 && response.data.message === "User created") {
         try {
+          setIsSignUp(true);
           const imageUrl = await getImageDownloadURL(id);
           await UploadImage({ imageName: id, file: profileImage as File });
           const userData = {
@@ -151,79 +153,36 @@ function SignUpSpecific({ theme }: SignUpSpecificProps) {
     console.log(activeStep);
   });
 
-  return id &&
+  return !isSignUp ? (
+    id &&
     pw &&
     userName &&
     birthday &&
     profileImage &&
     selectedGender &&
     selectedRegion ? (
-    <Container style={{ gap: "18px" }}>
-      <SignUpStepper />
-      <GreetingText>환영합니다🎉</GreetingText>
+      <Container style={{ gap: "26px", marginTop: "20px" }}>
+        <SignUpStepper />
+        <GreetingText>회원가입</GreetingText>
 
-      <div style={{ position: "relative" }}>
-        <p>키</p>
-        <NameInput
-          placeholder="키를 입력해주세요"
-          value={tall}
-          onChange={(e) => setTall(e.target.value)}
-        />
-        {tall ? (
-          isTallValid(String(tall)) ? (
-            <CorrectText>{tall}cm</CorrectText>
-          ) : (
-            <WarnText>100~250사이의 숫자만 입력해 주세요</WarnText>
-          )
-        ) : null}
-      </div>
-      <div style={{ position: "relative" }}>
-        <p>MBTI</p>
-        <SelectBox defaultValue="" onChange={(e) => setMbti(e.target.value)}>
-          <option
-            value=""
-            disabled
-            selected
-            hidden
-            style={{ color: theme.color.darkGray }}
-          >
-            MBTI를 선택해주세요
-          </option>
-          {mbtiTypes.map((mbti) => (
-            <OptionBox key={mbti.value} value={mbti.value}>
-              {mbti.label}
-            </OptionBox>
-          ))}
-        </SelectBox>
-        {mbti ? <CorrectText>{compatibilityMessages[mbti]}</CorrectText> : null}
-      </div>
-      <div>
-        <p>직업</p>
-        <SelectBox defaultValue="" onChange={(e) => setJob(e.target.value)}>
-          <option
-            value=""
-            disabled
-            selected
-            hidden
-            style={{ color: theme.color.darkGray }}
-          >
-            해당하는 직업을 선택해주세요
-          </option>
-          {jobOptions.map((job) => (
-            <OptionBox key={job.value} value={job.value}>
-              {job.label}
-            </OptionBox>
-          ))}
-        </SelectBox>
-      </div>
-      <TwoColumnWrapper>
-        <div>
-          <p>음주</p>
-          <SelectBox
-            style={{ width: "150px" }}
-            defaultValue=""
-            onChange={(e) => setAlcohol(e.target.value)}
-          >
+        <div style={{ position: "relative" }}>
+          <p>키</p>
+          <NameInput
+            placeholder="키를 입력해주세요"
+            value={tall}
+            onChange={(e) => setTall(e.target.value)}
+          />
+          {tall ? (
+            isTallValid(String(tall)) ? (
+              <CorrectText>{tall}cm</CorrectText>
+            ) : (
+              <WarnText>100~250사이의 숫자만 입력해 주세요</WarnText>
+            )
+          ) : null}
+        </div>
+        <div style={{ position: "relative" }}>
+          <p>MBTI</p>
+          <SelectBox defaultValue="" onChange={(e) => setMbti(e.target.value)}>
             <option
               value=""
               disabled
@@ -231,63 +190,118 @@ function SignUpSpecific({ theme }: SignUpSpecificProps) {
               hidden
               style={{ color: theme.color.darkGray }}
             >
-              음주는 하시나요?
+              MBTI를 선택해주세요
             </option>
-            {alcoholOptions.map((alcohol) => (
-              <OptionBox key={alcohol.value} value={alcohol.value}>
-                {alcohol.label}
+            {mbtiTypes.map((mbti) => (
+              <OptionBox key={mbti.value} value={mbti.value}>
+                {mbti.label}
+              </OptionBox>
+            ))}
+          </SelectBox>
+          {mbti ? (
+            <CorrectText>{compatibilityMessages[mbti]}</CorrectText>
+          ) : null}
+        </div>
+        <div>
+          <p>직업</p>
+          <SelectBox defaultValue="" onChange={(e) => setJob(e.target.value)}>
+            <option
+              value=""
+              disabled
+              selected
+              hidden
+              style={{ color: theme.color.darkGray }}
+            >
+              해당하는 직업을 선택해주세요
+            </option>
+            {jobOptions.map((job) => (
+              <OptionBox key={job.value} value={job.value}>
+                {job.label}
               </OptionBox>
             ))}
           </SelectBox>
         </div>
-        <div>
-          <p>흡연</p>
-          <SelectBox
-            style={{ width: "150px" }}
-            defaultValue=""
-            onChange={(e) => setSmoking(e.target.value === "true")}
-          >
-            <option
-              value=""
-              disabled
-              selected
-              hidden
-              style={{ color: theme.color.darkGray }}
+        <TwoColumnWrapper>
+          <div>
+            <p>음주</p>
+            <SelectBox
+              style={{ width: "150px" }}
+              defaultValue=""
+              onChange={(e) => setAlcohol(e.target.value)}
             >
-              흡연은 하시나요?
-            </option>
-            {smokingOptions.map((smoking) => (
-              <OptionBox
-                key={String(smoking.value)}
-                value={String(smoking.value)}
+              <option
+                value=""
+                disabled
+                selected
+                hidden
+                style={{ color: theme.color.darkGray }}
               >
-                {smoking.label}
-              </OptionBox>
-            ))}
-          </SelectBox>
-        </div>
-      </TwoColumnWrapper>
-      <SignUpButton
-        job={job}
-        isTallValid={isTallValid(tall)}
-        mbti={mbti}
-        alcohol={alcohol}
-        smoking={smoking}
-        onClick={handleSignUpClickWrapper}
-      >
-        달콤한 만남 시작하기!
-      </SignUpButton>
-    </Container>
+                음주는 하시나요?
+              </option>
+              {alcoholOptions.map((alcohol) => (
+                <OptionBox key={alcohol.value} value={alcohol.value}>
+                  {alcohol.label}
+                </OptionBox>
+              ))}
+            </SelectBox>
+          </div>
+          <div>
+            <p>흡연</p>
+            <SelectBox
+              style={{ width: "150px" }}
+              defaultValue=""
+              onChange={(e) => setSmoking(e.target.value === "true")}
+            >
+              <option
+                value=""
+                disabled
+                selected
+                hidden
+                style={{ color: theme.color.darkGray }}
+              >
+                흡연은 하시나요?
+              </option>
+              {smokingOptions.map((smoking) => (
+                <OptionBox
+                  key={String(smoking.value)}
+                  value={String(smoking.value)}
+                >
+                  {smoking.label}
+                </OptionBox>
+              ))}
+            </SelectBox>
+          </div>
+        </TwoColumnWrapper>
+        <SignUpButton
+          job={job}
+          isTallValid={isTallValid(tall)}
+          mbti={mbti}
+          alcohol={alcohol}
+          smoking={smoking}
+          onClick={handleSignUpClickWrapper}
+        >
+          달콤한 만남 시작하기!
+        </SignUpButton>
+      </Container>
+    ) : (
+      <RootErrorMessageWrapper>
+        <SweetLogo />
+        <RootErrorMessage>
+          올바른 경로로 회원가입을 진행해주세요🥲
+        </RootErrorMessage>
+        <GobackLink onClick={() => navigate("/")}>
+          회원가입으로 돌아가기
+        </GobackLink>
+      </RootErrorMessageWrapper>
+    )
   ) : (
-    <RootErrorMessageWrapper>
+    <Container style={{ gap: "30px" }}>
       <SweetLogo />
-      <RootErrorMessage>
-        올바른 경로로 회원가입을 진행해주세요🥲
-      </RootErrorMessage>
-      <GobackLink onClick={() => navigate("/")}>
-        회원가입으로 돌아가기
-      </GobackLink>
-    </RootErrorMessageWrapper>
+      <div style={{ fontSize: "64px" }}>환영합니다🎉</div>
+      <div style={{ fontSize: "20px" }}>
+        회원가입이 완료되어 로그인 페이지로 이동중...
+      </div>
+    </Container>
   );
 }
 
