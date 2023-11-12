@@ -109,7 +109,7 @@ export default function RequiredInformation({ theme }: SignUpSpecificProps) {
           ))}
         </div>
         <WarnText>
-          생년월일과 성별은 회원가입 후 변경하실 수 없습니다
+          생년월일과 성별은 변경하실 수 없습니다.
         </WarnText>
       </TwoColumnWrapper>
       <div>
@@ -167,7 +167,7 @@ export default function RequiredInformation({ theme }: SignUpSpecificProps) {
             </OptionBox>
           ))}
         </SelectBox>
-        {mbti ? <CorrectText>{compatibilityMessages[mbti]}</CorrectText> : null}
+        {mbti ? <CorrectText style={{whiteSpace:'nowrap'}}>{compatibilityMessages[mbti]}</CorrectText> : null}
       </div>
       <div>
         <p>직업</p>

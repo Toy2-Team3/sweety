@@ -100,7 +100,6 @@ const InformationWrap = styled.div`
   display: flex;
   flex-direction: column;
   gap: 1.8rem;
-  border: 1px solid pink;
 `;
 
 const ByeButtonWrap = styled.div`
