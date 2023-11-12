@@ -6,6 +6,8 @@ import {
   setDoc,
   deleteDoc,
   updateDoc,
+  query,
+  orderBy,
 } from "firebase/firestore";
 import {
   ref,
@@ -44,6 +46,7 @@ export interface CommunityData {
   userId?: string;
   title?: string;
   content?: string;
+  createdAt?: number;
 }
 
 export async function UploadImage({
@@ -139,6 +142,20 @@ export const getAllData = async (
   collectionName: string,
 ): Promise<IUserData[] | CommunityData[]> => {
   const querySnapshot = await getDocs(collection(db, collectionName));
+  const docs = querySnapshot.docs.map((doc) => {
+    return {
+      ...doc.data(),
+      id: doc.id,
+    };
+  });
+  return docs;
+};
+
+//커뮤니티 모든 문서 읽기 (최신순)
+export const getAllDataOrderByDate = async (): Promise<CommunityData[]> => {
+  const ref = collection(db, "community");
+  const q = query(ref, orderBy("createdAt", "desc"));
+  const querySnapshot = await getDocs(q);
   const docs = querySnapshot.docs.map((doc) => {
     return {
       ...doc.data(),

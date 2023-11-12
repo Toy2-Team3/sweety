@@ -1,9 +1,66 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import CommunityItem from "../components/community/CommunityItem";
 import { Button } from "../components/community/CommunityItemButtons";
+import {
+  CommunityData,
+  IUserData,
+  getAllData,
+  getAllDataOrderByDate,
+} from "../utils/firebase";
+
+export interface CommonData {
+  id: string;
+  chatId?: string;
+  userId?: string;
+  title?: string;
+  content?: string;
+  createdAt?: number;
+  nickName?: string;
+  profileUrl?: string;
+  region?: string;
+}
 
 const CommunityList = () => {
+  const [postList, setPostList] = useState<CommunityData[]>([]);
+  const [userList, setUserList] = useState<IUserData[]>([]);
+  const [commonList, setCommonList] = useState<CommonData[]>([]);
+
+  const fetchCommunityData = async () => {
+    const response = await getAllDataOrderByDate();
+    setPostList(response);
+  };
+
+  const fetchUserData = async () => {
+    const response = await getAllData("user");
+    setUserList(response);
+  };
+
+  function findCommonData(userList: IUserData[], postList: CommunityData[]) {
+    return postList.reduce((result: CommonData[], post) => {
+      const matchingUser = userList.find((user) => post.userId === user.userId);
+      if (matchingUser) {
+        result.push({
+          ...post,
+          nickName: matchingUser.nickName,
+          profileUrl: matchingUser.profileUrl,
+          region: matchingUser.region,
+        });
+      }
+      return result;
+    }, []);
+  }
+
+  useEffect(() => {
+    fetchCommunityData();
+    fetchUserData();
+  }, []);
+
+  useEffect(() => {
+    const newList = findCommonData(userList, postList);
+    setCommonList(newList);
+  }, [postList, userList]);
+
   return (
     <Wrapper>
       <Header>
@@ -14,13 +71,9 @@ const CommunityList = () => {
         <AddButton>새 글 등록</AddButton>
       </AddButtonWrapper>
       <ItemWrapper>
-        <CommunityItem />
-        <CommunityItem />
-        <CommunityItem />
-        <CommunityItem />
-        <CommunityItem />
-        <CommunityItem />
-        <CommunityItem />
+        {commonList.map((item) => {
+          return <CommunityItem key={item.id} item={item} />;
+        })}
       </ItemWrapper>
     </Wrapper>
   );

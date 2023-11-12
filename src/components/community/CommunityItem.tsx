@@ -1,28 +1,34 @@
-import React from "react";
+import React, { FC, useState } from "react";
 import styled from "styled-components";
+import { CommonData } from "../../pages/CommunityListPage";
 
-const CommunityItem = () => {
+interface CommunityItemProps {
+  item: CommonData;
+}
+
+const CommunityItem: FC<CommunityItemProps> = ({ item }) => {
+  const [isPostModalOpen, setIsPostModalOpen] = useState<boolean>(false);
+
+  const handleClickItem = () => {
+    setIsPostModalOpen(true);
+  };
+
   return (
     <Container>
       <ItemTop>
         <ItemLeft>
           <ImageWrapper>
-            <img
-              src="https://www.handmk.com/news/photo/202306/16714_40371_5250.jpg"
-              alt="user profile"
-            />
+            <img src={item.profileUrl} alt="user image" />
           </ImageWrapper>
           <div>
-            <h3>이상한 고양이</h3>
-            <span>서울</span>
+            <h3>{item.nickName}</h3>
+            <span>{item.region}</span>
+            <span>{item.createdAt}</span>
           </div>
         </ItemLeft>
       </ItemTop>
-      <h1>매주 월요일 바이크 타실 분 🚴</h1>
-      <p>
-        안녕하세요, 바이크 소모임 000입니다! 저희 소모임은 매주 월요일 저녁
-        8시에 진행됩니다. 많관부~ 어째저째 길다~~~ 내용이 길게 보입니다.
-      </p>
+      <h1>{item.title}</h1>
+      <p>{item.content}</p>
     </Container>
   );
 };

@@ -20,7 +20,7 @@ import "./App.css";
 function App() {
   const [login] = useRecoilState(loginState);
 
-  return login ? (
+  return (
     <ThemeProvider theme={theme}>
       <BrowserRouter>
         <div className="App" style={{ display: "flex" }}>
@@ -37,19 +37,38 @@ function App() {
         </div>
       </BrowserRouter>
     </ThemeProvider>
-  ) : (
-    <ThemeProvider theme={theme}>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<StartPage />} />
-          <Route path="/signup1" element={<SignUpIDPW />} />
-          <Route path="/signup2" element={<SignUpSpecific theme={theme} />} />
-          <Route path="/signup3" element={<SignUpSpecific2 theme={theme} />} />
-          <Route path="/login" element={<Login />} />
-        </Routes>
-      </BrowserRouter>
-    </ThemeProvider>
   );
+
+  // return login ? (
+  //   <ThemeProvider theme={theme}>
+  //     <BrowserRouter>
+  //       <div className="App" style={{ display: "flex" }}>
+  //         <NavigationBar></NavigationBar>
+  //         <PageWrap>
+  //           <Routes>
+  //             <Route path="/" element={<HomePage />} />
+  //             <Route path="/community" element={<CommunityListPage />} />
+  //             <Route path="/community/edit" element={<CommunityEditPage />} />
+  //             <Route path="/chat" element={<ChatPage />} />
+  //             <Route path="/mypage" element={<MyPage />} />
+  //           </Routes>
+  //         </PageWrap>
+  //       </div>
+  //     </BrowserRouter>
+  //   </ThemeProvider>
+  // ) : (
+  //   <ThemeProvider theme={theme}>
+  //     <BrowserRouter>
+  //       <Routes>
+  //         <Route path="/" element={<StartPage />} />
+  //         <Route path="/signup1" element={<SignUpIDPW />} />
+  //         <Route path="/signup2" element={<SignUpSpecific theme={theme} />} />
+  //         <Route path="/signup3" element={<SignUpSpecific2 theme={theme} />} />
+  //         <Route path="/login" element={<Login />} />
+  //       </Routes>
+  //     </BrowserRouter>
+  //   </ThemeProvider>
+  // );
 }
 
 const PageWrap = styled.div`
