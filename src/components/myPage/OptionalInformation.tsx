@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { useState } from "react";
+import ToastMessage from "../common/ToastMessage";
 
 interface TagProps {
   selected: boolean;
@@ -27,18 +28,30 @@ const interested = [
 export default function OptionalInformation() {
   const [inputCount, setInputCount] = useState(0);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
+  const [showToast, setShowToast] = useState(false);
 
   const handleIntroductionInput = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setInputCount(e.target.value.length);
   }
   
   const handleTagClick = (value: string) => {
-    if (selectedTags.includes(value)) {
-      setSelectedTags(selectedTags.filter((tag) => tag !== value));
+    const tagIndex = selectedTags.indexOf(value);
+
+    if (tagIndex !== -1) {
+      const newTags = [...selectedTags];
+      newTags.splice(tagIndex, 1);
+      setSelectedTags(newTags);
     } else {
-      setSelectedTags([...selectedTags, value]);
+      if (selectedTags.length < 5) {
+        setSelectedTags([...selectedTags, value]);
+      } else {
+        setShowToast(true); 
+
+        setTimeout(() => {
+          setShowToast(false);
+      }, 2000);
+      }
     }
-    console.log(selectedTags);
   };
 
   return (
@@ -57,6 +70,7 @@ export default function OptionalInformation() {
       </div>
         <div>
         <p>관심사</p>
+        <Condition>(최대 5개 선택)</Condition>
         <TagWrap>
           {interested.map((inter) => (
             <Tag
@@ -69,6 +83,12 @@ export default function OptionalInformation() {
           ))}
         </TagWrap>
       </div>
+      {
+        showToast &&
+          <ToastMessage 
+            content="관심사는 최대 5개 선택 가능합니다."
+          />
+      }
     </OptionalInformationWrap>
   )
 }
@@ -102,6 +122,13 @@ const Length = styled.p`
 
 const TagWrap = styled.div`
   padding: 0.5rem;
+`;
+
+const Condition = styled.span`
+  display: inline-block;
+  margin-top: 0.3rem;
+  font-size: ${(props) => props.theme.font.smallSize};
+  color: ${(props) => props.theme.color.borderGray};
 `;
 
 const Tag = styled.span<TagProps>`
