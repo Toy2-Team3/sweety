@@ -19,7 +19,7 @@ import {
   jobState,
   tallState,
   mbtiState,
-  alcholState,
+  alcoholState,
   smokingState,
   userNameState,
   birthdayState,
@@ -39,7 +39,7 @@ import {
 } from "./SignUpSpecific";
 import {
   SignUpButtonProps,
-  alcholOptions,
+  alcoholOptions,
   compatibilityMessages,
   jobOptions,
   mbtiTypes,
@@ -62,7 +62,7 @@ function SignUpSpecific({ theme }: SignUpSpecificProps) {
   const [job, setJob] = useRecoilState(jobState);
   const [tall, setTall] = useRecoilState(tallState);
   const [mbti, setMbti] = useRecoilState(mbtiState);
-  const [alchol, setAlchol] = useRecoilState(alcholState);
+  const [alcohol, setAlcohol] = useRecoilState(alcoholState);
   const [smoking, setSmoking] = useRecoilState(smokingState);
   const [activeStep, setActiveStep] = useRecoilState(activeStepState);
 
@@ -107,7 +107,7 @@ function SignUpSpecific({ theme }: SignUpSpecificProps) {
             introduction: "",
             interested: [],
             status: "A",
-            alchol: alchol,
+            alcohol: alcohol,
             smoking: smoking,
             mbti: mbti,
             job: job,
@@ -222,7 +222,7 @@ function SignUpSpecific({ theme }: SignUpSpecificProps) {
           <SelectBox
             style={{ width: "150px" }}
             defaultValue=""
-            onChange={(e) => setAlchol(e.target.value)}
+            onChange={(e) => setAlcohol(e.target.value)}
           >
             <option
               value=""
@@ -233,9 +233,9 @@ function SignUpSpecific({ theme }: SignUpSpecificProps) {
             >
               음주는 하시나요?
             </option>
-            {alcholOptions.map((alchol) => (
-              <OptionBox key={alchol.value} value={alchol.value}>
-                {alchol.label}
+            {alcoholOptions.map((alcohol) => (
+              <OptionBox key={alcohol.value} value={alcohol.value}>
+                {alcohol.label}
               </OptionBox>
             ))}
           </SelectBox>
@@ -271,7 +271,7 @@ function SignUpSpecific({ theme }: SignUpSpecificProps) {
         job={job}
         isTallValid={isTallValid(tall)}
         mbti={mbti}
-        alchol={alchol}
+        alcohol={alcohol}
         smoking={smoking}
         onClick={handleSignUpClickWrapper}
       >
@@ -298,12 +298,12 @@ const SignUpButton = styled.button<SignUpButtonProps>`
   color: white;
   border: none;
   border-radius: 12px;
-  background: ${({ job, isTallValid, mbti, alchol, smoking }) =>
-    job && isTallValid && mbti && alchol && smoking != undefined
+  background: ${({ job, isTallValid, mbti, alcohol, smoking }) =>
+    job && isTallValid && mbti && alcohol && smoking != undefined
       ? (props) => props.theme.color.primary
       : (props) => props.theme.color.darkGray};
-  cursor: ${({ job, isTallValid, mbti, alchol, smoking }) =>
-    job && isTallValid && mbti && alchol && smoking != undefined
+  cursor: ${({ job, isTallValid, mbti, alcohol, smoking }) =>
+    job && isTallValid && mbti && alcohol && smoking != undefined
       ? "pointer"
       : "default"};
 `;

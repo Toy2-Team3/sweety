@@ -1,34 +1,50 @@
-import { UserData } from "../constants/constant";
-import { initializeApp } from "firebase/app";
 import {
-  getFirestore,
-  setDoc,
   doc,
-  updateDoc,
+  collection,
+  getDocs,
   getDoc,
+  setDoc,
+  deleteDoc,
+  updateDoc,
 } from "firebase/firestore";
 import {
-  getStorage,
   ref,
   uploadBytes,
+  uploadBytesResumable,
   getDownloadURL,
   deleteObject,
 } from "firebase/storage";
+import { db, storage } from "./firebase.config";
+import { UserData } from "../constants/constant";
 
-const firebaseConfig = {
-  apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
-  authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
-  projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID,
-  storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
-  appId: process.env.REACT_APP_FIREBASE_APP_ID,
-  measurementId: process.env.REACT_APP_FIREBASE_MEASUREMENT_ID,
-};
+export interface IUserData {
+  id: string;
+  userId?: string;
+  password?: string;
+  token?: string;
+  nickName?: string;
+  birth?: string;
+  gender?: string;
+  region?: string;
+  profileUrl?: string;
+  myChats?: string[];
+  introduction?: string;
+  interested?: string[];
+  status?: string;
+  alcohol?: string;
+  smoking?: boolean;
+  mbti?: string;
+  job?: string;
+  tall?: number;
+}
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const storage = getStorage(app);
-const db = getFirestore(app);
+export interface CommunityData {
+  id: string;
+  chatId?: string;
+  userId?: string;
+  title?: string;
+  content?: string;
+}
 
 export async function UploadImage({
   imageName,
@@ -117,3 +133,87 @@ export async function signOut(userId: string) {
     console.error("탈퇴 중 오류 발생 :", error);
   }
 }
+
+//모든 문서 읽기
+export const getAllData = async (
+  collectionName: string,
+): Promise<IUserData[] | CommunityData[]> => {
+  const querySnapshot = await getDocs(collection(db, collectionName));
+  const docs = querySnapshot.docs.map((doc) => {
+    return {
+      ...doc.data(),
+      id: doc.id,
+    };
+  });
+  return docs;
+};
+
+//단일 문서 읽기
+export const getSingleData = async (collectionName: string, docId: string) => {
+  const docRef = doc(db, collectionName, docId);
+  const docSnap = await getDoc(docRef);
+  if (docSnap.exists()) {
+    return {
+      ...docSnap.data(),
+      id: docSnap.data().id as string,
+    };
+  }
+};
+
+//유저 데이터 추가
+export const setUserData = async (
+  userId: string,
+  props: IUserData,
+): Promise<void> => {
+  const docRef = doc(db, "user", userId);
+
+  await setDoc(docRef, props);
+};
+
+//커뮤니티 데이터 추가
+export const setCommunityData = async (props: CommunityData): Promise<void> => {
+  const newRef = doc(collection(db, "community")); //자동 랜덤 id
+
+  await setDoc(newRef, props);
+};
+
+//업데이트
+export const updateData = async (
+  collectionName: string,
+  docId: string,
+  props: Omit<IUserData | CommunityData, "id">,
+): Promise<void> => {
+  const docRef = doc(db, collectionName, docId);
+
+  await updateDoc(docRef, props);
+};
+
+//삭제
+export const deleteData = async (
+  collectionName: string,
+  docId: string,
+): Promise<void> => {
+  await deleteDoc(doc(db, collectionName, docId));
+};
+
+//이미지 추가
+export const addImage = (imageName: string, image: File) => {
+  return new Promise<string | undefined>((resolve, reject) => {
+    const imageRef = ref(storage, `userProfile/${imageName}`);
+    const uploadTask = uploadBytesResumable(imageRef, image);
+
+    uploadTask.on(
+      "state_changed",
+      null,
+      (error) => reject(error),
+      async () => {
+        try {
+          const imageURL = await getDownloadURL(uploadTask.snapshot.ref);
+          resolve(imageURL);
+        } catch (error) {
+          reject(error);
+        }
+      },
+    );
+  });
+};
