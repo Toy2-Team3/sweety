@@ -52,7 +52,7 @@ export const jobOptions = [
   { value: "기타", label: "기타" },
 ];
 
-export const alcoholOptions = [
+export const alcholOptions = [
   { value: "N", label: "안 마셔요" },
   { value: "S", label: "가끔 마셔요" },
   { value: "O", label: "자주 마셔요" },
@@ -103,7 +103,7 @@ export interface SignUpButtonProps {
   job: string;
   isTallValid: boolean;
   mbti: string;
-  alcohol: string;
+  alchol: string;
   smoking: boolean;
 }
 
@@ -125,7 +125,7 @@ export interface UserData {
   introduction: string;
   interested: string[];
   status: string;
-  alcohol: string;
+  alchol: string;
   smoking: boolean;
   mbti: string;
   job: string;

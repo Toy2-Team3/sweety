@@ -15,9 +15,10 @@ import {
   deleteObject,
 } from "firebase/storage";
 import { db, storage } from "./firebase.config";
+import { UserData } from "../constants/constant";
 
-export interface UserData {
-  id: string; //doc.id
+export interface IUserData {
+  id: string;
   userId?: string;
   password?: string;
   token?: string;
@@ -38,7 +39,7 @@ export interface UserData {
 }
 
 export interface CommunityData {
-  id: string; //doc.id
+  id: string;
   chatId?: string;
   userId?: string;
   title?: string;
@@ -85,9 +86,7 @@ export async function deleteImage(imageName: string): Promise<void> {
   }
 }
 
-export async function addUserData(
-  userData: Omit<UserData, "id">,
-): Promise<void> {
+export async function addUserData(userData: UserData): Promise<void> {
   const userDocRef = doc(db, "user", userData.userId);
 
   try {
@@ -138,7 +137,7 @@ export async function signOut(userId: string) {
 //모든 문서 읽기
 export const getAllData = async (
   collectionName: string,
-): Promise<UserData[] | CommunityData[]> => {
+): Promise<IUserData[] | CommunityData[]> => {
   const querySnapshot = await getDocs(collection(db, collectionName));
   const docs = querySnapshot.docs.map((doc) => {
     return {
@@ -162,14 +161,14 @@ export const getSingleData = async (collectionName: string, docId: string) => {
 };
 
 //유저 데이터 추가
-// export const setUserData = async (
-//   userId: string,
-//   props: UserData,
-// ): Promise<void> => {
-//   const docRef = doc(db, "user", userId);
+export const setUserData = async (
+  userId: string,
+  props: IUserData,
+): Promise<void> => {
+  const docRef = doc(db, "user", userId);
 
-//   await setDoc(docRef, props);
-// };
+  await setDoc(docRef, props);
+};
 
 //커뮤니티 데이터 추가
 export const setCommunityData = async (props: CommunityData): Promise<void> => {
@@ -182,7 +181,7 @@ export const setCommunityData = async (props: CommunityData): Promise<void> => {
 export const updateData = async (
   collectionName: string,
   docId: string,
-  props: Omit<UserData | CommunityData, "id">,
+  props: Omit<IUserData | CommunityData, "id">,
 ): Promise<void> => {
   const docRef = doc(db, collectionName, docId);
 
