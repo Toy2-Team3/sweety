@@ -25,7 +25,12 @@ const interested = [
 ];
 
 export default function OptionalInformation() {
+  const [inputCount, setInputCount] = useState(0);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
+
+  const handleIntroductionInput = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setInputCount(e.target.value.length);
+  }
   
   const handleTagClick = (value: string) => {
     if (selectedTags.includes(value)) {
@@ -43,7 +48,12 @@ export default function OptionalInformation() {
         <Introduction
           placeholder="자기소개를 입력해주세요"
           maxLength={60}
+          onChange={handleIntroductionInput}
         />
+        <Length>
+          <span>{inputCount}</span> 
+          <span>/60자</span>
+        </Length>
       </div>
         <div>
         <p>관심사</p>
@@ -67,6 +77,7 @@ const OptionalInformationWrap = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  gap: 1rem;
 `;
 
 const Introduction = styled.textarea`
@@ -80,6 +91,13 @@ const Introduction = styled.textarea`
     border: ${(props) => props.theme.color.primary} 1px solid;
     outline: none;
   }
+`;
+
+const Length = styled.p`
+  display: flex;
+  justify-content: flex-end;
+  font-size: ${(props) => props.theme.font.smallSize};
+  color: ${(props) => props.theme.color.borderGray};
 `;
 
 const TagWrap = styled.div`
