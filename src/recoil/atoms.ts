@@ -9,9 +9,14 @@ export const pwState = atom<string>({
   default: "",
 });
 
-export const profileImageState = atom<File | undefined>({
+export const profileImageState = atom<File | null>({
   key: "profileImageState",
-  default: undefined,
+  default: null,
+});
+
+export const profileImageUrlState = atom<string>({
+  key: "profileImageUrlState",
+  default: "",
 });
 
 export const userNameState = atom<string>({
@@ -49,8 +54,8 @@ export const smokingState = atom<boolean>({
   default: undefined,
 });
 
-export const alcholState = atom<string>({
-  key: "alcholState",
+export const alcoholState = atom<string>({
+  key: "alcoholState",
   default: "",
 });
 
@@ -59,7 +64,12 @@ export const mbtiState = atom<string>({
   default: "",
 });
 
-export const loginState = atom({
+export const loginState = atom<boolean>({
   key: "loginState",
   default: false,
+});
+
+export const activeStepState = atom<number>({
+  key: "activeStepState",
+  default: 0,
 });

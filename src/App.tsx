@@ -1,24 +1,35 @@
-import "./App.css";
-import { ThemeProvider } from "styled-components";
-import theme from "../src/styles/theme";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
-import NavigationBar from "./components/NavigationBar";
-import HomePage from "./pages/HomePage";
-import ChatPage from "./pages/chatting/index";
-import MyPage from "./pages/MyPage";
-import styled from "styled-components";
-import StartPage from "./components/login/StartPage";
-import Login from "./components/login/Login";
-import SignUpIDPW from "./components/login/SignUpIDPW";
-import SignUpSpecific from "./components/login/SignUpSpecific";
 import SignUpSpecific2 from "./components/login/SignUpSpecific2";
-import CommunityListPage from "./pages/CommunityListPage";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import SignUpSpecific from "./components/login/SignUpSpecific";
 import CommunityEditPage from "./pages/CommunityEditPage";
-import { useRecoilState } from "recoil";
+import CommunityListPage from "./pages/CommunityListPage";
+import NavigationBar from "./components/NavigationBar";
+import SignUpIDPW from "./components/login/SignUpIDPW";
+import StartPage from "./components/login/StartPage";
+import { ThemeProvider } from "styled-components";
+import ChatPage from "./pages/chatting/index";
+import Login from "./components/login/Login";
 import { loginState } from "./recoil/atoms";
+import { useRecoilState } from "recoil";
+import HomePage from "./pages/HomePage";
+import theme from "../src/styles/theme";
+import styled from "styled-components";
+import MyPage from "./pages/MyPage";
+import "./App.css";
+import { useEffect } from "react";
 
 function App() {
-  const [login] = useRecoilState(loginState);
+  const [login, setLogin] = useRecoilState(loginState);
+
+  const checkLoginStatus = () => {
+    const isLoginValue = sessionStorage.getItem("isLogin");
+    setLogin(isLoginValue === "true");
+  };
+
+  useEffect(() => {
+    checkLoginStatus();
+  });
+
   return login ? (
     <ThemeProvider theme={theme}>
       <BrowserRouter>

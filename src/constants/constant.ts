@@ -52,14 +52,14 @@ export const jobOptions = [
   { value: "기타", label: "기타" },
 ];
 
-export const alcholOptions = [
-  { value: "N", label: "안마셔요" },
+export const alcoholOptions = [
+  { value: "N", label: "안 마셔요" },
   { value: "S", label: "가끔 마셔요" },
   { value: "O", label: "자주 마셔요" },
 ];
 
 export const smokingOptions = [
-  { value: false, label: "안해요" },
+  { value: false, label: "안 해요" },
   { value: true, label: "해요" },
 ];
 
@@ -83,7 +83,7 @@ export const compatibilityMessages: { [key: string]: string } = {
 };
 
 export interface ButtonProps {
-  profileImage: File | undefined;
+  profileImage: File | null;
   userName: string;
   birthday: string | null;
   selectedGender: string;
@@ -103,6 +103,33 @@ export interface SignUpButtonProps {
   job: string;
   isTallValid: boolean;
   mbti: string;
-  alchol: string;
+  alcohol: string;
   smoking: boolean;
 }
+
+export interface LoginButtonProps {
+  id: string;
+  pw: string;
+}
+
+export interface UserData {
+  userId: string;
+  password: string;
+  token: string;
+  nickName: string;
+  birth: string | null;
+  gender: string;
+  region: string;
+  profileUrl: string;
+  myChats: string[];
+  introduction: string;
+  interested: string[];
+  status: string;
+  alcohol: string;
+  smoking: boolean;
+  mbti: string;
+  job: string;
+  tall: string;
+}
+
+export const steps = ["아이디 비밀번호", "기본 프로필 정보", "매칭 필수 정보"];
