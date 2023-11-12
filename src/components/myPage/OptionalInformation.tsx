@@ -9,11 +9,13 @@ interface TagProps {
 
 export default function OptionalInformation() {
   const [inputCount, setInputCount] = useState(0);
+  const [introduction, setIntroduction] = useState('');
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [showToast, setShowToast] = useState(false);
 
   const handleIntroductionInput = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setInputCount(e.target.value.length);
+    setIntroduction(e.target.value);
   }
   
   const handleTagClick = (value: string) => {
@@ -34,6 +36,7 @@ export default function OptionalInformation() {
       }, 2000);
       }
     }
+    console.log(introduction, selectedTags);
   };
 
   return (
@@ -43,6 +46,7 @@ export default function OptionalInformation() {
         <Introduction
           placeholder="자기소개를 입력해주세요"
           maxLength={60}
+          value={introduction}
           onChange={handleIntroductionInput}
         />
         <Length>
