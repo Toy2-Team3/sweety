@@ -9,7 +9,7 @@ import { activeStepState } from "../../recoil/atoms";
 function SignUpStepper() {
   const [activeStep] = useRecoilState(activeStepState);
   return (
-    <Box sx={{ width: "340px", position: "absolute", top: "110px" }}>
+    <Box sx={{ width: "400px", position: "absolute", top: "110px" }}>
       <Stepper activeStep={activeStep} alternativeLabel>
         {steps.map((label) => (
           <Step key={label}>
