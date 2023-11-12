@@ -54,8 +54,8 @@ export const smokingState = atom<boolean>({
   default: undefined,
 });
 
-export const alcholState = atom<string>({
-  key: "alcholState",
+export const alcoholState = atom<string>({
+  key: "alcoholState",
   default: "",
 });
 
