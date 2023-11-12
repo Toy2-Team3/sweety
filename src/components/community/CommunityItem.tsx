@@ -1,6 +1,7 @@
 import React, { FC, useState } from "react";
 import styled from "styled-components";
 import { CommonData } from "../../pages/CommunityListPage";
+import CommunityModal from "./CommunityModal";
 
 interface CommunityItemProps {
   item: CommonData;
@@ -9,27 +10,38 @@ interface CommunityItemProps {
 const CommunityItem: FC<CommunityItemProps> = ({ item }) => {
   const [isPostModalOpen, setIsPostModalOpen] = useState<boolean>(false);
 
-  const handleClickItem = () => {
+  const handleOpenPostModal = () => {
     setIsPostModalOpen(true);
   };
 
+  const handleClosePostModal = () => {
+    setIsPostModalOpen(false);
+  };
+
   return (
-    <Container>
-      <ItemTop>
-        <ItemLeft>
-          <ImageWrapper>
-            <img src={item.profileUrl} alt="user image" />
-          </ImageWrapper>
-          <div>
-            <h3>{item.nickName}</h3>
-            <span>{item.region}</span>
-            <span>{item.createdAt}</span>
-          </div>
-        </ItemLeft>
-      </ItemTop>
-      <h1>{item.title}</h1>
-      <p>{item.content}</p>
-    </Container>
+    <div>
+      <Container onClick={handleOpenPostModal}>
+        <ItemTop>
+          <ItemLeft>
+            <ImageWrapper>
+              <img src={item.profileUrl} alt="user image" />
+            </ImageWrapper>
+            <div>
+              <h3>{item.nickName}</h3>
+              <span>{item.region}</span>
+            </div>
+          </ItemLeft>
+        </ItemTop>
+        <h1>{item.title}</h1>
+        <p>{item.content}</p>
+      </Container>
+      {isPostModalOpen && (
+        <CommunityModal
+          item={item}
+          handleClosePostModal={handleClosePostModal}
+        />
+      )}
+    </div>
   );
 };
 
