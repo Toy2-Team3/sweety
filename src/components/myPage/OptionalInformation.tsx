@@ -2,6 +2,8 @@ import styled from "styled-components";
 import { useState } from "react";
 import ToastMessage from "../common/ToastMessage";
 import { interested } from "../../constants/constant";
+import { interestedTagsState, introductionState } from "../../recoil/atoms";
+import { useRecoilState } from "recoil";
 
 interface TagProps {
   selected: boolean;
@@ -9,8 +11,8 @@ interface TagProps {
 
 export default function OptionalInformation() {
   const [inputCount, setInputCount] = useState(0);
-  const [introduction, setIntroduction] = useState('');
-  const [selectedTags, setSelectedTags] = useState<string[]>([]);
+  const [introduction, setIntroduction] = useRecoilState(introductionState);
+  const [selectedTags, setSelectedTags] = useRecoilState(interestedTagsState);
   const [showToast, setShowToast] = useState(false);
 
   const handleIntroductionInput = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
