@@ -30,25 +30,6 @@ function App() {
     checkLoginStatus();
   });
 
-  // return (
-  //   <ThemeProvider theme={theme}>
-  //     <BrowserRouter>
-  //       <div className="App" style={{ display: "flex" }}>
-  //         <NavigationBar></NavigationBar>
-  //         <PageWrap>
-  //           <Routes>
-  //             <Route path="/" element={<HomePage />} />
-  //             <Route path="/community" element={<CommunityListPage />} />
-  //             <Route path="/community/edit" element={<CommunityEditPage />} />
-  //             <Route path="/chat" element={<ChatPage />} />
-  //             <Route path="/mypage" element={<MyPage />} />
-  //           </Routes>
-  //         </PageWrap>
-  //       </div>
-  //     </BrowserRouter>
-  //   </ThemeProvider>
-  // );
-
   return login ? (
     <ThemeProvider theme={theme}>
       <BrowserRouter>

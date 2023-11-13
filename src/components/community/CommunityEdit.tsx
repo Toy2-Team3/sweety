@@ -113,6 +113,7 @@ const InputWrapper = styled.div`
     flex-direction: column;
     align-items: start;
   }
+  
   label {
     font-size: 1.8rem;
     font-weight: bold;
@@ -121,6 +122,7 @@ const InputWrapper = styled.div`
       font-size: 1.5rem;
     }
   }
+
   input {
     width: 100%;
     padding: 0.5rem;
@@ -128,7 +130,13 @@ const InputWrapper = styled.div`
     border: 1px solid #949494;
     font-size: 1.3rem;
     font-weight: bold;
+
+    &:focus {
+      border:1px solid ${(props) => props.theme.color.primary};
+      outline: 1px solid ${(props) => props.theme.color.primary};
+    }
   }
+
   textarea {
     width: 100%;
     height: 10rem;
@@ -137,6 +145,11 @@ const InputWrapper = styled.div`
     border: 1px solid #949494;
     font-size: 1rem;
     font-weight: normal;
+
+    &:focus {
+      border:1px solid ${(props) => props.theme.color.primary};
+      outline: 1px solid ${(props) => props.theme.color.primary};
+    }
   }
 `;
 
