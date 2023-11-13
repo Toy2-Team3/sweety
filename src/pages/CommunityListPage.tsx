@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import CommunityItem from "../components/community/CommunityItem";
-import { Button } from "../components/community/CommunityItemButtons";
 import {
   CommunityData,
   IUserData,
@@ -9,6 +8,7 @@ import {
   getAllDataOrderByDate,
 } from "../utils/firebase";
 import { useNavigate } from "react-router-dom";
+import { CommunityButton } from "../styles/community.style";
 
 export interface CommonData {
   id: string;
@@ -133,7 +133,7 @@ const AddButtonWrapper = styled.div`
   justify-content: right;
 `;
 
-const AddButton = styled(Button)`
+const AddButton = styled(CommunityButton)`
   padding: 0.5rem 2rem;
   flex: 0;
 `;

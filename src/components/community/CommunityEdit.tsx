@@ -1,25 +1,15 @@
 import React, { useEffect, useRef, useState } from "react";
-import CommunityItemButtons, { ButtonText, ButtonType } from "./CommunityItemButtons";
 import styled from "styled-components";
 import { CommunityData, setCommunityData } from "../../utils/firebase";
 import { useRecoilState } from "recoil";
 import { idState } from "../../recoil/atoms";
 import { useNavigate } from "react-router-dom";
+import { CommunityButton, CommunityButtonWrapper } from "../../styles/community.style";
 
 const CommunityEdit = () => {
   const navigate = useNavigate()
     const [id] = useRecoilState(idState);
     const titleInputRef = useRef<HTMLInputElement>(null);
-  
-    const buttonText: ButtonText = {
-      left: "초기화",
-      right: "등록",
-    };
-  
-    const buttonType: ButtonType = {
-      leftBtnType:"reset",
-      rightBtnType:"submit"
-    };
 
   const [inputs, setInputs] = useState<
     Pick<CommunityData, "title" | "content">
@@ -78,7 +68,10 @@ const CommunityEdit = () => {
           />
         </InputWrapper>
       <ButtonWrapper>
-        <CommunityItemButtons buttonText={buttonText} buttonType={buttonType} />
+      <CommunityButtonWrapper>
+          <CommunityButton type='reset' $left>초기화</CommunityButton>
+          <CommunityButton type="submit">등록</CommunityButton>
+        </CommunityButtonWrapper>
       </ButtonWrapper>
       </InputForm>
     </EditWrapper>

@@ -1,11 +1,11 @@
 import React, { FC } from "react";
 import styled from "styled-components";
-import CommunityItemButtons, { ButtonText, ButtonType } from "./CommunityItemButtons";
 import Close from "../../assets/close.png";
 import Chat from "../../assets/comments-solid.svg";
 import { CommonData } from "../../pages/CommunityListPage";
 import { useRecoilState } from "recoil";
 import { idState } from "../../recoil/atoms";
+import { CommunityButton, CommunityButtonWrapper } from "../../styles/community.style";
 
 interface CommunityModalProps {
   item: CommonData;
@@ -16,19 +16,7 @@ const CommunityModal: FC<CommunityModalProps> = ({
   item,
   handleClosePostModal,
 }) => {
-
   const [id] = useRecoilState(idState);
-  
-  const buttonText: ButtonText = {
-    left: "삭제",
-    right: "수정",
-  };
-
-  const buttonType: ButtonType = {
-    leftBtnType:'reset',
-    rightBtnType:'submit'
-  };
-
 
   return (
     <ModalBackground onClick={handleClosePostModal}>
@@ -53,9 +41,12 @@ const CommunityModal: FC<CommunityModalProps> = ({
             그룹 채팅 참여
           </GoToChatButton>
 
-{id === item.userId &&
-          <CommunityItemButtons buttonText={buttonText} buttonType={buttonType} />
-}
+          {id === item.userId &&
+          <CommunityButtonWrapper>
+            <CommunityButton $left>삭제</CommunityButton>
+            <CommunityButton>수정</CommunityButton>
+          </CommunityButtonWrapper>
+          }
         </ButtonWrapper>
       </ModalWrapper>
     </ModalBackground>
