@@ -32,7 +32,7 @@ const CommunityModal: FC<CommunityModalProps> = ({
 
   return (
     <ModalBackground onClick={handleClosePostModal}>
-      <ModalWrapper>
+      <ModalWrapper onClick={(e)=>e.stopPropagation()}>
         <CloseButton onClick={handleClosePostModal}>
           <img src={Close} />
         </CloseButton>
