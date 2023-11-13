@@ -4,6 +4,8 @@ import CommunityItemButtons, { ButtonText, ButtonType } from "./CommunityItemBut
 import Close from "../../assets/close.png";
 import Chat from "../../assets/comments-solid.svg";
 import { CommonData } from "../../pages/CommunityListPage";
+import { useRecoilState } from "recoil";
+import { idState } from "../../recoil/atoms";
 
 interface CommunityModalProps {
   item: CommonData;
@@ -14,6 +16,8 @@ const CommunityModal: FC<CommunityModalProps> = ({
   item,
   handleClosePostModal,
 }) => {
+
+  const [id] = useRecoilState(idState);
   
   const buttonText: ButtonText = {
     left: "삭제",
@@ -49,8 +53,9 @@ const CommunityModal: FC<CommunityModalProps> = ({
             그룹 채팅 참여
           </GoToChatButton>
 
-          {/* 삭제, 수정 버튼은 글 작성자에게만 보이게할 예정 */}
+{id === item.userId &&
           <CommunityItemButtons buttonText={buttonText} buttonType={buttonType} />
+}
         </ButtonWrapper>
       </ModalWrapper>
     </ModalBackground>
