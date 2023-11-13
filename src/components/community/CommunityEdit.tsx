@@ -1,28 +1,86 @@
-import React from "react";
-import CommunityItemButtons, { ButtonType } from "./CommunityItemButtons";
+import React, { useEffect, useRef, useState } from "react";
+import CommunityItemButtons, { ButtonText, ButtonType } from "./CommunityItemButtons";
 import styled from "styled-components";
+import { CommunityData, setCommunityData } from "../../utils/firebase";
+import { useRecoilState } from "recoil";
+import { idState } from "../../recoil/atoms";
+import { useNavigate } from "react-router-dom";
 
 const CommunityEdit = () => {
-  const buttonText: ButtonType = {
-    left: "초기화",
-    right: "등록",
+  const navigate = useNavigate()
+    const [id] = useRecoilState(idState);
+    const titleInputRef = useRef<HTMLInputElement>(null);
+  
+    const buttonText: ButtonText = {
+      left: "초기화",
+      right: "등록",
+    };
+  
+    const buttonType: ButtonType = {
+      leftBtnType:"reset",
+      rightBtnType:"submit"
+    };
+
+  const [inputs, setInputs] = useState<
+    Pick<CommunityData, "title" | "content">
+  >({
+    title: "",
+    content: "",
+  });
+
+  const handleChange = (e: React.ChangeEvent) => {
+    const { value, name } = e.target as HTMLInputElement;
+    setInputs({ ...inputs, [name]: value });
   };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    const createdAt = Date.now();
+    const userId = id;
+    //채팅 생성하려면 본인 제외 다른 참가자들의 id가 필요함.
+    //따라서 처음 글 생성할 당시에는 chatId가 존재할 수 없다... ㅜ
+    const chatId = "";
+    await setCommunityData({
+      ...inputs,
+      userId,
+      chatId,
+      createdAt,
+    });
+    navigate('/community');
+  };
+
+  useEffect(() => {
+    titleInputRef.current?.focus();
+  }, []);
 
   return (
     <EditWrapper>
-      <InputForm>
+      <InputForm onSubmit={handleSubmit}>
         <InputWrapper>
           <label htmlFor="title">제목</label>
-          <input type="text" placeholder="제목..." id="title" />
+          <input
+            type="text"
+            placeholder="제목..."
+            id="title"
+            name="title"
+            onChange={handleChange}
+            ref={titleInputRef}
+          />
         </InputWrapper>
         <InputWrapper>
           <label htmlFor="content">내용</label>
-          <textarea placeholder="내용..." id="content" />
+          <textarea
+            placeholder="내용..."
+            id="content"
+            name="content"
+            onChange={handleChange}
+          />
         </InputWrapper>
-      </InputForm>
       <ButtonWrapper>
-        <CommunityItemButtons buttonText={buttonText} />
+        <CommunityItemButtons buttonText={buttonText} buttonType={buttonType} />
       </ButtonWrapper>
+      </InputForm>
     </EditWrapper>
   );
 };

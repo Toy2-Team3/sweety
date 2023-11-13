@@ -188,7 +188,9 @@ export const setUserData = async (
 };
 
 //커뮤니티 데이터 추가
-export const setCommunityData = async (props: CommunityData): Promise<void> => {
+export const setCommunityData = async (
+  props: Omit<CommunityData, "id">,
+): Promise<void> => {
   const newRef = doc(collection(db, "community")); //자동 랜덤 id
 
   await setDoc(newRef, props);

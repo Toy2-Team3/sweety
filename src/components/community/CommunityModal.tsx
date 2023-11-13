@@ -1,6 +1,6 @@
 import React, { FC } from "react";
 import styled from "styled-components";
-import CommunityItemButtons, { ButtonType } from "./CommunityItemButtons";
+import CommunityItemButtons, { ButtonText, ButtonType } from "./CommunityItemButtons";
 import Close from "../../assets/close.png";
 import Chat from "../../assets/comments-solid.svg";
 import { CommonData } from "../../pages/CommunityListPage";
@@ -14,10 +14,17 @@ const CommunityModal: FC<CommunityModalProps> = ({
   item,
   handleClosePostModal,
 }) => {
-  const buttonText: ButtonType = {
+  
+  const buttonText: ButtonText = {
     left: "삭제",
     right: "수정",
   };
+
+  const buttonType: ButtonType = {
+    leftBtnType:'reset',
+    rightBtnType:'submit'
+  };
+
 
   return (
     <ModalBackground onClick={handleClosePostModal}>
@@ -43,7 +50,7 @@ const CommunityModal: FC<CommunityModalProps> = ({
           </GoToChatButton>
 
           {/* 삭제, 수정 버튼은 글 작성자에게만 보이게할 예정 */}
-          <CommunityItemButtons buttonText={buttonText} />
+          <CommunityItemButtons buttonText={buttonText} buttonType={buttonType} />
         </ButtonWrapper>
       </ModalWrapper>
     </ModalBackground>

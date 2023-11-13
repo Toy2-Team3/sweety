@@ -1,20 +1,26 @@
 import React from "react";
 import styled from "styled-components";
 
-export interface ButtonType {
+export interface ButtonText {
   left: string;
   right: string;
 }
 
-interface ButtonProps {
-  buttonText: ButtonType;
+export interface ButtonType {
+  leftBtnType: "button" | "reset" | "submit" | undefined;
+  rightBtnType: "button" | "reset" | "submit" | undefined;
 }
 
-const CommunityItemButtons: React.FC<ButtonProps> = ({ buttonText }) => {
+interface ButtonProps {
+  buttonText: ButtonText;
+  buttonType:ButtonType;
+}
+
+const CommunityItemButtons: React.FC<ButtonProps> = ({ buttonText, buttonType }) => {
   return (
     <ButtonWrapper>
-      <Button $left>{buttonText.left}</Button>
-      <Button>{buttonText.right}</Button>
+      <Button type={buttonType.leftBtnType} $left>{buttonText.left}</Button>
+      <Button type={buttonType.rightBtnType}>{buttonText.right}</Button>
     </ButtonWrapper>
   );
 };
