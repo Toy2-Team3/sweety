@@ -16,9 +16,19 @@ import theme from "../src/styles/theme";
 import styled from "styled-components";
 import MyPage from "./pages/MyPage";
 import "./App.css";
+import { useEffect } from "react";
 
 function App() {
-  const [login] = useRecoilState(loginState);
+  const [login, setLogin] = useRecoilState(loginState);
+
+  const checkLoginStatus = () => {
+    const isLoginValue = sessionStorage.getItem("isLogin");
+    setLogin(isLoginValue === "true");
+  };
+
+  useEffect(() => {
+    checkLoginStatus();
+  });
 
   // return (
   //   <ThemeProvider theme={theme}>
