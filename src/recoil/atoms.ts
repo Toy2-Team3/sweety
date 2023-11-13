@@ -1,4 +1,5 @@
 import { atom } from "recoil";
+import { CommonData } from "../pages/CommunityListPage";
 export const idState = atom<string>({
   key: "idState",
   default: "",
@@ -81,5 +82,10 @@ export const introductionState = atom<string>({
 
 export const interestedTagsState = atom<string[]>({
   key: "interestedTagsState",
+  default: [],
+});
+
+export const commonListState = atom<CommonData[]>({
+  key: "commonListState",
   default: [],
 });

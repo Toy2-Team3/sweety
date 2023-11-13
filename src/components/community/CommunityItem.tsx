@@ -5,9 +5,15 @@ import CommunityModal from "./CommunityModal";
 
 interface CommunityItemProps {
   item: CommonData;
+  setShowToastMsg: (value: boolean) => void;
+  setToastMsg: (content: string) => void;
 }
 
-const CommunityItem: FC<CommunityItemProps> = ({ item }) => {
+const CommunityItem: FC<CommunityItemProps> = ({
+  item,
+  setShowToastMsg,
+  setToastMsg,
+}) => {
   const [isPostModalOpen, setIsPostModalOpen] = useState<boolean>(false);
 
   const handleOpenPostModal = () => {
@@ -39,6 +45,8 @@ const CommunityItem: FC<CommunityItemProps> = ({ item }) => {
         <CommunityModal
           item={item}
           handleClosePostModal={handleClosePostModal}
+          setShowToastMsg={setShowToastMsg}
+          setToastMsg={setToastMsg}
         />
       )}
     </div>

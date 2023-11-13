@@ -4,49 +4,63 @@ import Close from "../../assets/close.png";
 import Chat from "../../assets/comments-solid.svg";
 import { CommonData } from "../../pages/CommunityListPage";
 import { useRecoilState } from "recoil";
-import { idState } from "../../recoil/atoms";
+import { commonListState, idState } from "../../recoil/atoms";
 import { CommunityButtonWrapper } from "../../styles/community.style";
 import { useNavigate } from "react-router-dom";
 import { deleteData } from "../../utils/firebase";
 import AlertDialogModal from "./DeleteModal";
-import Button from '@mui/joy/Button';
-
+import Button from "@mui/joy/Button";
 
 interface CommunityModalProps {
   item: CommonData;
   handleClosePostModal: () => void;
+  setShowToastMsg: (value: boolean) => void;
+  setToastMsg: (content: string) => void;
 }
 
 const CommunityModal: FC<CommunityModalProps> = ({
   item,
   handleClosePostModal,
+  setShowToastMsg,
+  setToastMsg,
 }) => {
   const [id] = useRecoilState(idState);
-  const navigate=useNavigate()
+  const [commonList, setCommonList] = useRecoilState(commonListState);
+  const navigate = useNavigate();
 
-  const handleDelete = async (id:string) => {
+  const handleDelete = async (id: string) => {
     try {
-      await deleteData ('community',id);
-      handleClosePostModal();
-      console.log('삭제 성공')
-      // 삭제 성공 토스트 메시지 띄우기
+      await deleteData("community", id);
+
       // 삭제 완료 글 리스트 새로고침하기
+      const newList = commonList.filter((item) => {
+        return item.id !== id;
+      });
+      setCommonList(newList);
+
+      handleClosePostModal();
+      setToastMsg("성공적으로 삭제하였습니다!");
+      setShowToastMsg(true);
     } catch (error) {
       handleClosePostModal();
       console.log(error);
-      // 삭제 실패 토스트 메시지 띄우기
-
+      setToastMsg("삭제되지 못했습니다.. 다시 시도해주세요!");
+      setShowToastMsg(true);
+    } finally {
+      setTimeout(() => {
+        setShowToastMsg(false);
+      }, 2000);
     }
-  }
+  };
 
-  const handleEdit = () => {
+  const handleUpdate = () => {
     handleClosePostModal();
     navigate(`/update/${id}`); //글 id에 따라 달라지게
-  }
+  };
 
   return (
     <ModalBackground onClick={handleClosePostModal}>
-      <ModalWrapper onClick={(e)=>e.stopPropagation()}>
+      <ModalWrapper onClick={(e) => e.stopPropagation()}>
         <CloseButton onClick={handleClosePostModal}>
           <img src={Close} />
         </CloseButton>
@@ -67,22 +81,20 @@ const CommunityModal: FC<CommunityModalProps> = ({
             그룹 채팅 참여
           </GoToChatButton>
 
-          {id === item.userId &&
-          <CommunityButtonWrapper>
-            <AlertDialogModal
-            item={item}
-            handleDelete={handleDelete} />
-            <Button
-        variant="plain"
-        color="primary"
-        size='lg'
-        sx={{ width: 1/2 }}
-        onClick={handleEdit}
-      >
-        수정
-      </Button>
-          </CommunityButtonWrapper>
-          }
+          {id === item.userId && (
+            <CommunityButtonWrapper>
+              <AlertDialogModal item={item} handleDelete={handleDelete} />
+              <Button
+                variant="plain"
+                color="primary"
+                size="lg"
+                sx={{ width: 1 / 2 }}
+                onClick={handleUpdate}
+              >
+                수정
+              </Button>
+            </CommunityButtonWrapper>
+          )}
         </ButtonWrapper>
       </ModalWrapper>
     </ModalBackground>

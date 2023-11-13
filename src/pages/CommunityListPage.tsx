@@ -8,8 +8,10 @@ import {
   getAllDataOrderByDate,
 } from "../utils/firebase";
 import { useNavigate } from "react-router-dom";
-import Button from '@mui/joy/Button';
-
+import Button from "@mui/joy/Button";
+import { useRecoilState } from "recoil";
+import { commonListState } from "../recoil/atoms";
+import ToastMessage from "../components/common/ToastMessage";
 
 export interface CommonData {
   id: string;
@@ -25,9 +27,11 @@ export interface CommonData {
 
 const CommunityList = () => {
   const navigate = useNavigate();
+  const [commonList, setCommonList] = useRecoilState(commonListState);
   const [postList, setPostList] = useState<CommunityData[]>([]);
   const [userList, setUserList] = useState<IUserData[]>([]);
-  const [commonList, setCommonList] = useState<CommonData[]>([]);
+  const [showToastMsg, setShowToastMsg] = useState<boolean>(false);
+  const [toastMsg, setToastMsg] = useState<string>("");
 
   const handleCreateNewItem = () => {
     navigate("/community/edit");
@@ -66,7 +70,7 @@ const CommunityList = () => {
   useEffect(() => {
     const newList = findCommonData(userList, postList);
     setCommonList(newList);
-  }, [postList, userList]);
+  }, [postList, userList, setCommonList]);
 
   return (
     <Wrapper>
@@ -75,20 +79,28 @@ const CommunityList = () => {
         <div>당신의 관심사를 공유해보세요</div>
       </Header>
       <AddButtonWrapper>
-      <Button
-        variant="solid"
-        color="danger"
-        size='lg'
-        onClick={handleCreateNewItem}
-      >
-        새 글 등록
-      </Button>
+        <Button
+          variant="solid"
+          color="danger"
+          size="lg"
+          onClick={handleCreateNewItem}
+        >
+          새 글 등록
+        </Button>
       </AddButtonWrapper>
       <ItemWrapper>
         {commonList.map((item) => {
-          return <CommunityItem key={item.id} item={item} />;
+          return (
+            <CommunityItem
+              key={item.id}
+              item={item}
+              setShowToastMsg={setShowToastMsg}
+              setToastMsg={setToastMsg}
+            />
+          );
         })}
       </ItemWrapper>
+      {showToastMsg && <ToastMessage content={toastMsg} />}
     </Wrapper>
   );
 };
