@@ -113,7 +113,7 @@ const InputWrapper = styled.div`
     flex-direction: column;
     align-items: start;
   }
-  
+
   label {
     font-size: 1.8rem;
     font-weight: bold;
