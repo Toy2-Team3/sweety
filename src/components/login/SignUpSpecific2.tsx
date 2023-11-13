@@ -137,6 +137,9 @@ function SignUpSpecific({ theme }: SignUpSpecificProps) {
       }
     } catch (error) {
       console.error("회원가입 중 서버와의 에러가 발생했습니다 :", error);
+      window.alert(
+        "서버와의 연결이 불안정 합니다.\n잠시후 다시 시도해 주세요.",
+      );
     }
   };
 
@@ -149,6 +152,7 @@ function SignUpSpecific({ theme }: SignUpSpecificProps) {
         await handleSignUpClick(id, pw, userName, imageUrl);
       } catch (error) {
         console.error("유저 데이터 업로드 실패", error);
+        await deleteImage(id);
       }
     } else {
       console.error("프로필 이미지가 없습니다");
