@@ -73,3 +73,13 @@ export const activeStepState = atom<number>({
   key: "activeStepState",
   default: 0,
 });
+
+export const introductionState = atom<string>({
+  key: "introductionState",
+  default: "",
+});
+
+export const interestedTagsState = atom<string[]>({
+  key: "interestedTagsState",
+  default: [],
+});
