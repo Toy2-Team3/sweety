@@ -43,7 +43,7 @@ const CommunityModal: FC<CommunityModalProps> = ({
       setShowToastMsg(true);
     } catch (error) {
       handleClosePostModal();
-      console.log(error);
+
       setToastMsg("삭제되지 못했습니다.. 다시 시도해주세요!");
       setShowToastMsg(true);
     } finally {

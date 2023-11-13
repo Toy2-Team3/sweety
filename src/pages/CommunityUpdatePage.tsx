@@ -1,20 +1,20 @@
 import React from "react";
 import styled from "styled-components";
-import CommunityEdit from "../components/community/CommunityEdit";
+import CommunityUpdate from "../components/community/CommunityUpdate";
 
-const CommunityEditPage = () => {
+const CommunityUpdatePage = () => {
   return (
     <Wrapper>
       <Header>
-        <div>Community</div>
+        <div>Community</div>CommunityCreate
         <div>당신의 관심사를 공유해보세요</div>
       </Header>
-      <CommunityEdit />
+      <CommunityUpdate />
     </Wrapper>
   );
 };
 
-export default CommunityEditPage;
+export default CommunityUpdatePage;
 
 const Wrapper = styled.div`
   width: calc(100vw - 300px);

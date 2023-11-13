@@ -34,7 +34,7 @@ const CommunityList = () => {
   const [toastMsg, setToastMsg] = useState<string>("");
 
   const handleCreateNewItem = () => {
-    navigate("/community/edit");
+    navigate("/community/create");
   };
 
   const fetchCommunityData = async () => {

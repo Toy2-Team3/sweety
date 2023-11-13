@@ -4,13 +4,12 @@ import { CommunityData, setCommunityData } from "../../utils/firebase";
 import { useRecoilState } from "recoil";
 import { idState } from "../../recoil/atoms";
 import { useNavigate } from "react-router-dom";
-import Button from '@mui/joy/Button';
+import Button from "@mui/joy/Button";
 
-
-const CommunityEdit = () => {
-  const navigate = useNavigate()
-    const [id] = useRecoilState(idState);
-    const titleInputRef = useRef<HTMLInputElement>(null);
+const CommunityCreate = () => {
+  const navigate = useNavigate();
+  const [id] = useRecoilState(idState);
+  const titleInputRef = useRef<HTMLInputElement>(null);
 
   const [inputs, setInputs] = useState<
     Pick<CommunityData, "title" | "content">
@@ -38,7 +37,7 @@ const CommunityEdit = () => {
       chatId,
       createdAt,
     });
-    navigate('/community');
+    navigate("/community");
   };
 
   useEffect(() => {
@@ -68,34 +67,34 @@ const CommunityEdit = () => {
             onChange={handleChange}
           />
         </InputWrapper>
-      <ButtonWrapper>
-      <div>
-      <Button
-      type="reset"
-        variant="outlined"
-        color="neutral"
-        size='lg'
-        sx={{ width: 1/2 }}
-      >
-        초기화
-      </Button>
-          <Button
-      type="submit"
-        variant="outlined"
-        color="primary"
-        size='lg'
-        sx={{ width: 1/2 }}
-      >
-        등록
-      </Button>
-        </div>
-      </ButtonWrapper>
+        <ButtonWrapper>
+          <div>
+            <Button
+              type="reset"
+              variant="outlined"
+              color="neutral"
+              size="lg"
+              sx={{ width: 1 / 2 }}
+            >
+              초기화
+            </Button>
+            <Button
+              type="submit"
+              variant="outlined"
+              color="primary"
+              size="lg"
+              sx={{ width: 1 / 2 }}
+            >
+              등록
+            </Button>
+          </div>
+        </ButtonWrapper>
       </InputForm>
     </EditWrapper>
   );
 };
 
-export default CommunityEdit;
+export default CommunityCreate;
 
 const EditWrapper = styled.div`
   width: 100%;
@@ -142,7 +141,7 @@ const InputWrapper = styled.div`
     font-weight: bold;
 
     &:focus {
-      border:1px solid ${(props) => props.theme.color.primary};
+      border: 1px solid ${(props) => props.theme.color.primary};
       outline: 1px solid ${(props) => props.theme.color.primary};
     }
   }
@@ -157,7 +156,7 @@ const InputWrapper = styled.div`
     font-weight: normal;
 
     &:focus {
-      border:1px solid ${(props) => props.theme.color.primary};
+      border: 1px solid ${(props) => props.theme.color.primary};
       outline: 1px solid ${(props) => props.theme.color.primary};
     }
   }
@@ -170,14 +169,14 @@ const ButtonWrapper = styled.div`
   div {
     width: 30%;
     display: flex;
-  flex-direction: row;
-  justify-content: right;
-  gap: 1rem;
-  ${(props) => props.theme.response.tablet} {
-    width: 50%;
-  }
-  ${(props) => props.theme.response.mobile} {
-    width: 100%;
-  }
+    flex-direction: row;
+    justify-content: right;
+    gap: 1rem;
+    ${(props) => props.theme.response.tablet} {
+      width: 50%;
+    }
+    ${(props) => props.theme.response.mobile} {
+      width: 100%;
+    }
   }
 `;
