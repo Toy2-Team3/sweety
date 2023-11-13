@@ -5,7 +5,12 @@ import Chat from "../../assets/comments-solid.svg";
 import { CommonData } from "../../pages/CommunityListPage";
 import { useRecoilState } from "recoil";
 import { idState } from "../../recoil/atoms";
-import { CommunityButton, CommunityButtonWrapper } from "../../styles/community.style";
+import { CommunityButtonWrapper } from "../../styles/community.style";
+import { useNavigate } from "react-router-dom";
+import { deleteData } from "../../utils/firebase";
+import AlertDialogModal from "./DeleteModal";
+import Button from '@mui/joy/Button';
+
 
 interface CommunityModalProps {
   item: CommonData;
@@ -17,6 +22,27 @@ const CommunityModal: FC<CommunityModalProps> = ({
   handleClosePostModal,
 }) => {
   const [id] = useRecoilState(idState);
+  const navigate=useNavigate()
+
+  const handleDelete = async (id:string) => {
+    try {
+      await deleteData ('community',id);
+      handleClosePostModal();
+      console.log('삭제 성공')
+      // 삭제 성공 토스트 메시지 띄우기
+      // 삭제 완료 글 리스트 새로고침하기
+    } catch (error) {
+      handleClosePostModal();
+      console.log(error);
+      // 삭제 실패 토스트 메시지 띄우기
+
+    }
+  }
+
+  const handleEdit = () => {
+    handleClosePostModal();
+    navigate(`/update/${id}`); //글 id에 따라 달라지게
+  }
 
   return (
     <ModalBackground onClick={handleClosePostModal}>
@@ -43,8 +69,18 @@ const CommunityModal: FC<CommunityModalProps> = ({
 
           {id === item.userId &&
           <CommunityButtonWrapper>
-            <CommunityButton $left>삭제</CommunityButton>
-            <CommunityButton>수정</CommunityButton>
+            <AlertDialogModal
+            item={item}
+            handleDelete={handleDelete} />
+            <Button
+        variant="plain"
+        color="primary"
+        size='lg'
+        sx={{ width: 1/2 }}
+        onClick={handleEdit}
+      >
+        수정
+      </Button>
           </CommunityButtonWrapper>
           }
         </ButtonWrapper>

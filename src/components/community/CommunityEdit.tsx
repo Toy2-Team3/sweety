@@ -4,7 +4,8 @@ import { CommunityData, setCommunityData } from "../../utils/firebase";
 import { useRecoilState } from "recoil";
 import { idState } from "../../recoil/atoms";
 import { useNavigate } from "react-router-dom";
-import { CommunityButton, CommunityButtonWrapper } from "../../styles/community.style";
+import Button from '@mui/joy/Button';
+
 
 const CommunityEdit = () => {
   const navigate = useNavigate()
@@ -68,10 +69,26 @@ const CommunityEdit = () => {
           />
         </InputWrapper>
       <ButtonWrapper>
-      <CommunityButtonWrapper>
-          <CommunityButton type='reset' $left>초기화</CommunityButton>
-          <CommunityButton type="submit">등록</CommunityButton>
-        </CommunityButtonWrapper>
+      <div>
+      <Button
+      type="reset"
+        variant="outlined"
+        color="neutral"
+        size='lg'
+        sx={{ width: 1/2 }}
+      >
+        초기화
+      </Button>
+          <Button
+      type="submit"
+        variant="outlined"
+        color="primary"
+        size='lg'
+        sx={{ width: 1/2 }}
+      >
+        등록
+      </Button>
+        </div>
       </ButtonWrapper>
       </InputForm>
     </EditWrapper>
@@ -149,4 +166,18 @@ const InputWrapper = styled.div`
 const ButtonWrapper = styled.div`
   display: flex;
   justify-content: right;
+
+  div {
+    width: 30%;
+    display: flex;
+  flex-direction: row;
+  justify-content: right;
+  gap: 1rem;
+  ${(props) => props.theme.response.tablet} {
+    width: 50%;
+  }
+  ${(props) => props.theme.response.mobile} {
+    width: 100%;
+  }
+  }
 `;

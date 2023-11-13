@@ -8,7 +8,8 @@ import {
   getAllDataOrderByDate,
 } from "../utils/firebase";
 import { useNavigate } from "react-router-dom";
-import { CommunityButton } from "../styles/community.style";
+import Button from '@mui/joy/Button';
+
 
 export interface CommonData {
   id: string;
@@ -74,7 +75,14 @@ const CommunityList = () => {
         <div>당신의 관심사를 공유해보세요</div>
       </Header>
       <AddButtonWrapper>
-        <AddButton onClick={handleCreateNewItem}>새 글 등록</AddButton>
+      <Button
+        variant="solid"
+        color="danger"
+        size='lg'
+        onClick={handleCreateNewItem}
+      >
+        새 글 등록
+      </Button>
       </AddButtonWrapper>
       <ItemWrapper>
         {commonList.map((item) => {
@@ -131,11 +139,6 @@ const Header = styled.div`
 const AddButtonWrapper = styled.div`
   display: flex;
   justify-content: right;
-`;
-
-const AddButton = styled(CommunityButton)`
-  padding: 0.5rem 2rem;
-  flex: 0;
 `;
 
 const ItemWrapper = styled.div`
