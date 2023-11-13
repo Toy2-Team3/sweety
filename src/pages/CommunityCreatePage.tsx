@@ -6,7 +6,7 @@ const CommunityEditPage = () => {
   return (
     <Wrapper>
       <Header>
-        <div>Community</div>CommunityCreate
+        <div>Community</div>
         <div>당신의 관심사를 공유해보세요</div>
       </Header>
       <CommunityCreate />

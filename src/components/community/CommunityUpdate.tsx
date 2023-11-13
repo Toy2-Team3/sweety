@@ -1,21 +1,21 @@
 import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
-import { CommunityData, setCommunityData } from "../../utils/firebase";
-import { useRecoilState } from "recoil";
-import { idState } from "../../recoil/atoms";
-import { useNavigate } from "react-router-dom";
+import { CommunityData, getSingleData, updateData } from "../../utils/firebase";
+import { useNavigate, useParams } from "react-router-dom";
 import Button from "@mui/joy/Button";
 
 const CommunityUpdate = () => {
+  const params = useParams();
+  const docId = params.id as string;
   const navigate = useNavigate();
-  const [id] = useRecoilState(idState);
   const titleInputRef = useRef<HTMLInputElement>(null);
 
   const [inputs, setInputs] = useState<
-    Pick<CommunityData, "title" | "content">
+    Pick<CommunityData, "title" | "content" | "createdAt">
   >({
     title: "",
     content: "",
+    createdAt: 0,
   });
 
   const handleChange = (e: React.ChangeEvent) => {
@@ -27,18 +27,23 @@ const CommunityUpdate = () => {
     e.preventDefault();
 
     const createdAt = Date.now();
-    const userId = id;
-    //채팅 생성하려면 본인 제외 다른 참가자들의 id가 필요함.
-    //따라서 처음 글 생성할 당시에는 chatId가 존재할 수 없다... ㅜ
-    const chatId = "";
-    await setCommunityData({
+    await updateData(docId, {
       ...inputs,
-      userId,
-      chatId,
       createdAt,
     });
     navigate("/community");
   };
+
+  const fetchData = async () => {
+    const response = await getSingleData("community", docId);
+    if (response) {
+      setInputs(response);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
 
   useEffect(() => {
     titleInputRef.current?.focus();
@@ -54,6 +59,7 @@ const CommunityUpdate = () => {
             placeholder="제목..."
             id="title"
             name="title"
+            defaultValue={inputs.title}
             onChange={handleChange}
             ref={titleInputRef}
           />
@@ -64,19 +70,20 @@ const CommunityUpdate = () => {
             placeholder="내용..."
             id="content"
             name="content"
+            defaultValue={inputs.content}
             onChange={handleChange}
           />
         </InputWrapper>
         <ButtonWrapper>
           <div>
             <Button
-              type="reset"
               variant="outlined"
               color="neutral"
               size="lg"
               sx={{ width: 1 / 2 }}
+              onClick={() => navigate("/community")}
             >
-              초기화
+              List
             </Button>
             <Button
               type="submit"
@@ -85,7 +92,7 @@ const CommunityUpdate = () => {
               size="lg"
               sx={{ width: 1 / 2 }}
             >
-              등록
+              저장
             </Button>
           </div>
         </ButtonWrapper>

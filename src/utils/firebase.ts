@@ -172,7 +172,7 @@ export const getSingleData = async (collectionName: string, docId: string) => {
   if (docSnap.exists()) {
     return {
       ...docSnap.data(),
-      id: docSnap.data().id as string,
+      // id: docSnap.data().id as string,
     };
   }
 };
@@ -196,13 +196,12 @@ export const setCommunityData = async (
   await setDoc(newRef, props);
 };
 
-//업데이트
+//커뮤니티 데이터 업데이트
 export const updateData = async (
-  collectionName: string,
   docId: string,
-  props: Omit<IUserData | CommunityData, "id">,
+  props: Pick<CommunityData, "title" | "content" | "createdAt">,
 ): Promise<void> => {
-  const docRef = doc(db, collectionName, docId);
+  const docRef = doc(db, "community", docId);
 
   await updateDoc(docRef, props);
 };

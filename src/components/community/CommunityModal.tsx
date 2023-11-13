@@ -55,7 +55,7 @@ const CommunityModal: FC<CommunityModalProps> = ({
 
   const handleUpdate = () => {
     handleClosePostModal();
-    navigate(`/update/${id}`); //글 id에 따라 달라지게
+    navigate(`/community/update/${item.id}`);
   };
 
   return (
