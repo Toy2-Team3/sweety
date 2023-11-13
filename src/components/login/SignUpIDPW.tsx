@@ -72,8 +72,8 @@ function SignUpIDPW() {
   };
 
   return (
-    <Container>
-      <GreetingText>환영합니다🎉</GreetingText>
+    <Container style={{ gap: "20px" }}>
+      <GreetingText>회원가입</GreetingText>
       <InputWrapper style={{ position: "relative" }}>
         <p>아이디</p>
         <IdPwInput
@@ -155,7 +155,9 @@ function SignUpIDPW() {
 export default SignUpIDPW;
 
 export const GreetingText = styled.h1`
-  font-size: 64px;
+  font-size: 50px;
+  position: absolute;
+  top: 35px;
 `;
 
 export const NextButton = styled.button<NextButtonProps>`
