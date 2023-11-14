@@ -2,14 +2,15 @@ import styled from "styled-components";
 import { Message } from "../../types/chatting";
 
 const ChatBox = (item: Message) => {
+  const myId = sessionStorage.getItem("id");
   return (
     <div
       style={{
         display: "flex",
-        justifyContent: item.userId === "seokmin" ? "flex-end" : "flex-start",
+        justifyContent: item.userId === myId ? "flex-end" : "flex-start",
       }}
     >
-      <ChatBoxWrapper $isMyChat={item.userId === "seokmin"}>
+      <ChatBoxWrapper $isMyChat={item.userId === myId}>
         {/* {!item.isMine && <img src={item.profileImage} alt="" />} */}
         <div>{item.text}</div>
       </ChatBoxWrapper>
