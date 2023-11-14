@@ -52,14 +52,14 @@ export const jobOptions = [
   { value: "기타", label: "기타" },
 ];
 
-export const alcholOptions = [
-  { value: "N", label: "안마셔요" },
+export const alcoholOptions = [
+  { value: "N", label: "안 마셔요" },
   { value: "S", label: "가끔 마셔요" },
   { value: "O", label: "자주 마셔요" },
 ];
 
 export const smokingOptions = [
-  { value: false, label: "안해요" },
+  { value: false, label: "안 해요" },
   { value: true, label: "해요" },
 ];
 
@@ -82,8 +82,161 @@ export const compatibilityMessages: { [key: string]: string } = {
   ENTP: "그거 아세요? INTJ, INTP와 최고의 궁합이래요!",
 };
 
+type MbtiScoreType = {
+  [key: string]: {
+    천생연분: string[];
+    좋은관계: string[];
+    보통: string[];
+    안맞아요: string[];
+  };
+};
+
+export const mbtiScore: MbtiScoreType = {
+  INFP: {
+    천생연분: ["ENFJ", "ENTJ"],
+    좋은관계: ["INFP", "ENFP", "INFJ", "INTJ", "INTP", "ENTP"],
+    보통: [],
+    안맞아요: ["ISFP", "ESFP", "ISTP", "ESTP", "ISFJ", "ESFJ", "ISTJ", "ESTJ"],
+  },
+  ENFP: {
+    천생연분: ["INFJ", "INTJ"],
+    좋은관계: ["INFP", "ENFP", "ENFJ", "ENTJ", "INTP", "ENTP"],
+    보통: [],
+    안맞아요: ["ISFP", "ESFP", "ISTP", "ESTP", "ISFJ", "ESFJ", "ISTJ", "ESTJ"],
+  },
+  INFJ: {
+    천생연분: ["ENFP", "ENTP"],
+    좋은관계: ["INFP", "INFJ", "ENFJ", "INTJ", "ENTJ", "INTP"],
+    보통: [],
+    안맞아요: ["ISFP", "ESFP", "ISTP", "ESTP", "ISFJ", "ESFJ", "ISTJ", "ESTJ"],
+  },
+  ENFJ: {
+    천생연분: ["INFP", "ISFP"],
+    좋은관계: ["ENFP", "INFJ", "ENFJ", "INTJ", "ENTJ", "INTP", "ENTP"],
+    보통: [],
+    안맞아요: ["ESFP", "ISTP", "ESTP", "ISFJ", "ESFJ", "ISTJ", "ESTJ"],
+  },
+  INTJ: {
+    천생연분: ["ENFP", "ENTP"],
+    좋은관계: ["INFP", "INFJ", "ENFJ", "INTJ", "ENTJ", "INTP"],
+    보통: ["ISFP", "ESFP", "ISTP", "ESTP", "ISFJ", "ESFJ", "ISTJ", "ESTJ"],
+    안맞아요: [],
+  },
+  ENTJ: {
+    천생연분: ["INFP", "INTP"],
+    좋은관계: ["ENFP", "INFJ", "ENFJ", "INTJ", "ENTJ", "ENTP"],
+    보통: ["ISFP", "ESFP", "ISTP", "ESTP", "ISFJ", "ESFJ", "ISTJ", "ESTJ"],
+    안맞아요: [],
+  },
+  INTP: {
+    천생연분: ["ENTJ", "ESTJ"],
+    좋은관계: ["INFP", "ENFP", "INFJ", "ENFJ", "INTJ", "INTP", "ENTP"],
+    보통: ["ISFP", "ESFP", "ISTP", "ESTP", "ISFJ", "ESFJ", "ISTJ", "ESTJ"],
+    안맞아요: [],
+  },
+  ENTP: {
+    천생연분: ["INFJ", "INTJ"],
+    좋은관계: ["INFP", "ENFP", "ENFJ", "ENTJ", "INTP", "ENTP"],
+    보통: ["ISFP", "ESFP", "ISTP", "ESTP", "ISFJ", "ESFJ", "ISTJ", "ESTJ"],
+    안맞아요: [],
+  },
+  ISFP: {
+    천생연분: ["ENFJ", "ESFJ", "ESTJ"],
+    좋은관계: [],
+    보통: [
+      "ISFP",
+      "ESFP",
+      "ISTP",
+      "ISFJ",
+      "ISTJ",
+      "ESTP",
+      "ENTJ",
+      "ENTP",
+      "INTP",
+      "INTJ",
+    ],
+    안맞아요: ["INFP", "ENFP", "INFJ"],
+  },
+  ESFP: {
+    천생연분: ["ISFJ", "ISTJ"],
+    좋은관계: [],
+    보통: [
+      "ISFP",
+      "ESFJ",
+      "ISTP",
+      "ESTP",
+      "INTJ",
+      "ENTJ",
+      "INTP",
+      "ENTP",
+      "ESTJ",
+      "ESFP",
+    ],
+    안맞아요: ["INFP", "ENFP", "INFJ", "ENFJ"],
+  },
+  ISTP: {
+    천생연분: ["ESFJ", "ESTJ"],
+    좋은관계: [],
+    보통: [
+      "INTJ",
+      "ENTJ",
+      "INTP",
+      "ENTP",
+      "ISFP",
+      "ESFP",
+      "ISTP",
+      "ESTP",
+      "ESFJ",
+      "ISFJ",
+      "ISTJ",
+    ],
+    안맞아요: ["INFP", "ENFP", "INFJ", "ENFJ"],
+  },
+  ESTP: {
+    천생연분: ["ISFJ", "ISTJ"],
+    좋은관계: [],
+    보통: [
+      "INTJ",
+      "ENTJ",
+      "INTP",
+      "ENTP",
+      "ISFP",
+      "ESFP",
+      "ISTP",
+      "ESTP",
+      "ESFJ",
+      "ESTJ",
+    ],
+    안맞아요: ["INFP", "ENFP", "INFJ", "ENFJ"],
+  },
+  ESFJ: {
+    천생연분: ["ISFP", "ISTP"],
+    좋은관계: ["ISFJ", "ESFJ", "ISTJ", "ESTJ"],
+    보통: ["INTJ", "ENTJ", "INTP", "ENTP", "ESFP", "ESTP"],
+    안맞아요: ["INFP", "ENFP", "INFJ", "ENFJ"],
+  },
+  ISFJ: {
+    천생연분: ["ESFP", "ESTP"],
+    좋은관계: ["ISFJ", "ESFJ", "ISTJ", "ESTJ"],
+    보통: ["INTJ", "ENTJ", "INTP", "ENTP", "ISTP"],
+    안맞아요: ["INFP", "ENFP", "INFJ", "ENFJ"],
+  },
+  ESTJ: {
+    천생연분: ["ISFP", "ISTP"],
+    좋은관계: ["ISFJ", "ESFJ", "ISTJ", "ESTJ"],
+    보통: ["INTJ", "ENTJ", "INTP", "ENTP", "ESFP"],
+    안맞아요: ["INFP", "ENFP", "INFJ", "ENFJ"],
+  },
+  ISTJ: {
+    천생연분: ["ESFP", "ESTP"],
+    좋은관계: ["ISFJ", "ESFJ", "ISTJ", "ESTJ"],
+    보통: ["INTJ", "ENTJ", "INTP", "ENTP", "ISFP", "ISTP", "ESFJ"],
+    안맞아요: ["INFP", "ENFP", "INFJ", "ENFJ"],
+  },
+};
+
 export interface ButtonProps {
-  profileImage: File | undefined;
+  profileImage: File | null;
   userName: string;
   birthday: string | null;
   selectedGender: string;
@@ -103,6 +256,33 @@ export interface SignUpButtonProps {
   job: string;
   isTallValid: boolean;
   mbti: string;
-  alchol: string;
+  alcohol: string;
   smoking: boolean;
 }
+
+export interface LoginButtonProps {
+  id: string;
+  pw: string;
+}
+
+export interface UserData {
+  userId: string;
+  password: string;
+  token: string;
+  nickName: string;
+  birth: string | null;
+  gender: string;
+  region: string;
+  profileUrl: string;
+  myChats: string[];
+  introduction: string;
+  interested: string[];
+  status: string;
+  alcohol: string;
+  smoking: boolean;
+  mbti: string;
+  job: string;
+  tall: string;
+}
+
+export const steps = ["아이디 비밀번호", "기본 프로필 정보", "매칭 필수 정보"];

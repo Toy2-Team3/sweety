@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import UserInfo from "../components/Home/UserInfo";
-import { UserData, get } from "../utils/firebase";
+import { IUserData, get, getUserData } from "../utils/firebase";
+import { idState, selectedGenderState } from "../recoil/atoms";
+import { useRecoilState } from "recoil";
 const Home = () => {
-  // const fireFetch = useFireFetch();
-  const [users, setUsers] = useState<UserData[]>([]);
-  const userId: string | null = "kimchulsoo";
-  const gender: string | null = "female";
-  function shuffleArray(array: UserData[]): UserData[] {
+  const [gender, setGender] = useRecoilState(selectedGenderState);
+  const [users, setUsers] = useState<IUserData[]>([]);
+  const [userId, setUserId] = useRecoilState(idState);
+
+  function shuffleArray<T>(array: T[]): T[] {
     const shuffledArray = [...array];
     for (let i = shuffledArray.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
@@ -18,16 +20,22 @@ const Home = () => {
     }
     return shuffledArray;
   }
-
   useEffect(() => {
     const fetchData = async () => {
+      try {
+        const user = await get("user", "userId", userId);
+        console.log(user);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
       if (gender === "female") {
         try {
           const userData = await get(
             "user",
-            "gender" as keyof UserData,
+            "gender" as keyof IUserData,
             "male",
           );
+          console.log(userData);
           const shuffledUsers = shuffleArray(userData);
           setUsers(shuffledUsers);
         } catch (error) {
@@ -37,9 +45,10 @@ const Home = () => {
         try {
           const userData = await get(
             "user",
-            "gender" as keyof UserData,
+            "gender" as keyof IUserData,
             "female",
           );
+          console.log(userData);
           const shuffledUsers = shuffleArray(userData);
           setUsers(shuffledUsers);
         } catch (error) {
@@ -50,7 +59,6 @@ const Home = () => {
 
     fetchData();
   }, []);
-  console.log(users);
   return (
     <Wrapper>
       <Header>

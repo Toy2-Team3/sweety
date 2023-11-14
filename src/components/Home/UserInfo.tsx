@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { ReactComponent as WhiteChatIcon } from "../../assets/chattingIcon.svg";
+import UserProfileModal from "../common/UserProfileModal";
 
-interface UserInfoProps {
+export interface UserInfoProps {
   id: string;
   userId?: string;
   password?: string;
@@ -23,7 +24,7 @@ interface UserInfoProps {
   tall?: number;
 }
 
-const calculateAge = (birthDate: string): number => {
+export const calculateAge = (birthDate: string): number => {
   const currentDate = new Date();
   const birthDateObject = new Date(birthDate);
 
@@ -41,22 +42,27 @@ const calculateAge = (birthDate: string): number => {
 };
 
 const UserInfo = ({ userinfo }: { userinfo: UserInfoProps }) => {
+  const [userModal, setUserModal] = useState(false);
+
   const [userOnOff, setUserOnOff] = useState(true);
+
   const handleUserChat = (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
   ) => {
     e.preventDefault();
     console.log("userChat");
   };
+
   const handleDetailModal = (
     e: React.MouseEvent<HTMLDivElement, MouseEvent>,
   ) => {
     e.preventDefault();
-    console.log("userChat");
+    setUserModal(true);
   };
+
   return (
-    <UserCover onClick={handleDetailModal}>
-      <UserImage src={userinfo?.profileUrl} />
+    <UserCover>
+      <UserImage src={userinfo?.profileUrl} onClick={handleDetailModal} />
       {userOnOff && (
         <UserActive>
           <span></span>
@@ -73,8 +79,11 @@ const UserInfo = ({ userinfo }: { userinfo: UserInfoProps }) => {
       <UserRegion>{userinfo?.region}</UserRegion>
       <UserChatButton onClick={handleUserChat}>
         <WhiteChatIcon />
-        {/* <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 512 512"><!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. --><path d="M160 368c26.5 0 48 21.5 48 48v16l72.5-54.4c8.3-6.2 18.4-9.6 28.8-9.6H448c8.8 0 16-7.2 16-16V64c0-8.8-7.2-16-16-16H64c-8.8 0-16 7.2-16 16V352c0 8.8 7.2 16 16 16h96zm48 124l-.2 .2-5.1 3.8-17.1 12.8c-4.8 3.6-11.3 4.2-16.8 1.5s-8.8-8.2-8.8-14.3V474.7v-6.4V468v-4V416H112 64c-35.3 0-64-28.7-64-64V64C0 28.7 28.7 0 64 0H448c35.3 0 64 28.7 64 64V352c0 35.3-28.7 64-64 64H309.3L208 492z"/></svg> */}
       </UserChatButton>
+      {userModal === true && (
+        <UserProfileModal userinfo={userinfo} setUserModal={setUserModal} />
+      )}
+      <BackgroundBlur />
     </UserCover>
   );
 };
@@ -88,7 +97,19 @@ const UserCover = styled.div`
   overflow: hidden;
   cursor: pointer;
 `;
-
+const BackgroundBlur = styled.div`
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 20%;
+  background-color: rgba(
+    0,
+    0,
+    0,
+    0.5
+  ); /* Adjust the alpha value for transparency */
+`;
 const UserImage = styled.img`
   object-fit: cover;
   position: absolute;
@@ -99,6 +120,7 @@ const UserImage = styled.img`
 `;
 
 const UserName = styled.div`
+  z-index: 2;
   position: absolute;
   bottom: 2rem;
   color: rgba(255, 255, 255, 1); // Set color to white with full opacity
@@ -132,6 +154,8 @@ const UserName = styled.div`
 `;
 
 const UserRegion = styled.div`
+  z-index: 2;
+
   position: absolute;
   bottom: 0.7rem;
   left: 0.5rem;
@@ -143,6 +167,7 @@ const UserRegion = styled.div`
   }
 `;
 const UserChatButton = styled.button`
+  z-index: 2;
   position: absolute;
   bottom: 1rem;
   font-size: 2rem;
