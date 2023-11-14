@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import { FC } from "react";
 import styled from "styled-components";
 import Close from "../../assets/close.png";
 import Chat from "../../assets/comments-solid.svg";
@@ -6,7 +6,7 @@ import { useRecoilState } from "recoil";
 import { commonListState, idState } from "../../recoil/atoms";
 import { CommunityButtonWrapper } from "../../styles/community.style";
 import { useNavigate } from "react-router-dom";
-import { deleteData, updateData } from "../../utils/firebase";
+import { deleteData } from "../../utils/firebase";
 import AlertDialogModal from "./DeleteModal";
 import Button from "@mui/joy/Button";
 import axios from "axios";
@@ -47,10 +47,10 @@ const CommunityModal: FC<CommunityModalProps> = ({
   const [id] = useRecoilState(idState);
   const [commonList, setCommonList] = useRecoilState(commonListState);
   const navigate = useNavigate();
+  const ACCESS_TOKEN = sessionStorage.getItem("accessToken");
 
+  //그룹 채팅 참여 버튼 클릭
   const handleClickChatButton = async () => {
-    const ACCESS_TOKEN = sessionStorage.getItem("accessToken");
-
     try {
       const requestBody: RequestBody = {
         chatId: item.chatId as string,
@@ -77,6 +77,14 @@ const CommunityModal: FC<CommunityModalProps> = ({
       }
     } catch (error) {
       console.log(error);
+      setToastMsg("이미 참여한 채팅입니다! 채팅방으로 이동합니다 ✈️");
+      setShowToastMsg(true);
+
+      setTimeout(() => {
+        setShowToastMsg(false);
+        handleClosePostModal();
+        navigate(`/chat?chatId=${item.chatId}`);
+      }, 2000);
     }
   };
 

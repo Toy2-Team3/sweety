@@ -1,10 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
-import {
-  CommunityData,
-  setCommunityData,
-  updateData,
-} from "../../utils/firebase";
+import { CommunityData, setCommunityData } from "../../utils/firebase";
 import { useRecoilState } from "recoil";
 import { idState } from "../../recoil/atoms";
 import { useNavigate } from "react-router-dom";
@@ -72,8 +68,6 @@ const CommunityCreate = () => {
       if (response.status === 200) {
         console.log("요청 성공", response);
         return response.data.id;
-        // setNewChatId(response.data.id);
-        // console.log("새로운 채팅방 생성 성공");
       } else {
         console.log("요청 실패", response);
         return "";
