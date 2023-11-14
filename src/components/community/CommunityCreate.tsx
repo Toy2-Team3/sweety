@@ -1,10 +1,36 @@
 import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
-import { CommunityData, setCommunityData } from "../../utils/firebase";
+import {
+  CommunityData,
+  setCommunityData,
+  updateData,
+} from "../../utils/firebase";
 import { useRecoilState } from "recoil";
 import { idState } from "../../recoil/atoms";
 import { useNavigate } from "react-router-dom";
 import Button from "@mui/joy/Button";
+import axios from "axios";
+
+interface User {
+  id: string;
+  name: string;
+  picture: string;
+}
+
+interface CreateChatRequestBody {
+  name: string;
+  users: string[];
+  isPrivate?: boolean;
+}
+
+interface ChatResponse {
+  id: string;
+  name: string;
+  users: User[];
+  isPrivate: boolean;
+  updatedAt: Date;
+  message?: string;
+}
 
 const CommunityCreate = () => {
   const navigate = useNavigate();
@@ -18,6 +44,45 @@ const CommunityCreate = () => {
     content: "",
   });
 
+  //그룹채팅방 생성하는 함수
+  const CreateGroupChat = async (
+    inputs: Pick<CommunityData, "title" | "content">,
+  ) => {
+    const ACCESS_TOKEN = sessionStorage.getItem("accessToken");
+
+    try {
+      const requestBody: CreateChatRequestBody = {
+        name: `${inputs.title}의 그룹 채팅` as string,
+        users: [],
+        isPrivate: false,
+      };
+
+      const response = await axios.post<ChatResponse>(
+        "https://fastcampus-chat.net/chat",
+        requestBody,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            serverId: process.env.REACT_APP_SERVER_ID,
+            Authorization: `Bearer ${ACCESS_TOKEN}`,
+          },
+        },
+      );
+
+      if (response.status === 200) {
+        console.log("요청 성공", response);
+        return response.data.id;
+        // setNewChatId(response.data.id);
+        // console.log("새로운 채팅방 생성 성공");
+      } else {
+        console.log("요청 실패", response);
+        return "";
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const handleChange = (e: React.ChangeEvent) => {
     const { value, name } = e.target as HTMLInputElement;
     setInputs({ ...inputs, [name]: value });
@@ -26,17 +91,19 @@ const CommunityCreate = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    const response = await CreateGroupChat(inputs);
+
     const createdAt = Date.now();
     const userId = id;
-    //채팅 생성하려면 본인 제외 다른 참가자들의 id가 필요함.
-    //따라서 처음 글 생성할 당시에는 chatId가 존재할 수 없다... ㅜ
-    const chatId = "";
+    const chatId = response;
+
     await setCommunityData({
       ...inputs,
       userId,
       chatId,
       createdAt,
     });
+
     navigate("/community");
   };
 

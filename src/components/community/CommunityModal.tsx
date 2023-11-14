@@ -18,21 +18,16 @@ interface User {
   picture: string;
 }
 
-interface CreateChatRequestBody {
-  name: string;
-  users: string[];
-  isPrivate?: boolean;
-}
-
-interface ChatResponse {
+interface Response {
   id: string;
   name: string;
   users: User[];
   isPrivate: boolean;
   updatedAt: Date;
+  message?: string;
 }
 
-interface ParticipateChatRequestBody {
+interface RequestBody {
   chatId: string;
 }
 
@@ -53,73 +48,35 @@ const CommunityModal: FC<CommunityModalProps> = ({
   const [commonList, setCommonList] = useRecoilState(commonListState);
   const navigate = useNavigate();
 
-  const handleClickChatButton = async (item: CommonData) => {
+  const handleClickChatButton = async () => {
     const ACCESS_TOKEN = sessionStorage.getItem("accessToken");
 
-    if (item.chatId === "") {
-      //채팅방 새로 생성
-      try {
-        const requestBody: CreateChatRequestBody = {
-          name: item.title as string,
-          users: [item.userId as string],
-          isPrivate: false,
-        };
+    try {
+      const requestBody: RequestBody = {
+        chatId: item.chatId as string,
+      };
 
-        const response = await axios.post<ChatResponse>(
-          "https://fastcampus-chat.net/chat",
-          requestBody,
-          {
-            headers: {
-              "Content-Type": "application/json",
-              serverId: process.env.REACT_APP_SERVER_ID,
-              Authorization: `Bearer ${ACCESS_TOKEN}`,
-            },
+      const response = await axios.patch<Response>(
+        "https://fastcampus-chat.net/chat/participate",
+        requestBody,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            serverId: process.env.REACT_APP_SERVER_ID,
+            Authorization: `Bearer ${ACCESS_TOKEN}`,
           },
-        );
+        },
+      );
 
-        if (response.status === 200) {
-          console.log(response);
-          const newChatId = response.data.id;
-
-          //파이어베이스에 새로 생성된 chatId 저장
-          updateData(item.id, { chatId: newChatId });
-
-          handleClosePostModal();
-          navigate(`/chat?chatId=${newChatId}`);
-        } else {
-          console.log(response);
-          console.log("새로운 채팅방 생성 요청 실패");
-        }
-      } catch (error) {
-        console.log(error);
-        console.log("새로운 채팅방 생성 실패");
+      if (response.status === 200) {
+        console.log(response);
+        handleClosePostModal();
+        navigate(`/chat?chatId=${item.chatId}`);
+      } else {
+        console.log("그룹 채팅 참여하기 실패", response);
       }
-    } else {
-      //채팅 참여하기
-      try {
-        const requestBody: ParticipateChatRequestBody = {
-          chatId: item.chatId as string,
-        };
-
-        const response = await axios.patch<ChatResponse>(
-          "https://fastcampus-chat.net/chat/participate",
-          requestBody,
-          {
-            headers: {
-              "Content-Type": "application/json",
-              serverId: process.env.REACT_APP_SERVER_ID,
-              Authorization: `Bearer ${ACCESS_TOKEN}`,
-            },
-          },
-        );
-
-        if (response.status === 200) {
-          handleClosePostModal();
-          navigate(`/chat?chatId=${item.chatId}`);
-        }
-      } catch (error) {
-        console.log(error);
-      }
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -171,10 +128,12 @@ const CommunityModal: FC<CommunityModalProps> = ({
         <h1>{item.title}</h1>
         <p>{item.content}</p>
         <ButtonWrapper>
-          <GoToChatButton onClick={() => handleClickChatButton(item)}>
-            <img src={Chat} />
-            그룹 채팅 참여
-          </GoToChatButton>
+          {id !== item.userId && item.chatId !== "" && (
+            <GoToChatButton onClick={handleClickChatButton}>
+              <img src={Chat} />
+              그룹 채팅 참여
+            </GoToChatButton>
+          )}
 
           {id === item.userId && (
             <CommunityButtonWrapper>
