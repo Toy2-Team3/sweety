@@ -69,7 +69,6 @@ const CommunityModal: FC<CommunityModalProps> = ({
       );
 
       if (response.status === 200) {
-        console.log(response);
         handleClosePostModal();
         navigate(`/chat?chatId=${item.chatId}`);
       } else {

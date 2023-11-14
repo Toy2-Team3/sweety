@@ -66,7 +66,6 @@ const CommunityCreate = () => {
       );
 
       if (response.status === 200) {
-        console.log("요청 성공", response);
         return response.data.id;
       } else {
         console.log("요청 실패", response);
