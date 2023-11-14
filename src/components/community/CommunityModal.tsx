@@ -2,14 +2,39 @@ import React, { FC } from "react";
 import styled from "styled-components";
 import Close from "../../assets/close.png";
 import Chat from "../../assets/comments-solid.svg";
-import { CommonData } from "../../pages/CommunityListPage";
 import { useRecoilState } from "recoil";
 import { commonListState, idState } from "../../recoil/atoms";
 import { CommunityButtonWrapper } from "../../styles/community.style";
 import { useNavigate } from "react-router-dom";
-import { deleteData } from "../../utils/firebase";
+import { deleteData, updateData } from "../../utils/firebase";
 import AlertDialogModal from "./DeleteModal";
 import Button from "@mui/joy/Button";
+import axios from "axios";
+import { CommonData } from "../../pages/CommunityListPage";
+
+interface User {
+  id: string;
+  name: string;
+  picture: string;
+}
+
+interface CreateChatRequestBody {
+  name: string;
+  users: string[];
+  isPrivate?: boolean;
+}
+
+interface ChatResponse {
+  id: string;
+  name: string;
+  users: User[];
+  isPrivate: boolean;
+  updatedAt: Date;
+}
+
+interface ParticipateChatRequestBody {
+  chatId: string;
+}
 
 interface CommunityModalProps {
   item: CommonData;
@@ -27,6 +52,76 @@ const CommunityModal: FC<CommunityModalProps> = ({
   const [id] = useRecoilState(idState);
   const [commonList, setCommonList] = useRecoilState(commonListState);
   const navigate = useNavigate();
+
+  const handleClickChatButton = async (item: CommonData) => {
+    const ACCESS_TOKEN = sessionStorage.getItem("accessToken");
+
+    if (item.chatId === "") {
+      //채팅방 새로 생성
+      try {
+        const requestBody: CreateChatRequestBody = {
+          name: item.title as string,
+          users: [item.userId as string],
+          isPrivate: false,
+        };
+
+        const response = await axios.post<ChatResponse>(
+          "https://fastcampus-chat.net/chat",
+          requestBody,
+          {
+            headers: {
+              "Content-Type": "application/json",
+              serverId: process.env.REACT_APP_SERVER_ID,
+              Authorization: `Bearer ${ACCESS_TOKEN}`,
+            },
+          },
+        );
+
+        if (response.status === 200) {
+          console.log(response);
+          const newChatId = response.data.id;
+
+          //파이어베이스에 새로 생성된 chatId 저장
+          updateData(item.id, { chatId: newChatId });
+
+          handleClosePostModal();
+          navigate(`/chat?chatId=${newChatId}`);
+        } else {
+          console.log(response);
+          console.log("새로운 채팅방 생성 요청 실패");
+        }
+      } catch (error) {
+        console.log(error);
+        console.log("새로운 채팅방 생성 실패");
+      }
+    } else {
+      //채팅 참여하기
+      try {
+        const requestBody: ParticipateChatRequestBody = {
+          chatId: item.chatId as string,
+        };
+
+        const response = await axios.patch<ChatResponse>(
+          "https://fastcampus-chat.net/chat/participate",
+          requestBody,
+          {
+            headers: {
+              "Content-Type": "application/json",
+              serverId: process.env.REACT_APP_SERVER_ID,
+              Authorization: `Bearer ${ACCESS_TOKEN}`,
+            },
+          },
+        );
+
+        if (response.status === 200) {
+          handleClosePostModal();
+          navigate(`/chat?chatId=${item.chatId}`);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  };
 
   const handleDelete = async (id: string) => {
     try {
@@ -76,7 +171,7 @@ const CommunityModal: FC<CommunityModalProps> = ({
         <h1>{item.title}</h1>
         <p>{item.content}</p>
         <ButtonWrapper>
-          <GoToChatButton>
+          <GoToChatButton onClick={() => handleClickChatButton(item)}>
             <img src={Chat} />
             그룹 채팅 참여
           </GoToChatButton>

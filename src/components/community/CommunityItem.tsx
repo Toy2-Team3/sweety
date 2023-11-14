@@ -1,7 +1,7 @@
 import React, { FC, useState } from "react";
 import styled from "styled-components";
-import { CommonData } from "../../pages/CommunityListPage";
 import CommunityModal from "./CommunityModal";
+import { CommonData } from "../../pages/CommunityListPage";
 
 interface CommunityItemProps {
   item: CommonData;

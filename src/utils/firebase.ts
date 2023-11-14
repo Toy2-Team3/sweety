@@ -199,7 +199,7 @@ export const setCommunityData = async (
 //커뮤니티 데이터 업데이트
 export const updateData = async (
   docId: string,
-  props: Pick<CommunityData, "title" | "content" | "createdAt">,
+  props: Omit<CommunityData, "id">,
 ): Promise<void> => {
   const docRef = doc(db, "community", docId);
 
