@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { ReactComponent as Logo } from "../assets/sweetyLogo.svg";
 import { ReactComponent as Icon } from "../assets/sweetyIcon.svg";
 import { ReactComponent as HomeIcon } from "../assets/homeIcon.svg";
@@ -13,6 +13,8 @@ import { ReactComponent as ActivedCommunityIcon } from "../assets/activedCommuni
 import { ReactComponent as ActivedChatIcon } from "../assets/activedChattingIcon.svg";
 import { ReactComponent as ActivedMyPageIcon } from "../assets/activedMypageIcon.svg";
 import { ReactComponent as ActivedSettingIcon } from "../assets/activedSettingIcon.svg";
+import { useSetRecoilState } from "recoil";
+import { loginState } from "../recoil/atoms";
 
 const categories = [
   {
@@ -47,8 +49,17 @@ const categories = [
 
 export default function NavigationBar() {
   const navigate = useNavigate();
+  const location = useLocation();
   const [activeCategory, setActiveCategory] = useState("");
   const [isSettingClicked, setIsSettingClicked] = useState(false);
+  const setLogin = useSetRecoilState(loginState);
+
+  const logOut = async () => {
+    setLogin(false);
+    sessionStorage.removeItem("accessToken");
+    sessionStorage.removeItem("isLogin");
+    navigate("/");
+  };
 
   const handleCategoryClick = (categoryId: string) => {
     setActiveCategory(categoryId);
@@ -59,18 +70,19 @@ export default function NavigationBar() {
     setIsSettingClicked(!isSettingClicked);
   };
 
+  useEffect(() => {
+    setActiveCategory("home");
+  }, []);
+
   // 새로고침 시 저장되도록
   useEffect(() => {
-    const savedCategory = localStorage.getItem("activeCategory");
+    const savedCategory = location.pathname.replace("/", "");
+    console.log(savedCategory);
 
     if (savedCategory) {
       setActiveCategory(savedCategory);
     }
-  }, []);
-
-  useEffect(() => {
-    localStorage.setItem("activeCategory", activeCategory);
-  }, [activeCategory]);
+  }, [location]);
 
   return (
     <NavigationWrap>
@@ -101,8 +113,8 @@ export default function NavigationBar() {
       </TopDiv>
       <BottomDiv>
         <SettingBox $isClicked={isSettingClicked}>
-          <SettingMenu>로그아웃</SettingMenu>
-          <Divider />
+          <SettingMenu onClick={logOut}>로그아웃</SettingMenu>
+          <Divider></Divider>
           <SettingMenu>다른 설정...</SettingMenu>
         </SettingBox>
         <ClickedBox $isClicked={isSettingClicked}>
