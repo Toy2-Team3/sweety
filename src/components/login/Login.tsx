@@ -53,6 +53,7 @@ function Login() {
           const data = response.data.accessToken;
           sessionStorage.setItem("accessToken", data);
           sessionStorage.setItem("isLogin", "true");
+          sessionStorage.setItem("id", id);
           setLogin(true);
           updateTokenInUserCollection(id, data);
           navigate("/");
