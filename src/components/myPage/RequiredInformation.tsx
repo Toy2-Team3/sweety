@@ -1,13 +1,24 @@
 import styled, { DefaultTheme } from "styled-components";
-import { regions, genderOptions } from "../../constants/constant";
+import { regions, genderOptions, mbtiScore } from "../../constants/constant";
 import { isNameValid } from "../../utils/registerFunction";
 import { CorrectText, WarnText } from "../login/SignUpIDPW";
 import { isTallValid } from "../../utils/registerFunction";
-import { useRecoilValue } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 import { useEffect, useState } from "react";
 import { getUserData } from "../../utils/firebase";
 import {
-  idState,
+  alcoholState,
+  birthdayState,
+  idState, 
+  jobState, 
+  mbtiState, 
+  profileImageState, 
+  profileImageUrlState, 
+  selectedGenderState, 
+  selectedRegionState, 
+  smokingState, 
+  tallState, 
+  userNameState,
 } from "../../recoil/atoms";
 import {
   alcoholOptions,
@@ -22,19 +33,19 @@ interface SignUpSpecificProps {
 }
 
 export default function RequiredInformation({ theme }: SignUpSpecificProps) {
-  const [prevProfileImageUrl, setPrevProfileImageUrl] = useState("");
-  const [profileImage, setProfileImage] = useState<File | null>(null);
+  const [prevProfileImageUrl, setPrevProfileImageUrl] = useRecoilState(profileImageUrlState)
+  const [profileImage, setProfileImage] = useRecoilState(profileImageState)
 
-  const [profileImageUrl, setProfileImageUrl] = useState("");
-  const [userName, setUserName] = useState("");
-  const [birthday, setBirthday] =  useState("");
-  const [selectedGender, setSelectedGender] =  useState("");
-  const [selectedRegion, setSelectedRegion] =  useState("");
-  const [job, setJob] =  useState("");
-  const [tall, setTall] =  useState("");
-  const [mbti, setMbti] =  useState("");
-  const [alcohol, setAlcohol] =  useState("");
-  const [smoking, setSmoking] =  useState(false);
+  const [profileImageUrl, setProfileImageUrl] = useRecoilState(profileImageUrlState);
+  const [userName, setUserName] = useRecoilState(userNameState);
+  const [birthday, setBirthday] =  useRecoilState(birthdayState);
+  const [selectedGender, setSelectedGender] =  useRecoilState(selectedGenderState);
+  const [selectedRegion, setSelectedRegion] =  useRecoilState(selectedRegionState);
+  const [job, setJob] =  useRecoilState(jobState);
+  const [tall, setTall] =  useRecoilState(tallState);
+  const [mbti, setMbti] =  useRecoilState(mbtiState);
+  const [alcohol, setAlcohol] =  useRecoilState(alcoholState);
+  const [smoking, setSmoking] =  useRecoilState(smokingState);
   const id = useRecoilValue(idState);
 
   useEffect(() => {
@@ -43,7 +54,7 @@ export default function RequiredInformation({ theme }: SignUpSpecificProps) {
         return;
 
       const userData = await getUserData(id);
-      console.log(id, userData);
+      // console.log(id, userData);
       
       if(userData) {
         setProfileImageUrl(userData.profileUrl);

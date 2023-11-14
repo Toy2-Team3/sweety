@@ -2,8 +2,8 @@ import styled from "styled-components";
 import { useEffect, useState } from "react";
 import ToastMessage from "../common/ToastMessage";
 import { interested } from "../../constants/constant";
-import { idState } from "../../recoil/atoms";
-import { useRecoilValue } from "recoil";
+import { idState, interestedTagsState, introductionState } from "../../recoil/atoms";
+import { useRecoilState, useRecoilValue } from "recoil";
 import { getUserData } from "../../utils/firebase";
 
 interface TagProps {
@@ -12,8 +12,8 @@ interface TagProps {
 
 export default function OptionalInformation() {
   const [inputCount, setInputCount] = useState(0);
-  const [introduction, setIntroduction] = useState<string>("");
-  const [selectedTags, setSelectedTags] = useState<string[]>([]);
+  const [introduction, setIntroduction] = useRecoilState(introductionState);
+  const [selectedTags, setSelectedTags] = useRecoilState(interestedTagsState);
   const [showToast, setShowToast] = useState(false);
   const id = useRecoilValue(idState);
   
@@ -23,7 +23,7 @@ export default function OptionalInformation() {
         return;
 
       const userData = await getUserData(id);
-      console.log(id, userData);
+      // console.log(id, userData);
       
       if(userData) {
         setIntroduction(userData.introduction);
@@ -57,7 +57,7 @@ export default function OptionalInformation() {
       }, 2000);
       }
     }
-    console.log(introduction, selectedTags);
+    // console.log(introduction, selectedTags);
   };
 
   return (
