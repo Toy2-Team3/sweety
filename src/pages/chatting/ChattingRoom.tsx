@@ -1,11 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-
-interface ChattingRoomProps {
-  name: string;
-  online: boolean;
-  roomId: number;
-}
+import { ChattingRoomProps } from "../../types/chatting";
 
 const ChattingRoom = ({
   onClick,
@@ -13,29 +8,20 @@ const ChattingRoom = ({
   isCurrentRoom,
 }: {
   onClick: () => void;
-  data: ChattingRoomProps;
+  data: ChattingRoomProps | undefined;
   isCurrentRoom: boolean;
 }) => {
-  const StatusCircle = () => {
-    return (
-      <Circle
-        style={{ backgroundColor: data.online ? "#039f00" : "#9a9a9a" }}
-      />
-    );
-  };
-
   return (
     <ChattingRoomWrapper onClick={onClick} $isCurrentRoom={isCurrentRoom}>
-      <ChattingRoomName>{data.name}</ChattingRoomName>
+      <ChattingRoomName>{data?.name}</ChattingRoomName>
       <ChattingRoomStatus>
-        <StatusCircle />
-        {data.online ? "Online" : "Offline"}
       </ChattingRoomStatus>
     </ChattingRoomWrapper>
   );
 };
 
 const ChattingRoomWrapper = styled.div<{ $isCurrentRoom: boolean }>`
+  min-height: 63px;
   min-width: 264px;
   padding: 12px 0 11px 25px;
   border-bottom: 1px solid #c9c9c9;
@@ -61,12 +47,6 @@ const ChattingRoomStatus = styled.div`
   font-size: 14px;
   font-weight: 400;
   color: "#626262";
-`;
-
-const Circle = styled.div`
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
 `;
 
 export default ChattingRoom;

@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { Message } from "./ChattingSection";
+import { Message } from "../../types/chatting";
 
 const ChatBox = (item: Message) => {
   return (

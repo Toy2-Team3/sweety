@@ -1,6 +1,7 @@
 import styled from "styled-components";
-import ChattingRoomList, { ChattingRoomProps } from "./ChattingRoomList";
+import ChattingRoomList from "./ChattingRoomList";
 import ChattingSection from "./ChattingSection";
+import { ChattingRoomProps } from "../../types/chatting";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { useSearchParams } from "react-router-dom";

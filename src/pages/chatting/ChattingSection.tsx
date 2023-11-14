@@ -1,73 +1,31 @@
 import styled from "styled-components";
 import ChatBox from "./ChatBox";
-import defaultImage from "../../assets/ex.jpg";
 import ChattingTextarea from "./ChattingTextarea";
 import hamburgerButton from "../../assets/hamburger.svg";
 import exitButton from "../../assets/exitChattingRoom.svg";
-import ChattingRoomList, { ChattingRoomProps } from "./ChattingRoomList";
-import { useState, useEffect } from "react";
-
-export interface ChatProps {
-  isMine: boolean;
-  profileImage?: "*.jpg";
-  message: string;
-}
+import ChattingRoomList from "./ChattingRoomList";
+import { ChattingRoomProps, Message } from "../../types/chatting";
+import { useState, useEffect, useRef } from "react";
+import { getChattingRoomSocket } from "../../socket";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 
 const ChattingSection = ({
-  roomData,
-  currentRoomNumber,
-  setCurrentRoomNumber,
+  myRoomData,
 }: {
-  roomData: ChattingRoomProps[];
-  currentRoomNumber: number;
-  setCurrentRoomNumber: React.Dispatch<React.SetStateAction<number>>;
+  myRoomData: ChattingRoomProps[] | undefined;
 }) => {
-  const chatDummy: ChatProps[] = [
-    {
-      isMine: false,
-      profileImage: defaultImage,
-      message: "뭐하냐",
-    },
-    {
-      isMine: true,
-      message: "왜",
-    },
-    {
-      isMine: false,
-      profileImage: defaultImage,
-      message: "집에 가고싶다 집에 가고싶다 집에 가고싶다 집에 가고싶다",
-    },
-    {
-      isMine: false,
-      profileImage: defaultImage,
-      message: "집에 가고싶다 집에 가고싶다 집에 가고싶다 집에 가고싶다",
-    },
-    {
-      isMine: true,
-      message: "왜",
-    },
-    {
-      isMine: false,
-      profileImage: defaultImage,
-      message:
-        "배고프다 배고프다 배고프다 배고프다 배고프다 배고프다 배고프다 배고프다 배고프다 배고프다 배고프다 배고프다 배고프다 배고프다 배고프다 배고프다 배고프다 배고프다 배고프다 배고프다 배고프다 배고프다 배고프다 배고프다",
-    },
-    {
-      isMine: true,
-      message: "우우루먀ㅐ러ㅐ먀넝",
-    },
-    {
-      isMine: true,
-      message: "아라라라라랄ㄹ",
-    },
-    {
-      isMine: false,
-      profileImage: defaultImage,
-      message: "집에 가고싶다 집에 가고싶다 집에 가고싶다 집에 가고싶다",
-    },
-  ];
-
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const chatId = searchParams.get("chatId");
+  const currentRoom = myRoomData?.find((room) => room.id === chatId);
+  const currentRoomName = currentRoom ? currentRoom.name : "";
+  const [chatMessages, setChatMessages] = useState<Message[]>([]);
+  const [newMessages, setNewMessages] = useState<Message>();
   const [showRoomList, setShowRoomList] = useState<boolean>(false);
+  const [chatSocket, setChatSocket] = useState(getChattingRoomSocket(chatId));
+  const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handleResize = () => {
@@ -76,19 +34,85 @@ const ChattingSection = ({
       }
     };
     window.addEventListener("resize", handleResize);
+
     return () => {
       window.removeEventListener("resize", handleResize);
     };
   }, []);
+
+  useEffect(() => {
+    setChatMessages([]);
+    const getSocket = () => {
+      setChatSocket(getChattingRoomSocket(chatId));
+    };
+    getSocket();
+  }, [chatId]);
+
+  useEffect(() => {
+    const getPrevMessage = () => {
+      if (chatSocket) {
+        chatSocket.emit("fetch-messages");
+        chatSocket.on("messages-to-client", (data) => {
+          setChatMessages(data.messages);
+        });
+        chatSocket.on("message-to-client", (data: Message) => {
+          setNewMessages(data);
+        });
+        chatSocket.on("join", () => {
+          // console.log("join", data);
+        });
+        chatSocket.on("leave", () => {
+          // console.log("leave", data);
+        });
+        chatSocket.on("users-to-client", () => {
+          // console.log("users-to-client", data);
+        });
+      }
+    };
+    getPrevMessage();
+  }, [chatSocket]);
+
+  useEffect(() => {
+    if (newMessages) setChatMessages((prev) => [...prev, newMessages]);
+  }, [newMessages]);
+
+  useEffect(() => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+    }
+  }, [chatMessages]);
+
+  const sendMessageAPI = (message: string) => {
+    chatSocket?.emit("message-to-server", message);
+  };
+
+  const onExit = async () => {
+    if (window.confirm("정말 채팅방을 나가시겠습니까?")) {
+      const res = await axios.patch(
+        "https://fastcampus-chat.net/chat/leave",
+        { chatId: `${chatId}` },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            serverId: `${process.env.REACT_APP_SERVER_ID}`,
+            Authorization: `Bearer ${sessionStorage.getItem("accessToken")}`,
+          },
+        },
+      );
+      if (res.status === 200 && myRoomData) {
+        setTimeout(() => navigate(`/chat`), 500);
+      }
+    } else {
+      console.log("취소");
+    }
+  };
 
   return (
     <MainContainer>
       <div className="chatting-room-controller">
         {showRoomList && (
           <ChattingRoomList
-            roomData={roomData}
-            currentRoomNumber={currentRoomNumber}
-            setCurrentRoomNumber={setCurrentRoomNumber}
+            myRoomData={myRoomData}
             setShowRoomList={setShowRoomList}
           />
         )}
@@ -101,16 +125,16 @@ const ChattingSection = ({
           src={hamburgerButton}
           alt=""
         />
-        <h1>{roomData[currentRoomNumber].name}</h1>
-        <img src={exitButton} alt="" />
+        <h1>{currentRoomName}</h1>
+        <img onClick={onExit} src={exitButton} alt="" />
       </Header>
       <div onClick={() => setShowRoomList(false)}>
-        <ChattingViewArea>
-          {chatDummy.map((item, index) => {
+        <ChattingViewArea ref={scrollRef}>
+          {chatMessages.map((item, index) => {
             return <ChatBox key={index} {...item} />;
           })}
         </ChattingViewArea>
-        <ChattingTextarea />
+        <ChattingTextarea sendMessageAPI={sendMessageAPI} />
       </div>
     </MainContainer>
   );
