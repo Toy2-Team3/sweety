@@ -11,11 +11,12 @@ const ChattingRoom = ({
   data: ChattingRoomProps | undefined;
   isCurrentRoom: boolean;
 }) => {
-  return (
+  return data === undefined ? (
+    <NoChattingRoom>현재 참여중인 채팅방이 없어요</NoChattingRoom>
+  ) : (
     <ChattingRoomWrapper onClick={onClick} $isCurrentRoom={isCurrentRoom}>
       <ChattingRoomName>{data?.name}</ChattingRoomName>
-      <ChattingRoomStatus>
-      </ChattingRoomStatus>
+      <ChattingRoomStatus></ChattingRoomStatus>
     </ChattingRoomWrapper>
   );
 };
@@ -47,6 +48,15 @@ const ChattingRoomStatus = styled.div`
   font-size: 14px;
   font-weight: 400;
   color: "#626262";
+`;
+
+const NoChattingRoom = styled.div`
+  position: absolute;
+  text-align: center;
+  width: 100%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 `;
 
 export default ChattingRoom;

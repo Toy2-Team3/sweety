@@ -24,26 +24,38 @@ const ChattingRoomList = ({
   return (
     <MainContainer>
       <PaddingBox />
-      {myRoomData?.map((item, index) => {
-        const isCurrentRoom = item.id === chatId;
-        return (
-          <ChattingRoom
-            onClick={
-              isCurrentRoom
-                ? () => {}
-                : () => {
-                    navigate(`/chat?chatId=${item.id}`);
-                    if (setShowRoomList) {
-                      setShowRoomList(false);
+      {myRoomData && myRoomData?.length > 0 ? (
+        myRoomData.map((item, index) => {
+          const isCurrentRoom = item.id === chatId;
+          return (
+            <ChattingRoom
+              onClick={
+                isCurrentRoom
+                  ? () => {}
+                  : () => {
+                      navigate(`/chat?chatId=${item.id}`);
+                      if (setShowRoomList) {
+                        setShowRoomList(false);
+                      }
                     }
-                  }
+              }
+              key={index}
+              data={item}
+              isCurrentRoom={isCurrentRoom}
+            />
+          );
+        })
+      ) : (
+        <ChattingRoom
+          onClick={() => {
+            if (setShowRoomList) {
+              setShowRoomList(false);
             }
-            key={index}
-            data={item}
-            isCurrentRoom={isCurrentRoom}
-          />
-        );
-      })}
+          }}
+          isCurrentRoom={false}
+          data={undefined}
+        />
+      )}
     </MainContainer>
   );
 };
@@ -56,6 +68,7 @@ const MainContainer = styled.div`
   flex-shrink: 0;
   background-color: white;
   height: 100vh;
+  position: relative;
 
   @media screen and (max-width: 1024px) {
     position: absolute;

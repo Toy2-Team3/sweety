@@ -129,12 +129,20 @@ const ChattingSection = ({
         <img onClick={onExit} src={exitButton} alt="" />
       </Header>
       <div onClick={() => setShowRoomList(false)}>
-        <ChattingViewArea ref={scrollRef}>
-          {chatMessages.map((item, index) => {
-            return <ChatBox key={index} {...item} />;
-          })}
-        </ChattingViewArea>
-        <ChattingTextarea sendMessageAPI={sendMessageAPI} />
+        {chatId ? (
+          <>
+            <ChattingViewArea ref={scrollRef}>
+              {chatMessages.map((item, index) => {
+                return <ChatBox key={index} {...item} />;
+              })}
+            </ChattingViewArea>
+            <ChattingTextarea sendMessageAPI={sendMessageAPI} />
+          </>
+        ) : (
+          <ChattingViewArea>
+            <NotEnterRoom>채팅방에 입장해 주세요</NotEnterRoom>
+          </ChattingViewArea>
+        )}
       </div>
     </MainContainer>
   );
@@ -187,8 +195,8 @@ const Header = styled.header`
   }
 
   @media screen and (max-width: 1024px) {
-    width: calc(100% - 104px);
-    left: 104px;
+    width: calc(100% - 99px);
+    left: 99px;
 
     > img:first-child {
       display: block;
@@ -217,6 +225,16 @@ const Header = styled.header`
     @media screen and (max-width: 480px) {
       font-size: 18px;
     }
+  }
+`;
+
+const NotEnterRoom = styled.div`
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  @media screen and (max-width: 480px) {
+    top: 60%;
   }
 `;
 
