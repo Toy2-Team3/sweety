@@ -4,19 +4,21 @@ import ByeModal from "../components/myPage/ByeModal";
 import OptionalInformation from "../components/myPage/OptionalInformation";
 import RequiredInformation from "../components/myPage/RequiredInformation";
 import theme from "../styles/theme";
-import { useRecoilValue } from "recoil";
-import { idState, profileImageUrlState, userNameState, introductionState, interestedTagsState, selectedRegionState, tallState, mbtiState, jobState, alcoholState, smokingState } from "../recoil/atoms";
-import { getUserData } from "../utils/firebase";
+import { useRecoilState, useRecoilValue } from "recoil";
+import { profileImageUrlState, userNameState, introductionState, interestedTagsState, selectedRegionState, tallState, mbtiState, jobState, alcoholState, smokingState, profileImageState } from "../recoil/atoms";
+import { UploadImage, getImageDownloadURL, getUserData, updateUserData } from "../utils/firebase";
 import { UserData } from "../constants/constant";
+import ToastMessage from "../components/common/ToastMessage";
 
-type MypageUserData = Omit<UserData, "password" | "token" | "myChats" | "status">;
+export type MypageUserData = Partial<UserData>;
 
 export default function MyPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [atBottom, setAtBottom] = useState(false);
-  const id = useRecoilValue(idState); 
-  const profileUrl = useRecoilValue(profileImageUrlState);
-  const nickName = useRecoilValue(userNameState);
+  const id = sessionStorage.getItem('id');
+  const [profileImage, setProfileImage] = useRecoilState(profileImageState);
+  const [profileImageUrl, setProfileImageUrl] = useRecoilState(profileImageUrlState); 
+  const userName = useRecoilValue(userNameState);
   const region = useRecoilValue(selectedRegionState);
   const tall = useRecoilValue(tallState);
   const mbti = useRecoilValue(mbtiState);
@@ -27,15 +29,43 @@ export default function MyPage() {
   const interestedTags = useRecoilValue(interestedTagsState);
   const [userData, setUserData] = useState<MypageUserData | undefined>();
   const [isChanged, setIsChanged] = useState(false);
+  const [isImageChanged, setIsImageChanged] = useState(false);
+  const [showToast, setShowToast] = useState(false);
+  
+  const checkIsChanged = (isImageChanged: boolean, 
+                          userName: string, 
+                          region: string, 
+                          tall: string, 
+                          mbti: string, 
+                          job: string, 
+                          alcohol: string, 
+                          smoking: boolean, 
+                          introduction: string, 
+                          interestedTags: string[]) => {
+    if(userData) {
+      if(isImageChanged
+        || userData.nickName !== userName
+        || userData.region !== region
+        || String(userData.tall) !== tall
+        || userData.mbti !== mbti
+        || userData.job !== job
+        || userData.alcohol !== alcohol
+        || userData.smoking !== smoking
+        || userData.introduction !== introduction
+        || `${userData.interested}` !== `${interestedTags}`) {
+          setIsChanged(true);
+      } else {
+        setIsChanged(false);
+      }
+    }
+    // console.log(isChanged);
+  }
 
-  useEffect(() => {
-    const getUserInformation = async (id: string): Promise<void> => {  
-      if(!id)
-        return;
-
+  const getUserInformation = async (): Promise<void> => {
+    if(id) {
       const fetchedData = await getUserData(id);
 
-      if(fetchedData) {
+      if (fetchedData) {
         const userData: MypageUserData = {
           job: fetchedData.job,
           tall: fetchedData.tall,
@@ -52,46 +82,29 @@ export default function MyPage() {
           userId: fetchedData.userId,
         };
         setUserData(userData);
-        // console.log(userData);
+        checkIsChanged(
+          isImageChanged,
+          userName,
+          region,
+          tall,
+          mbti,
+          job,
+          alcohol,
+          smoking,
+          introduction,
+          interestedTags
+        );
       }
     }
-
-    getUserInformation(id);
-  }, [id])
-
-  const checkIsChanged = (profileUrl: string, 
-                          nickName: string, 
-                          region: string, 
-                          tall: string, 
-                          mbti: string, 
-                          job: string, 
-                          alcohol: string, 
-                          smoking: boolean, 
-                          introduction: string, 
-                          interestedTags: string[]) => {
-    if(userData) {
-      if(userData.profileUrl !== profileUrl
-        || userData.nickName !== nickName 
-        || userData.region !== region
-        || String(userData.tall) !== tall
-        || userData.mbti !== mbti
-        || userData.job !== job
-        || userData.alcohol !== alcohol
-        || userData.smoking !== smoking
-        || userData.introduction !== introduction
-        || `${userData.interested}` !== `${interestedTags}`) {
-          console.log(`바뀜`);
-          console.log(isChanged);
-          setIsChanged(true);
-      } else {
-        setIsChanged(false);
-      }
-    }
-  }
+  };
 
   useEffect(() => {
-    checkIsChanged(profileUrl, nickName, region, tall, mbti, job, alcohol, smoking, introduction, interestedTags);
-  }, [profileUrl, nickName, region, tall, mbti, job, alcohol, smoking, introduction, interestedTags]);
+    getUserInformation();
+  }, [id, isImageChanged, userName, region, tall, mbti, job, alcohol, smoking, introduction, interestedTags]);
+
+  const handleImageChange = () => {
+    setIsImageChanged(true);
+  };
 
   const handleOpenModal = () => {
     setIsModalOpen(true);
@@ -112,32 +125,88 @@ export default function MyPage() {
       window.removeEventListener("scroll", handleScrolling);
     };
   }, []);
+  
+  // 이미지 업로드
+  const updateProfileImage = async () => {
+    if(id) {
+      UploadImage({ imageName: id, file: profileImage as File });
+      setProfileImage(profileImage);
+      const imageUrl = await getImageDownloadURL(id);  
+      setProfileImageUrl(imageUrl);
+    }
+  }
 
-  // TODO : 
-  // default 정보: 파이어베이스에서 가져온 회원 정보 => O
-  // 하나의 값이라도 수정한다면 버튼 색 바뀌도록 => O
-  // 프로필 수정 버튼 클릭 시 변경된 정보 파이어베이스 및 서버로 전송
-  
-  
+  const updateMyPageData = async () => {
+    if(!isChanged)
+      return;
+
+    try {
+      if(userData && id) {
+        // 이미지 업로드
+        await updateProfileImage();
+        setIsImageChanged(false);
+        
+        // 수정한 데이터 업데이트
+        const changedUserData: MypageUserData = {
+          profileUrl: profileImageUrl,
+          nickName: userName,
+          region: region,
+          tall: tall,
+          mbti: mbti,
+          job: job,
+          alcohol: alcohol,
+          smoking: smoking,
+          introduction: introduction,
+          interested: interestedTags,
+        };
+        
+        setUserData(changedUserData);
+
+        // 파이어베이스에 업데이트
+        await updateUserData(id, userData);
+        console.log(`${id}의 정보가 수정되었습니다.`);
+        setIsChanged(false);
+        setShowToast(true);
+
+        setTimeout(() => {
+          setShowToast(false);
+          window.location.reload();
+        }, 2000);
+
+      }
+    } catch (error) {
+      console.log(`[ERROR]: ${error}`)
+    }
+  };
+
+    // TODO : 
+    // default 정보: 파이어베이스에서 가져온 회원 정보 => O
+    // 하나의 값이라도 수정한다면 버튼 색 바뀌도록 => O
+    // 프로필 수정 버튼 클릭 시 변경된 정보 파이어베이스 및 서버로 전송 => 파이어베이스만 O
+
 
   return (
     <PageWrap>
       <SaveButtonWrap>
         {
           !atBottom && 
-            <SaveButton $isChanged={isChanged}>
+            <SaveButton $isChanged={isChanged} onClick={updateMyPageData}>
               프로필 수정
             </SaveButton>
         }
       </SaveButtonWrap>
       <InformationWrap>
-        <RequiredInformation theme={theme}/>
+        <RequiredInformation 
+          theme={theme}
+          onImageChange={handleImageChange}
+        />
         <OptionalInformation />
       </InformationWrap>
       {
         atBottom && 
           <SaveButton
             $isChanged={isChanged}
+            onClick={updateMyPageData}
             style={{marginTop: '-5.5rem', marginBottom: '5rem'}}
           >
             프로필 수정
@@ -155,6 +224,12 @@ export default function MyPage() {
             />
         }
       </ByeButtonWrap>
+      {
+        showToast &&
+          <ToastMessage 
+            content="프로필 정보가 수정되었습니다."
+          />
+      }
     </PageWrap>
   )
 }

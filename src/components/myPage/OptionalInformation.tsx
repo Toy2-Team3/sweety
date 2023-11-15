@@ -2,8 +2,8 @@ import styled from "styled-components";
 import { useEffect, useState } from "react";
 import ToastMessage from "../common/ToastMessage";
 import { interested } from "../../constants/constant";
-import { idState, interestedTagsState, introductionState } from "../../recoil/atoms";
-import { useRecoilState, useRecoilValue } from "recoil";
+import { interestedTagsState, introductionState } from "../../recoil/atoms";
+import { useRecoilState } from "recoil";
 import { getUserData } from "../../utils/firebase";
 
 interface TagProps {
@@ -15,24 +15,22 @@ export default function OptionalInformation() {
   const [introduction, setIntroduction] = useRecoilState(introductionState);
   const [selectedTags, setSelectedTags] = useRecoilState(interestedTagsState);
   const [showToast, setShowToast] = useState(false);
-  const id = useRecoilValue(idState);
-  
-  useEffect(() => {
-    const getUserInformation = async (id: string): Promise<void> => {  
-      if(!id)
-        return;
+  const id = sessionStorage.getItem("id");
 
+  const getUserInformation = async (): Promise<void> => {
+    if(id) {
       const userData = await getUserData(id);
-      // console.log(id, userData);
-      
-      if(userData) {
+
+      if (userData) {
         setIntroduction(userData.introduction);
         setSelectedTags(userData.interested);
-      } 
+      }
     }
-  
-    getUserInformation(id);
-  }, [id])
+  };
+
+  useEffect(() => {
+    getUserInformation();
+  }, [id]);
 
   const handleIntroductionInput = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setInputCount(e.target.value.length);
@@ -54,10 +52,9 @@ export default function OptionalInformation() {
 
         setTimeout(() => {
           setShowToast(false);
-      }, 2000);
+        }, 2000);
       }
     }
-    // console.log(introduction, selectedTags);
   };
 
   return (

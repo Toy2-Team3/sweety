@@ -1,19 +1,17 @@
 import styled, { DefaultTheme } from "styled-components";
-import { regions, genderOptions, mbtiScore } from "../../constants/constant";
+import { regions, genderOptions } from "../../constants/constant";
 import { isNameValid } from "../../utils/registerFunction";
 import { CorrectText, WarnText } from "../login/SignUpIDPW";
 import { isTallValid } from "../../utils/registerFunction";
-import { useRecoilState, useRecoilValue } from "recoil";
+import { useRecoilState } from "recoil";
 import { useEffect, useState } from "react";
 import { getUserData } from "../../utils/firebase";
 import {
   alcoholState,
   birthdayState,
-  idState, 
   jobState, 
   mbtiState, 
   profileImageState, 
-  profileImageUrlState, 
   selectedGenderState, 
   selectedRegionState, 
   smokingState, 
@@ -32,11 +30,11 @@ interface SignUpSpecificProps {
   theme: DefaultTheme;
 }
 
-export default function RequiredInformation({ theme }: SignUpSpecificProps) {
-  const [prevProfileImageUrl, setPrevProfileImageUrl] = useRecoilState(profileImageUrlState)
-  const [profileImage, setProfileImage] = useRecoilState(profileImageState)
-
-  const [profileImageUrl, setProfileImageUrl] = useRecoilState(profileImageUrlState);
+export default function RequiredInformation({ theme, onImageChange }: SignUpSpecificProps & { onImageChange: () => void }) {
+  const [prevProfileImageUrl, setPrevProfileImageUrl] = useState("")
+  const [, setProfileImage] = useRecoilState(profileImageState)
+  const [newProfileImageUrl, setNewProfileImageUrl] = useState("");
+  const [isUploaded, setIsUploaded] = useState(false);
   const [userName, setUserName] = useRecoilState(userNameState);
   const [birthday, setBirthday] =  useRecoilState(birthdayState);
   const [selectedGender, setSelectedGender] =  useRecoilState(selectedGenderState);
@@ -46,52 +44,47 @@ export default function RequiredInformation({ theme }: SignUpSpecificProps) {
   const [mbti, setMbti] =  useRecoilState(mbtiState);
   const [alcohol, setAlcohol] =  useRecoilState(alcoholState);
   const [smoking, setSmoking] =  useRecoilState(smokingState);
-  const id = useRecoilValue(idState);
+  const id = sessionStorage.getItem('id');
 
-  useEffect(() => {
-    const getUserInformation = async (id: string): Promise<void> => {  
-      if(!id)
-        return;
-
+  const getUserInformation = async (): Promise<void> => {
+    if(id) {
       const userData = await getUserData(id);
-      // console.log(id, userData);
-      
-      if(userData) {
-        setProfileImageUrl(userData.profileUrl);
+
+      if (userData) {
+        setPrevProfileImageUrl(userData.profileUrl);
         setUserName(userData.nickName);
+        setAlcohol(userData.alcohol);
         setBirthday(userData.birth);
         setSelectedGender(userData.gender);
         setSelectedRegion(userData.region);
         setJob(userData.job);
         setTall(userData.tall);
         setMbti(userData.mbti);
-        setAlcohol(userData.alcohol);
         setSmoking(userData.smoking);
-      } 
+      }
     }
-  
-    getUserInformation(id);
-  }, [id])
+  };
+
+  useEffect(() => {
+    getUserInformation();
+  }, [id]);
 
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
     if (files && files.length > 0) {
       const imageFile = files[0];
       setProfileImage(imageFile);
+      setNewProfileImageUrl(URL.createObjectURL(imageFile));
+      onImageChange();
+      setIsUploaded(true);
     }
   };
-
-  useEffect(() => {
-    if (profileImage) {
-      setPrevProfileImageUrl(URL.createObjectURL(profileImage));
-    }
-  }, [profileImage]);
 
   return (
     <RequiredInformationWrap>
       <ProfileWrapper>
         <ProfileUploadLabel
-          backgroundImage={profileImageUrl}
+          backgroundImage={isUploaded ? newProfileImageUrl : prevProfileImageUrl}
           htmlFor="profile"
         >
         </ProfileUploadLabel>
