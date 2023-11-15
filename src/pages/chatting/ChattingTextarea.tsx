@@ -2,7 +2,11 @@ import { useState, ChangeEvent, useRef, useEffect } from "react";
 import styled from "styled-components";
 import SendChat from "../../assets/sendChatIcon.svg";
 
-const ChattingTextarea = () => {
+const ChattingTextarea = ({
+  sendMessageAPI,
+}: {
+  sendMessageAPI: (message: string) => void;
+}) => {
   const [message, setMessage] = useState<string>("");
 
   const handleMessageChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
@@ -26,10 +30,12 @@ const ChattingTextarea = () => {
 
   const [isSending, setIsSending] = useState<boolean>(false);
   const sendMessage = async () => {
+    const textarea = textareaRef.current;
     try {
       setIsSending(true);
-      // await api 호출 응답 기다리긔
-      console.log("메세지 전송: " + message);
+      sendMessageAPI(message);
+      setMessage("");
+      if (textarea) textarea.style.height = "55px";
       setIsSending(false);
     } catch (e) {
       console.log(e);
@@ -39,6 +45,7 @@ const ChattingTextarea = () => {
   return (
     <InputContainer>
       <textarea
+        placeholder="메세지를 입력해주세요"
         ref={textareaRef}
         maxLength={255}
         value={message}
@@ -76,19 +83,22 @@ const InputContainer = styled.div`
   textarea {
     font-family: Arial, Helvetica, sans-serif;
     width: 100%;
-    padding: 12px 24px;
+    padding: 14px 24px;
     resize: none;
     border-radius: 30px;
     border: 1px solid #c6c6c6;
     background: #fff;
     outline: none;
-    font-size: 20px;
+    font-size: 16px;
     font-style: normal;
     font-weight: 400;
     max-height: 70px;
 
     &:focus {
       border: 1px solid #d94e28;
+    }
+    &::placeholder {
+      font-size: 16px;
     }
   }
 
