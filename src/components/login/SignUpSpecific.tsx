@@ -3,7 +3,7 @@ import { regions, genderOptions, ButtonProps } from "../../constants/constant";
 import { calculateMaxDate, isNameValid } from "../../utils/registerFunction";
 import { ReactComponent as SweetLogo } from "../../assets/sweetyLogo.svg";
 import { CorrectText, GreetingText, WarnText } from "./SignUpIDPW";
-import styled, { DefaultTheme } from "styled-components";
+import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import SignUpStepper from "./SignUpStepper";
 import { Container } from "./StartPage";
@@ -19,12 +19,13 @@ import {
   selectedRegionState,
   userNameState,
 } from "../../recoil/atoms";
+import { InputWrapper } from "./Login";
 
-interface SignUpSpecificProps {
-  theme: DefaultTheme;
+interface GenderButtonProps {
+  selected: boolean;
 }
 
-function SignUpSpecific({ theme }: SignUpSpecificProps) {
+function SignUpSpecific() {
   const [prevProfileImageUrl, setPrevProfileImageUrl] = useState("");
   const [profileImage, setProfileImage] = useRecoilState(profileImageState);
   const [activeStep, setActiveStep] = useRecoilState(activeStepState);
@@ -70,7 +71,7 @@ function SignUpSpecific({ theme }: SignUpSpecificProps) {
   }, [profileImage]);
 
   return id && pw ? (
-    <Container style={{ gap: "30px", marginTop: "30px" }}>
+    <Container gap="16px" marginTop="30px">
       <SignUpStepper />
       <GreetingText>회원가입</GreetingText>
       <ProfileWrapper>
@@ -78,14 +79,7 @@ function SignUpSpecific({ theme }: SignUpSpecificProps) {
           backgroundImage={prevProfileImageUrl || ""}
           htmlFor="profile"
         >
-          {profileImage ? null : (
-            <ProfileCamera
-              style={{
-                width: "50px",
-                height: "50px",
-              }}
-            />
-          )}
+          {profileImage ? null : <ProfileCamera />}
         </ProfileUploadLabel>
         <ProfileInput
           type="file"
@@ -94,7 +88,7 @@ function SignUpSpecific({ theme }: SignUpSpecificProps) {
           accept=".jpg, .jpeg, .png"
         />
       </ProfileWrapper>
-      <div style={{ position: "relative" }}>
+      <InputWrapper>
         <p>닉네임</p>
         <NameInput
           placeholder="닉네임을 입력해주세요"
@@ -108,7 +102,7 @@ function SignUpSpecific({ theme }: SignUpSpecificProps) {
             <WarnText>영문, 한글 조합 20자 이하입니다</WarnText>
           )
         ) : null}
-      </div>
+      </InputWrapper>
       <TwoColumnWrapper>
         <div>
           <p>생년월일</p>
@@ -125,13 +119,7 @@ function SignUpSpecific({ theme }: SignUpSpecificProps) {
             <GenderButton
               key={option.value}
               onClick={() => setSelectedGender(option.value)}
-              style={{
-                background:
-                  selectedGender === option.value
-                    ? theme.color.primary
-                    : theme.color.darkGray,
-                marginRight: "9px",
-              }}
+              selected={selectedGender === option.value}
             >
               {option.label}
             </GenderButton>
@@ -149,15 +137,9 @@ function SignUpSpecific({ theme }: SignUpSpecificProps) {
           defaultValue=""
           onChange={(e) => setSelectedRegion(e.target.value)}
         >
-          <option
-            value=""
-            disabled
-            selected
-            hidden
-            style={{ color: theme.color.darkGray }}
-          >
+          <DefaultOption value="" disabled selected hidden>
             거주지역을 선택해주세요
-          </option>
+          </DefaultOption>
           {regions.map((region) => (
             <OptionBox key={region.value} value={region.value}>
               {region.label}
@@ -237,6 +219,7 @@ export const TwoColumnWrapper = styled.div`
   flex-direction: row;
   justify-content: space-between;
   width: 340px;
+  margin-bottom: 16px;
 `;
 
 const Birthday = styled.input`
@@ -252,17 +235,19 @@ const Birthday = styled.input`
   }
 `;
 
-const GenderButton = styled.button`
+const GenderButton = styled.button<GenderButtonProps>`
   width: 60px;
   height: 50px;
   border-radius: 12px;
   border: none;
   cursor: pointer;
-  background: ${(props) => props.theme.color.darkGray};
+  background: ${(props) =>
+    props.selected ? props.theme.color.primary : props.theme.color.darkGray};
+  margin-right: 9px;
 `;
 
-export const SelectBox = styled.select`
-  width: 340px;
+export const SelectBox = styled.select<{ width?: string }>`
+  width: ${(props) => props.width || "340px"};
   height: 50px;
   border-radius: 12px;
   border: 1px solid ${(props) => props.theme.color.borderGray};
@@ -280,6 +265,10 @@ export const OptionBox = styled.option`
   border-radius: 12px;
   border: 1px solid ${(props) => props.theme.color.borderGray};
   background: #fff;
+`;
+
+export const DefaultOption = styled.option`
+  color: ${(props) => props.theme.color.darkGray};
 `;
 
 const SignUpButton = styled.button<ButtonProps>`

@@ -86,7 +86,7 @@ function Login() {
           placeholder="아이디를 입력해주세요."
         />
       </InputWrapper>
-      <InputWrapper style={{ position: "relative" }}>
+      <InputWrapper>
         <p>비밀번호</p>
         <IdPwInput
           type={showPw ? "text" : "password"}
@@ -100,7 +100,7 @@ function Login() {
           {showPw ? "🙂" : "😌"}
         </ShowPasswordButton>
       </InputWrapper>
-      <div style={{ position: "relative" }}>
+      <InputWrapper>
         <LoginButton
           id={id}
           pw={pw}
@@ -116,7 +116,7 @@ function Login() {
         ) : id && pw && wrong ? (
           <WarnText>아이디 및 비밀번호를 다시 확인해주세요</WarnText>
         ) : null}
-      </div>
+      </InputWrapper>
 
       <RegisterLink onClick={() => navigate("/signup1")}>
         회원가입하러 가기
@@ -125,8 +125,9 @@ function Login() {
   );
 }
 
-export const InputWrapper = styled.div`
-  margin: 10px 0 15px;
+export const InputWrapper = styled.div<{ margin?: string }>`
+  margin: ${(props) => props.margin || "10px 0 15px"};
+  position: relative;
 `;
 
 export const IdPwInput = styled.input`

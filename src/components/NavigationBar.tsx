@@ -58,6 +58,7 @@ export default function NavigationBar() {
     setLogin(false);
     sessionStorage.removeItem("accessToken");
     sessionStorage.removeItem("isLogin");
+    sessionStorage.removeItem("id");
     navigate("/");
   };
 
