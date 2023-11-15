@@ -1,6 +1,9 @@
 import styled from "styled-components";
 import { ReactComponent as SweetLogo } from "../../assets/sweetyLogo.svg";
 import { useNavigate } from "react-router-dom";
+import homeIntroImage from "../../assets/homeIntro.png";
+import communityIntroImage from "../../assets/communityIntro.png";
+import myPageIntroImage from "../../assets/myPageIntro.png";
 
 function IntroPage() {
   const navigate = useNavigate();
@@ -19,7 +22,6 @@ function IntroPage() {
             style={{
               display: "flex",
               flexDirection: "column",
-
               alignItems: "center",
             }}
           >
@@ -30,7 +32,7 @@ function IntroPage() {
               sweety 이용하러 가기
             </SweetyButton>
           </div>
-          <SweetLogo path={{ width: "350px" }} />
+          <SweetLogo />
         </div>
       </Header>
       <Content>
@@ -39,7 +41,11 @@ function IntroPage() {
             <p>나와 잘 맞는지 궁금하니까</p>
           </div>
           <div style={{ display: "flex", flexDirection: "row" }}>
-            <Box>모바일 홈화면 디테일 모달 이미지</Box>
+            <img
+              src={homeIntroImage}
+              alt="Description"
+              style={{ width: "250px", height: "auto" }}
+            />
             <Box>
               <p>
                 쉽고 빠른 채팅, 마음에 드는 상대가 있나요?, 채팅 버튼을 눌러,
@@ -57,12 +63,20 @@ function IntroPage() {
               함께하면 즐거우니까, 자유로우면서 다양한, 주제로 사람들과, 소통할
               수 있어요.
             </Box>
-            <Box>커뮤니티 모달이미지</Box>
+            <img
+              src={communityIntroImage}
+              alt="Description"
+              style={{ width: "400px", height: "auto" }}
+            />
           </div>
         </div>
         <div>
           <div style={{ display: "flex", flexDirection: "row" }}>
-            <Box>마이페이지 수정 이미지</Box>
+            <img
+              src={myPageIntroImage}
+              alt="Description"
+              style={{ width: "400px", height: "auto" }}
+            />
             <Box>
               관심사 추가하기, 비슷한 관심사가 있다면, 대화가 더 쉬워져요.
             </Box>
