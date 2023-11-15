@@ -108,7 +108,7 @@ const CommunityList = () => {
 export default CommunityList;
 
 const Wrapper = styled.div`
-  width: calc(100vw - 300px);
+  width: calc(100vw - 315px);
   padding: 5rem;
 
   display: flex;

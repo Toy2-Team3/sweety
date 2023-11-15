@@ -44,6 +44,7 @@ const CommunityItem: FC<CommunityItemProps> = ({
       {isPostModalOpen && (
         <CommunityModal
           item={item}
+          isPostModalOpen={isPostModalOpen}
           handleClosePostModal={handleClosePostModal}
           setShowToastMsg={setShowToastMsg}
           setToastMsg={setToastMsg}

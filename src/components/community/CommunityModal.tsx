@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC, useEffect } from "react";
 import styled from "styled-components";
 import Close from "../../assets/close.png";
 import Chat from "../../assets/comments-solid.svg";
@@ -11,6 +11,7 @@ import AlertDialogModal from "./DeleteModal";
 import Button from "@mui/joy/Button";
 import axios from "axios";
 import { CommonData } from "../../pages/CommunityListPage";
+import MouseOverPopover from "./Popover";
 
 interface User {
   id: string;
@@ -33,6 +34,7 @@ interface RequestBody {
 
 interface CommunityModalProps {
   item: CommonData;
+  isPostModalOpen: boolean;
   handleClosePostModal: () => void;
   setShowToastMsg: (value: boolean) => void;
   setToastMsg: (content: string) => void;
@@ -40,6 +42,7 @@ interface CommunityModalProps {
 
 const CommunityModal: FC<CommunityModalProps> = ({
   item,
+  isPostModalOpen,
   handleClosePostModal,
   setShowToastMsg,
   setToastMsg,
@@ -117,21 +120,25 @@ const CommunityModal: FC<CommunityModalProps> = ({
     navigate(`/community/update/${item.id}`);
   };
 
+  useEffect(() => {
+    const html = document.documentElement;
+    if (isPostModalOpen) {
+      html.style.overflowY = "hidden";
+    } else {
+      html.style.overflowY = "auto";
+    }
+    return () => {
+      html.style.overflowY = "auto";
+    };
+  }, [isPostModalOpen]);
+
   return (
     <ModalBackground onClick={handleClosePostModal}>
       <ModalWrapper onClick={(e) => e.stopPropagation()}>
         <CloseButton onClick={handleClosePostModal}>
           <img src={Close} />
         </CloseButton>
-        <ModalTop>
-          <ImageWrapper>
-            <img src={item.profileUrl} alt="user image" />
-          </ImageWrapper>
-          <div>
-            <h3>{item.nickName}</h3>
-            <span>{item.region}</span>
-          </div>
-        </ModalTop>
+        <MouseOverPopover item={item} />
         <h1>{item.title}</h1>
         <p>{item.content}</p>
         <ButtonWrapper>
@@ -230,38 +237,6 @@ const CloseButton = styled.div`
       width: 1.2rem;
       height: 1.2rem;
     }
-  }
-`;
-
-const ModalTop = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: left;
-  align-items: center;
-  gap: 1rem;
-  h3 {
-    font-size: 1.4rem;
-    font-weight: 500;
-    margin-bottom: 0.3rem;
-    ${(props) => props.theme.response.mobile} {
-      font-size: 1.3rem;
-    }
-  }
-  span {
-    color: #949494;
-    font-size: 1rem;
-  }
-`;
-
-const ImageWrapper = styled.div`
-  width: 4rem;
-  height: 4rem;
-  border-radius: 50%;
-  overflow: hidden;
-  img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
   }
 `;
 
