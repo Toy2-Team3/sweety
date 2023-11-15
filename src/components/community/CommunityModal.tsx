@@ -132,13 +132,15 @@ const CommunityModal: FC<CommunityModalProps> = ({
           <img src={Close} />
         </CloseButton>
         <ModalContent>
-          <ModalLeft>
-            <UserCard item={item} />
-          </ModalLeft>
+          {ID !== item.userId && (
+            <ModalLeft>
+              <UserCard item={item} />
+            </ModalLeft>
+          )}
           <ModalRight>
             <h1>{item.title}</h1>
             <p>{item.content}</p>
-            <ButtonWrapper>
+            <div>
               {ID !== item.userId && item.chatId !== "" && (
                 <GoToChatButton onClick={handleClickChatButton}>
                   <img src={Chat} />
@@ -160,7 +162,7 @@ const CommunityModal: FC<CommunityModalProps> = ({
                   </Button>
                 </CommunityButtonWrapper>
               )}
-            </ButtonWrapper>
+            </div>
           </ModalRight>
         </ModalContent>
       </ModalWrapper>
@@ -182,7 +184,7 @@ const ModalBackground = styled.div`
 
 const ModalWrapper = styled.div`
   width: 60%;
-  /* max-height: 50%; */
+  max-height: 80%;
   padding: 3rem;
   overflow-y: auto; //모달 height에 따라 스크롤바 나타남
 
@@ -196,6 +198,12 @@ const ModalWrapper = styled.div`
   transform: translate(-50%, -50%);
 
   ${(props) => props.theme.response.tablet} {
+    min-width: 70%;
+    max-height: 80%;
+    padding: 2rem;
+  }
+
+  ${(props) => props.theme.response.mobile} {
     min-width: 80%;
     max-height: 80%;
     padding: 2rem;
@@ -222,26 +230,38 @@ const CloseButton = styled.div`
 const ModalContent = styled.div`
   display: flex;
   flex-direction: row;
-
+  justify-content: flex-start;
   gap: 2rem;
+
+  ${(props) => props.theme.response.tablet} {
+    flex-direction: column;
+  }
 `;
 
 const ModalLeft = styled.div`
-  width: 40%;
+  ${(props) => props.theme.response.tablet} {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
 `;
 
 const ModalRight = styled.div`
-  width: 60%;
   display: flex;
   flex-direction: column;
+  gap: 1rem;
 
+  ${(props) => props.theme.response.tablet} {
+    width: 100%;
+  }
   h1 {
     font-size: 2rem;
     font-weight: bold;
-    line-height: 2rem;
+    line-height: 2.5rem;
 
     ${(props) => props.theme.response.tablet} {
-      font-size: 1.7rem;
+      font-size: 1.6rem;
+      line-height: 1.5rem;
     }
 
     ${(props) => props.theme.response.mobile} {
@@ -260,39 +280,34 @@ const ModalRight = styled.div`
   }
 `;
 
-const ButtonWrapper = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-
-  ${(props) => props.theme.response.tablet} {
-    flex-direction: column;
-    gap: 0.7rem;
-  }
-`;
-
 const GoToChatButton = styled.button`
   display: flex;
   flex-direction: row;
   justify-content: center;
   align-items: center;
   gap: 0.6rem;
+
   white-space: nowrap;
   color: ${(props) => props.theme.color.primary};
   font-size: 1.1rem;
+
   background: rgba(217, 78, 40, 0.1);
   border: transparent;
   border-radius: 0.5rem;
+
   padding: 0.6rem 1rem;
   transition: all 0.3s;
+
   &:hover {
     transform: scale(1.05);
     cursor: pointer;
   }
+
   img {
     width: 1.5rem;
     height: 1.5rem;
   }
+
   ${(props) => props.theme.response.mobile} {
     font-size: 1rem;
   }

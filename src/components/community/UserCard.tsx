@@ -24,7 +24,7 @@ const UserCard: React.FC<UserCardProps> = ({ item }) => {
         : "자주 마셔요";
 
   return (
-    <Card sx={{ maxWidth: 300 }}>
+    <Card sx={{ minWidth: 250 }}>
       <CardMedia
         component="img"
         height="180"
