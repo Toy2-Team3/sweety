@@ -23,22 +23,21 @@ const MouseOverPopover: React.FC<PopoverProps> = ({ item }) => {
 
   return (
     <div>
-      <Typography
+      <ModalTop
         aria-owns={open ? "mouse-over-popover" : undefined}
         aria-haspopup="true"
         onMouseEnter={handlePopoverOpen}
         onMouseLeave={handlePopoverClose}
       >
-        <ModalTop>
-          <ImageWrapper>
-            <img src={item.profileUrl} alt="user image" />
-          </ImageWrapper>
-          <div>
-            <h3>{item.nickName}</h3>
-            <span>{item.region}</span>
-          </div>
-        </ModalTop>
-      </Typography>
+        <ImageWrapper>
+          <img src={item.profileUrl} alt="user image" />
+        </ImageWrapper>
+        <div>
+          <h3>{item.nickName}</h3>
+          <span>{item.region}</span>
+        </div>
+      </ModalTop>
+
       <Popover
         id="mouse-over-popover"
         sx={{
@@ -71,14 +70,17 @@ const ModalTop = styled.div`
   justify-content: left;
   align-items: center;
   gap: 1rem;
+
   h3 {
     font-size: 1.4rem;
     font-weight: 500;
     margin-bottom: 0.3rem;
+
     ${(props) => props.theme.response.mobile} {
-      font-size: 1.3rem;
+      font-size: 1.2rem;
     }
   }
+
   span {
     color: #949494;
     font-size: 1rem;
@@ -89,6 +91,11 @@ const ImageWrapper = styled.div`
   height: 4rem;
   border-radius: 50%;
   overflow: hidden;
+
+  ${(props) => props.theme.response.mobile} {
+    width: 3.3rem;
+    height: 3.3rem;
+  }
 
   img {
     width: 100%;

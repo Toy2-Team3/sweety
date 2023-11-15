@@ -1,7 +1,8 @@
-import React, { FC, useState } from "react";
+import React, { FC, useEffect, useState } from "react";
 import styled from "styled-components";
 import CommunityModal from "./CommunityModal";
 import { CommonData } from "../../pages/CommunityListPage";
+import { preventScroll } from "../../utils/preventScroll";
 
 interface CommunityItemProps {
   item: CommonData;
@@ -23,6 +24,10 @@ const CommunityItem: FC<CommunityItemProps> = ({
   const handleClosePostModal = () => {
     setIsPostModalOpen(false);
   };
+
+  useEffect(() => {
+    preventScroll(isPostModalOpen);
+  }, [isPostModalOpen]);
 
   return (
     <div>
@@ -69,33 +74,41 @@ const Container = styled.div`
   box-shadow: 1px 2px 3px 1px rgba(0, 0, 0, 0.5);
   position: relative;
   transition: all 0.3s;
+
   &:hover {
     transform: scale(1.03);
     cursor: pointer;
   }
+
   > div:last-child {
     display: flex;
     justify-content: left;
+
     ${(props) => props.theme.response.mobile} {
       justify-content: center;
     }
   }
+
   h1,
   p {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
   }
+
   h1 {
     font-size: 1.6rem;
     font-weight: bold;
+
     ${(props) => props.theme.response.mobile} {
       font-size: 1.4rem;
     }
   }
+
   p {
     font-size: 1.1rem;
     font-weight: normal;
+
     ${(props) => props.theme.response.tablet} {
       width: 100%;
       line-height: 1.3rem;
@@ -106,6 +119,7 @@ const Container = styled.div`
       -webkit-box-orient: vertical;
     }
   }
+
   ${(props) => props.theme.response.mobile} {
     font-size: ${(props) => props.theme.font.mediumSize};
   }
@@ -123,16 +137,29 @@ const ItemLeft = styled.div`
   justify-content: left;
   align-items: center;
   gap: 1rem;
+
   div {
     display: flex;
     flex-direction: row;
     justify-content: center;
     align-items: center;
+
+    ${(props) => props.theme.response.mobile} {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
     h3 {
       font-size: 1.3rem;
-      font-weight: 600;
+      font-weight: 500;
       margin-right: 0.5rem;
+
+      ${(props) => props.theme.response.mobile} {
+        font-size: 1.2rem;
+        margin-bottom: 0.3rem;
+      }
     }
+
     span {
       color: #949494;
       font-size: 1rem;
@@ -145,13 +172,15 @@ const ImageWrapper = styled.div`
   height: 3rem;
   border-radius: 50%;
   overflow: hidden;
+
+  ${(props) => props.theme.response.mobile} {
+    width: 3.3rem;
+    height: 3.3rem;
+  }
+
   img {
     width: 100%;
     height: 100%;
     object-fit: cover;
-  }
-  ${(props) => props.theme.response.mobile} {
-    width: 3.3rem;
-    height: 3.3rem;
   }
 `;

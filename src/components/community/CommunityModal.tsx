@@ -12,6 +12,7 @@ import Button from "@mui/joy/Button";
 import axios from "axios";
 import { CommonData } from "../../pages/CommunityListPage";
 import MouseOverPopover from "./Popover";
+import { preventScroll } from "../../utils/preventScroll";
 
 interface User {
   id: string;
@@ -121,15 +122,7 @@ const CommunityModal: FC<CommunityModalProps> = ({
   };
 
   useEffect(() => {
-    const html = document.documentElement;
-    if (isPostModalOpen) {
-      html.style.overflowY = "hidden";
-    } else {
-      html.style.overflowY = "auto";
-    }
-    return () => {
-      html.style.overflowY = "auto";
-    };
+    preventScroll(isPostModalOpen);
   }, [isPostModalOpen]);
 
   return (
@@ -198,25 +191,32 @@ const ModalWrapper = styled.div`
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+
   ${(props) => props.theme.response.tablet} {
     min-width: 80%;
     max-height: 80%;
     padding: 2rem;
   }
+
   h1 {
     font-size: 2rem;
     font-weight: bold;
+    line-height: 1.5rem;
+
     ${(props) => props.theme.response.tablet} {
       font-size: 1.7rem;
     }
+
     ${(props) => props.theme.response.mobile} {
       font-size: 1.3rem;
     }
   }
+
   p {
     font-size: 1.1rem;
     font-weight: normal;
     line-height: 1.5rem;
+
     ${(props) => props.theme.response.mobile} {
       font-size: 1rem;
     }
