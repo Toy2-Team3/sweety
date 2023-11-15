@@ -61,7 +61,7 @@ function App() {
         <Routes>
           <Route path="/" element={<StartPage />} />
           <Route path="/signup1" element={<SignUpIDPW />} />
-          <Route path="/signup2" element={<SignUpSpecific theme={theme} />} />
+          <Route path="/signup2" element={<SignUpSpecific />} />
           <Route path="/signup3" element={<SignUpSpecific2 theme={theme} />} />
           <Route path="/login" element={<Login />} />
         </Routes>

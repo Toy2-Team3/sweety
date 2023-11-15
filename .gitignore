@@ -25,5 +25,4 @@ yarn-error.log*
 
 # Environment Variables
 .env*
-
 .github
