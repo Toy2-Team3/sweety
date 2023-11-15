@@ -163,7 +163,7 @@ export const ImageWrapper = styled.div`
   }
 `;
 
-const InfoWrapper = styled.div`
+export const InfoWrapper = styled.div`
   width: 60%;
   height: 100%;
 
@@ -183,7 +183,7 @@ const ModalBottom = styled.div`
   }
 `;
 
-const InfoBottom = styled.div`
+export const InfoBottom = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: space-around;

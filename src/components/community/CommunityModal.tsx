@@ -11,8 +11,8 @@ import AlertDialogModal from "./DeleteModal";
 import Button from "@mui/joy/Button";
 import axios from "axios";
 import { CommonData } from "../../pages/CommunityListPage";
-import MouseOverPopover from "./Popover";
 import { preventScroll } from "../../utils/preventScroll";
+import UserCard from "./UserCard";
 
 interface User {
   id: string;
@@ -131,32 +131,39 @@ const CommunityModal: FC<CommunityModalProps> = ({
         <CloseButton onClick={handleClosePostModal}>
           <img src={Close} />
         </CloseButton>
-        <MouseOverPopover item={item} />
-        <h1>{item.title}</h1>
-        <p>{item.content}</p>
-        <ButtonWrapper>
-          {id !== item.userId && item.chatId !== "" && (
-            <GoToChatButton onClick={handleClickChatButton}>
-              <img src={Chat} />
-              그룹 채팅 참여
-            </GoToChatButton>
-          )}
+        <ModalContent>
+          <ModalLeft>
+            <h3>글 작성자 정보</h3>
+            <UserCard />
+          </ModalLeft>
+          <ModalRight>
+            <h1>{item.title}</h1>
+            <p>{item.content}</p>
+            <ButtonWrapper>
+              {id !== item.userId && item.chatId !== "" && (
+                <GoToChatButton onClick={handleClickChatButton}>
+                  <img src={Chat} />
+                  그룹 채팅 참여
+                </GoToChatButton>
+              )}
 
-          {id === item.userId && (
-            <CommunityButtonWrapper>
-              <AlertDialogModal item={item} handleDelete={handleDelete} />
-              <Button
-                variant="plain"
-                color="primary"
-                size="lg"
-                sx={{ width: 1 / 2 }}
-                onClick={handleUpdate}
-              >
-                수정
-              </Button>
-            </CommunityButtonWrapper>
-          )}
-        </ButtonWrapper>
+              {id === item.userId && (
+                <CommunityButtonWrapper>
+                  <AlertDialogModal item={item} handleDelete={handleDelete} />
+                  <Button
+                    variant="plain"
+                    color="primary"
+                    size="lg"
+                    sx={{ width: 1 / 2 }}
+                    onClick={handleUpdate}
+                  >
+                    수정
+                  </Button>
+                </CommunityButtonWrapper>
+              )}
+            </ButtonWrapper>
+          </ModalRight>
+        </ModalContent>
       </ModalWrapper>
     </ModalBackground>
   );
@@ -176,17 +183,14 @@ const ModalBackground = styled.div`
 
 const ModalWrapper = styled.div`
   width: 60%;
-  max-height: 50%;
+  /* max-height: 50%; */
   padding: 3rem;
-  overflow-y: auto;
-  display: flex;
-  flex-direction: column;
-  justify-content: top;
-  align-items: left;
-  gap: 1.5rem;
+  overflow-y: auto; //모달 height에 따라 스크롤바 나타남
+
   background-color: white;
   border: transparent;
   border-radius: 1rem;
+
   position: absolute;
   top: 50%;
   left: 50%;
@@ -197,11 +201,49 @@ const ModalWrapper = styled.div`
     max-height: 80%;
     padding: 2rem;
   }
+`;
+
+const CloseButton = styled.div`
+  position: absolute;
+  right: 1rem;
+  top: 1rem;
+  cursor: pointer;
+
+  img {
+    width: 1.5rem;
+    height: 1.5rem;
+
+    ${(props) => props.theme.response.tablet} {
+      width: 1.2rem;
+      height: 1.2rem;
+    }
+  }
+`;
+
+const ModalContent = styled.div`
+  display: flex;
+  flex-direction: row;
+
+  gap: 2rem;
+`;
+
+const ModalLeft = styled.div`
+  h3 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+  }
+`;
+
+const ModalRight = styled.div`
+  width: 60%;
+  display: flex;
+  flex-direction: column;
 
   h1 {
     font-size: 2rem;
     font-weight: bold;
-    line-height: 1.5rem;
+    line-height: 2rem;
 
     ${(props) => props.theme.response.tablet} {
       font-size: 1.7rem;
@@ -223,27 +265,11 @@ const ModalWrapper = styled.div`
   }
 `;
 
-const CloseButton = styled.div`
-  position: absolute;
-  right: 1rem;
-  top: 1rem;
-  cursor: pointer;
-
-  img {
-    width: 1.5rem;
-    height: 1.5rem;
-
-    ${(props) => props.theme.response.tablet} {
-      width: 1.2rem;
-      height: 1.2rem;
-    }
-  }
-`;
-
 const ButtonWrapper = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+
   ${(props) => props.theme.response.tablet} {
     flex-direction: column;
     gap: 0.7rem;
