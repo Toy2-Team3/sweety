@@ -4,7 +4,6 @@ import Close from "../../assets/close.png";
 import Chat from "../../assets/comments-solid.svg";
 import { useRecoilState } from "recoil";
 import { commonListState } from "../../recoil/atoms";
-import { CommunityButtonWrapper } from "../../styles/community.style";
 import { useNavigate } from "react-router-dom";
 import { deleteData } from "../../utils/firebase";
 import AlertDialogModal from "./DeleteModal";
@@ -310,5 +309,18 @@ const GoToChatButton = styled.button`
 
   ${(props) => props.theme.response.mobile} {
     font-size: 1rem;
+  }
+`;
+
+const CommunityButtonWrapper = styled.div`
+  width: 50%;
+
+  display: flex;
+  flex-direction: row;
+  justify-content: right;
+  gap: 1rem;
+
+  ${(props) => props.theme.response.mobile} {
+    width: 100%;
   }
 `;

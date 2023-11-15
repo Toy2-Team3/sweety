@@ -5,6 +5,7 @@ export const CommunityButtonWrapper = styled.div`
   flex-direction: row;
   justify-content: right;
   gap: 1rem;
+
   ${(props) => props.theme.response.mobile} {
     width: 100%;
   }
