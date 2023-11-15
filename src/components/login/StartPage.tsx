@@ -32,9 +32,11 @@ function StartPage() {
 
 export default StartPage;
 
-export const Container = styled.div`
+export const Container = styled.div<{ gap?: string; marginTop?: string }>`
   width: 100vw;
   height: 100vh;
+  gap: ${(props) => props.gap || 0};
+  margin-top: ${(props) => props.marginTop || 0};
   display: flex;
   justify-content: center;
   align-items: center;

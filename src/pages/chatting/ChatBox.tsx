@@ -1,17 +1,18 @@
 import styled from "styled-components";
-import { ChatProps } from "./ChattingSection";
+import { Message } from "../../types/chatting";
 
-const ChatBox = (item: ChatProps) => {
+const ChatBox = (item: Message) => {
+  const myId = sessionStorage.getItem("id");
   return (
     <div
       style={{
         display: "flex",
-        justifyContent: item.isMine ? "flex-end" : "flex-start",
+        justifyContent: item.userId === myId ? "flex-end" : "flex-start",
       }}
     >
-      <ChatBoxWrapper $isMyChat={item.isMine}>
-        {!item.isMine && <img src={item.profileImage} alt="" />}
-        <div>{item.message}</div>
+      <ChatBoxWrapper $isMyChat={item.userId === myId}>
+        {/* {!item.isMine && <img src={item.profileImage} alt="" />} */}
+        <div>{item.text}</div>
       </ChatBoxWrapper>
     </div>
   );
@@ -38,7 +39,7 @@ const ChatBoxWrapper = styled.div<{ $isMyChat: boolean }>`
     border-radius: 30px;
     padding: 9px 20px;
     max-width: 600px;
-    background-color: ${(props) => (props.$isMyChat ? "#D94E28" : "#d9d9d9")};
+    background-color: ${(props) => (props.$isMyChat ? "#F9744C" : "#d9d9d9")};
     color: ${(props) => (props.$isMyChat ? "#fff" : "#000")};
   }
 `;
