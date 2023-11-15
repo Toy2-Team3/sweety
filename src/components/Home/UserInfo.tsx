@@ -111,9 +111,9 @@ const UserInfo = ({ userinfo }: { userinfo: UserInfoProps }) => {
           },
         },
       );
-      // console.log(response);
+      console.log(response);
       if (response.status === 200) {
-        console.log("채팅방생성");
+        navigate(`/chat?chatId=${response.data.id}`);
       }
     } catch (error) {
       console.log(error);
@@ -132,24 +132,24 @@ const UserInfo = ({ userinfo }: { userinfo: UserInfoProps }) => {
           },
         },
       );
-      const filteredChats = response?.data.chats.filter((chat) => {
-        // 채팅이 private이고 users 배열이 존재하며,
-        // users 배열 중에서 id가 desiredUserId와 일치하는 사용자가 있는지 확인
-        return (
-          chat.isPrivate &&
-          chat.users.length === 2 &&
-          chat.users.filter((u) => u.id === id).length === 1
-        );
-      });
-      if (filteredChats?.length >= 1) {
-        console.log(filteredChats[0].id);
-        navigate(`/chat?chatId={${filteredChats[0].id}}`);
-      } else {
-        await makeChattingRoom(userinfo.userId, userinfo.nickName);
-      }
 
       if (response.status === 200) {
-        console.log("채팅방목록불러오기 성공");
+        const filteredChats = response?.data.chats.filter((chat) => {
+          // 채팅이 private이고 users 배열이 존재하며,
+          // users 배열 중에서 id가 desiredUserId와 일치하는 사용자가 있는지 확인
+          return (
+            chat.isPrivate &&
+            chat.users.length === 2 &&
+            chat.users.filter((u) => u.id === id).length === 1
+          );
+        });
+
+        if (filteredChats?.length >= 1) {
+          console.log(filteredChats[0].id);
+          navigate(`/chat?chatId=${filteredChats[0].id}`);
+        } else {
+          await makeChattingRoom(userinfo.userId, userinfo.nickName);
+        }
       }
     } catch (error) {
       console.log(error);
