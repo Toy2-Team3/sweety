@@ -72,9 +72,9 @@ function SignUpIDPW() {
   };
 
   return (
-    <Container style={{ gap: "20px" }}>
+    <Container style={{ gap: "15px" }}>
       <GreetingText>회원가입</GreetingText>
-      <InputWrapper style={{ position: "relative" }}>
+      <InputWrapper margin="0px">
         <p>아이디</p>
         <IdPwInput
           value={id}
@@ -93,7 +93,7 @@ function SignUpIDPW() {
           )
         ) : null}
       </InputWrapper>
-      <InputWrapper style={{ position: "relative" }}>
+      <InputWrapper>
         <p>비밀번호</p>
         <IdPwInput
           type={showPw ? "text" : "password"}
@@ -116,7 +116,7 @@ function SignUpIDPW() {
           {showPw ? "🙂" : "😌"}
         </ShowPasswordButton>
       </InputWrapper>
-      <InputWrapper style={{ position: "relative" }}>
+      <InputWrapper>
         <p>비밀번호 확인</p>
         <IdPwInput
           type={showPwCheck ? "text" : "password"}

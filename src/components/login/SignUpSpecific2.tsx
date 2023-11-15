@@ -36,6 +36,7 @@ import {
   RootErrorMessage,
   GobackLink,
   NameInput,
+  DefaultOption,
 } from "./SignUpSpecific";
 import {
   SignUpButtonProps,
@@ -48,6 +49,7 @@ import {
 import axios from "axios";
 import Box from "@mui/material/Box";
 import LinearProgress from "@mui/material/LinearProgress";
+import { InputWrapper } from "./Login";
 
 interface SignUpSpecificProps {
   theme: DefaultTheme;
@@ -172,11 +174,11 @@ function SignUpSpecific({ theme }: SignUpSpecificProps) {
     profileImage &&
     selectedGender &&
     selectedRegion ? (
-      <Container style={{ gap: "26px", marginTop: "20px" }}>
+      <Container gap="26px" marginTop="20px">
         <SignUpStepper />
         <GreetingText>회원가입</GreetingText>
 
-        <div style={{ position: "relative" }}>
+        <InputWrapper margin="5px 0 0 0">
           <p>키</p>
           <NameInput
             placeholder="키를 입력해주세요"
@@ -190,19 +192,13 @@ function SignUpSpecific({ theme }: SignUpSpecificProps) {
               <WarnText>100~250사이의 숫자만 입력해 주세요</WarnText>
             )
           ) : null}
-        </div>
-        <div style={{ position: "relative" }}>
+        </InputWrapper>
+        <InputWrapper>
           <p>MBTI</p>
           <SelectBox defaultValue="" onChange={(e) => setMbti(e.target.value)}>
-            <option
-              value=""
-              disabled
-              selected
-              hidden
-              style={{ color: theme.color.darkGray }}
-            >
+            <DefaultOption value="" disabled selected hidden>
               MBTI를 선택해주세요
-            </option>
+            </DefaultOption>
             {mbtiTypes.map((mbti) => (
               <OptionBox key={mbti.value} value={mbti.value}>
                 {mbti.label}
@@ -212,19 +208,13 @@ function SignUpSpecific({ theme }: SignUpSpecificProps) {
           {mbti ? (
             <CorrectText>{compatibilityMessages[mbti]}</CorrectText>
           ) : null}
-        </div>
+        </InputWrapper>
         <div>
           <p>직업</p>
           <SelectBox defaultValue="" onChange={(e) => setJob(e.target.value)}>
-            <option
-              value=""
-              disabled
-              selected
-              hidden
-              style={{ color: theme.color.darkGray }}
-            >
+            <DefaultOption value="" disabled selected hidden>
               해당하는 직업을 선택해주세요
-            </option>
+            </DefaultOption>
             {jobOptions.map((job) => (
               <OptionBox key={job.value} value={job.value}>
                 {job.label}
@@ -236,19 +226,13 @@ function SignUpSpecific({ theme }: SignUpSpecificProps) {
           <div>
             <p>음주</p>
             <SelectBox
-              style={{ width: "150px" }}
+              width="150px"
               defaultValue=""
               onChange={(e) => setAlcohol(e.target.value)}
             >
-              <option
-                value=""
-                disabled
-                selected
-                hidden
-                style={{ color: theme.color.darkGray }}
-              >
+              <DefaultOption value="" disabled selected hidden>
                 음주는 하시나요?
-              </option>
+              </DefaultOption>
               {alcoholOptions.map((alcohol) => (
                 <OptionBox key={alcohol.value} value={alcohol.value}>
                   {alcohol.label}
@@ -259,19 +243,13 @@ function SignUpSpecific({ theme }: SignUpSpecificProps) {
           <div>
             <p>흡연</p>
             <SelectBox
-              style={{ width: "150px" }}
+              width="150px"
               defaultValue=""
               onChange={(e) => setSmoking(e.target.value === "true")}
             >
-              <option
-                value=""
-                disabled
-                selected
-                hidden
-                style={{ color: theme.color.darkGray }}
-              >
+              <DefaultOption value="" disabled selected hidden>
                 흡연은 하시나요?
-              </option>
+              </DefaultOption>
               {smokingOptions.map((smoking) => (
                 <OptionBox
                   key={String(smoking.value)}
@@ -309,7 +287,7 @@ function SignUpSpecific({ theme }: SignUpSpecificProps) {
       </RootErrorMessageWrapper>
     )
   ) : (
-    <Container style={{ gap: "30px" }}>
+    <Container gap="30px">
       <SweetLogo />
       <div style={{ fontSize: "64px" }}>환영합니다🎉</div>
       <div style={{ fontSize: "20px" }}>
