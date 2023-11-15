@@ -62,7 +62,7 @@ const UserCard: React.FC<UserCardProps> = ({ item }) => {
         </Box>
         <Box>
           {item.interested?.map((value) => {
-            return <Tag>{value}</Tag>;
+            return <Tag key={value}>{value}</Tag>;
           })}
         </Box>
       </CardContent>

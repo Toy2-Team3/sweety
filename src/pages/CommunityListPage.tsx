@@ -59,8 +59,6 @@ const CommunityList = () => {
     setCommonList(newList);
   }, [postList, userList, setCommonList]);
 
-  console.log(commonList);
-
   return (
     <Wrapper>
       <Header>

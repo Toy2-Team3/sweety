@@ -250,8 +250,6 @@ export const get = async (
       querySnapshot.forEach((doc) => {
         userData.push(doc.data() as IUserData);
       });
-
-      console.log("good");
       return userData;
     } else {
       const Ref = collection(db, initialCollection);
@@ -261,8 +259,6 @@ export const get = async (
       querySnapshot.forEach((doc) => {
         userData.push(doc.data() as IUserData);
       });
-
-      console.log("good");
       return userData;
     }
   } catch (error) {

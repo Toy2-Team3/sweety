@@ -136,7 +136,7 @@ const UserProfileModal: React.FC<UserProfileModalProps> = ({
                 <h3>관심사</h3>
                 <div>
                   {userinfo.interested?.map((value) => {
-                    return <Tag>{value}</Tag>;
+                    return <Tag key={value}>{value}</Tag>;
                   })}
                 </div>
               </>
