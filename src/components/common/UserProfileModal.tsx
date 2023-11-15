@@ -72,11 +72,10 @@ const UserProfileModal: React.FC<UserProfileModalProps> = ({
             <div>
               <h1>
                 {userinfo?.nickName} (
-                {userinfo?.birth && <span>{calculateAge(userinfo.birth)}</span>}
-                )
+                {userinfo?.birth && calculateAge(userinfo.birth)})
               </h1>
               <h2>
-                <span> ❤ 나와의 궁합점수는? </span>{" "}
+                <span> 🧡 나와의 궁합점수는? </span>{" "}
                 {loveClick ? (
                   <ScoreSpan>
                     {" "}
@@ -123,7 +122,7 @@ const UserProfileModal: React.FC<UserProfileModalProps> = ({
             </div>
           </InfoWrapper>
         </ModalTop>
-        <ModalBottom>
+        <div>
           <>
             {userinfo?.introduction !== "" && (
               <>
@@ -143,7 +142,7 @@ const UserProfileModal: React.FC<UserProfileModalProps> = ({
               </>
             )}
           </>
-        </ModalBottom>
+        </div>
       </ModalWrapper>
     </ModalBackground>
   );
@@ -293,12 +292,11 @@ export const InfoWrapper = styled.div`
     width: 100%;
     height: 100%;
   }
-`;
 
-const ModalBottom = styled.div`
   h2 {
-    font-size: 1.5rem;
-    font-weight: bold;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: ${(props) => props.theme.color.secondary};
   }
 `;
 
@@ -311,6 +309,7 @@ export const InfoBottom = styled.div`
     width: 50%;
   }
 `;
+
 const pulseAnimation = keyframes`
   0% {
     transform: scale(1);
@@ -343,7 +342,7 @@ const LoveButton = styled.button`
   }
 `;
 const ScoreSpan = styled.span`
-  color: red;
+  color: ${(props) => props.theme.color.secondary};
   font-weight: 800;
 `;
 
@@ -353,6 +352,6 @@ const Tag = styled.span`
   margin: 0.3rem;
   padding: 0.3rem;
   background-color: ${(props) => props.theme.color.darkGray};
-  font-size: 0.8rem;
+  font-size: 1rem;
   color: ${(props) => props.theme.color.black};
 `;
