@@ -205,10 +205,10 @@ const UserCover = styled.div`
   width: 100%;
   padding-top: 100%;
   position: relative;
-  overflow: hidden;
   cursor: pointer;
 `;
 const BackgroundBlur = styled.div`
+  border-radius: 0.5rem;
   position: absolute;
   bottom: 0;
   left: 0;
@@ -222,12 +222,20 @@ const BackgroundBlur = styled.div`
   ); /* Adjust the alpha value for transparency */
 `;
 const UserImage = styled.img`
+  border-radius: 0.5rem;
+
   object-fit: cover;
   position: absolute;
   width: 100%;
   height: 100%;
   top: 0;
   left: 0;
+  transition: all 0.3s;
+  box-shadow: 1px 2px 3px 1px rgba(0, 0, 0, 0.5);
+  &:hover {
+    transform: scale(1.03);
+    cursor: pointer;
+  }
 `;
 
 const UserName = styled.div`
@@ -238,6 +246,11 @@ const UserName = styled.div`
   font-size: 1.5rem;
   left: 0.5rem;
   display: flex;
+  span:nth-child(1) {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
 
   span:nth-child(2) {
     font-size: 1.2rem;
@@ -290,6 +303,11 @@ const UserChatButton = styled.button`
   border: none;
   ${(props) => props.theme.response.tablet} {
     font-size: 1.2rem;
+  }
+  transition: all 0.3s;
+  &:hover {
+    transform: scale(1);
+    cursor: pointer;
   }
 `;
 const UserActive = styled.div`
