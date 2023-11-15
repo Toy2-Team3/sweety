@@ -6,6 +6,8 @@ import {
   setDoc,
   deleteDoc,
   updateDoc,
+  where,
+  query,
 } from "firebase/firestore";
 import {
   ref,
@@ -54,7 +56,6 @@ export async function UploadImage({
   file: File;
 }): Promise<void> {
   const storageRef = ref(storage, "userProfile/" + imageName);
-
   try {
     await uploadBytes(storageRef, file);
     console.log("이미지를 업로드 했습니다.");
@@ -62,7 +63,6 @@ export async function UploadImage({
     console.error("업로드에 실패 했습니다 :", error);
   }
 }
-
 export async function getImageDownloadURL(imageName: string): Promise<string> {
   const storageRef = ref(storage, "userProfile/" + imageName);
   try {
@@ -216,4 +216,40 @@ export const addImage = (imageName: string, image: File) => {
       },
     );
   });
+};
+
+export const get = async (
+  initialCollection: string,
+  key: keyof IUserData | null = null,
+  value: string | null = null,
+): Promise<IUserData[]> => {
+  try {
+    if (key) {
+      const Ref = collection(db, initialCollection);
+      const q = query(Ref, where(key, "==", value));
+      const querySnapshot = await getDocs(q);
+      const userData: IUserData[] = [];
+
+      querySnapshot.forEach((doc) => {
+        userData.push(doc.data() as IUserData);
+      });
+
+      console.log("good");
+      return userData;
+    } else {
+      const Ref = collection(db, initialCollection);
+      const userData: IUserData[] = [];
+      const querySnapshot = await getDocs(Ref);
+
+      querySnapshot.forEach((doc) => {
+        userData.push(doc.data() as IUserData);
+      });
+
+      console.log("good");
+      return userData;
+    }
+  } catch (error) {
+    console.error("bad: ", error);
+    throw error;
+  }
 };
