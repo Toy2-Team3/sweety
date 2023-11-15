@@ -227,4 +227,4 @@ export const updateUserData = async (
   const docRef = doc(db, "user", userId);
 
   await updateDoc(docRef, props);
-};
+}; 

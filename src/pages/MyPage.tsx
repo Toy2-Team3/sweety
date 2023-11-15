@@ -126,13 +126,35 @@ export default function MyPage() {
     };
   }, []);
   
-  // 이미지 업로드
-  const updateProfileImage = async () => {
+
+  const updateToFireStore = async () => {
     if(id) {
-      UploadImage({ imageName: id, file: profileImage as File });
-      setProfileImage(profileImage);
-      const imageUrl = await getImageDownloadURL(id);  
+      // 이미지 업로드
+      if(isImageChanged) {
+        UploadImage({ imageName: id, file: profileImage as File });
+        setProfileImage(profileImage);
+      }
+   
+      const imageUrl = await getImageDownloadURL(id); 
       setProfileImageUrl(imageUrl);
+      
+      // 수정한 데이터 업데이트
+      const changedUserData: MypageUserData = {
+        profileUrl: imageUrl,
+        nickName: userName,
+        region: region,
+        tall: tall,
+        mbti: mbti,
+        job: job,
+        alcohol: alcohol,
+        smoking: smoking,
+        introduction: introduction,
+        interested: interestedTags,
+      };
+
+      // 파이어베이스에 업데이트
+      await updateUserData(id, changedUserData);
+      console.log(`${id}의 정보가 수정되었습니다.`);
     }
   }
 
@@ -141,39 +163,17 @@ export default function MyPage() {
       return;
 
     try {
-      if(userData && id) {
-        // 이미지 업로드
-        await updateProfileImage();
+      await updateToFireStore();
+
+      setIsChanged(false);
+      setShowToast(true);
+
+      setTimeout(() => {
+        setShowToast(false);
+        window.location.reload();
         setIsImageChanged(false);
-        
-        // 수정한 데이터 업데이트
-        const changedUserData: MypageUserData = {
-          profileUrl: profileImageUrl,
-          nickName: userName,
-          region: region,
-          tall: tall,
-          mbti: mbti,
-          job: job,
-          alcohol: alcohol,
-          smoking: smoking,
-          introduction: introduction,
-          interested: interestedTags,
-        };
-        
-        setUserData(changedUserData);
+      }, 2000);
 
-        // 파이어베이스에 업데이트
-        await updateUserData(id, userData);
-        console.log(`${id}의 정보가 수정되었습니다.`);
-        setIsChanged(false);
-        setShowToast(true);
-
-        setTimeout(() => {
-          setShowToast(false);
-          window.location.reload();
-        }, 2000);
-
-      }
     } catch (error) {
       console.log(`[ERROR]: ${error}`)
     }
