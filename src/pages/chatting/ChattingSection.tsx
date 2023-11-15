@@ -3,6 +3,7 @@ import ChatBox from "./ChatBox";
 import ChattingTextarea from "./ChattingTextarea";
 import hamburgerButton from "../../assets/hamburger.svg";
 import exitButton from "../../assets/exitChattingRoom.svg";
+import chatRoomUserList from "../../assets/chatRoomUserList.svg";
 import ChattingRoomList from "./ChattingRoomList";
 import { ChattingRoomProps, Message } from "../../types/chatting";
 import { useState, useEffect, useRef } from "react";
@@ -10,6 +11,7 @@ import { getChattingRoomSocket } from "../../socket";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useSearchParams } from "react-router-dom";
+import UserListModal from "./UserListModal";
 
 const ChattingSection = ({
   myRoomData,
@@ -26,6 +28,7 @@ const ChattingSection = ({
   const [showRoomList, setShowRoomList] = useState<boolean>(false);
   const [chatSocket, setChatSocket] = useState(getChattingRoomSocket(chatId));
   const scrollRef = useRef<HTMLDivElement>(null);
+  const [showUserListModal, setShowUserListModal] = useState<boolean>(false);
 
   useEffect(() => {
     const handleResize = () => {
@@ -37,6 +40,7 @@ const ChattingSection = ({
 
     return () => {
       window.removeEventListener("resize", handleResize);
+      chatSocket?.disconnect();
     };
   }, []);
 
@@ -49,7 +53,7 @@ const ChattingSection = ({
   }, [chatId]);
 
   useEffect(() => {
-    const getPrevMessage = () => {
+    const subscribeChatRoom = () => {
       if (chatSocket) {
         chatSocket.emit("fetch-messages");
         chatSocket.on("messages-to-client", (data) => {
@@ -69,7 +73,7 @@ const ChattingSection = ({
         });
       }
     };
-    getPrevMessage();
+    subscribeChatRoom();
   }, [chatSocket]);
 
   useEffect(() => {
@@ -126,7 +130,14 @@ const ChattingSection = ({
           alt=""
         />
         <h1>{currentRoomName}</h1>
-        <img onClick={onExit} src={exitButton} alt="" />
+        <div>
+          <img
+            onClick={() => setShowUserListModal((prev) => !prev)}
+            src={chatRoomUserList}
+            alt=""
+          />
+          <img onClick={onExit} src={exitButton} alt="" />
+        </div>
       </Header>
       <div onClick={() => setShowRoomList(false)}>
         {chatId ? (
@@ -144,6 +155,9 @@ const ChattingSection = ({
           </ChattingViewArea>
         )}
       </div>
+      {showUserListModal && (
+        <UserListModal setShowUserListModal={setShowUserListModal} />
+      )}
     </MainContainer>
   );
 };
@@ -225,6 +239,11 @@ const Header = styled.header`
     @media screen and (max-width: 480px) {
       font-size: 18px;
     }
+  }
+
+  div {
+    display: flex;
+    gap: 20px;
   }
 `;
 
