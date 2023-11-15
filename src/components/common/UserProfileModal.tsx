@@ -1,30 +1,56 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled, { keyframes } from "styled-components";
 import Close from "../../assets/close.png";
 import { UserInfoProps, calculateAge } from "../Home/UserInfo";
 import { calculateLoveSync } from "../../utils/loveSync";
-import { idState } from "../../recoil/atoms";
-import { useRecoilState } from "recoil";
 import { getUserData } from "../../utils/firebase";
 const UserProfileModal: React.FC<{
   userinfo: UserInfoProps;
   setUserModal: React.Dispatch<React.SetStateAction<boolean>>;
 }> = ({ userinfo, setUserModal }) => {
   const [loveClick, setLoveClick] = useState(false);
-  const [userId, setUsreId] = useRecoilState(idState);
+  const [myMbti, setMyMbti] = useState("");
+  const [myIntersted, setMyInterested] = useState([]);
+  const [myAlcohol, setMyAlcohol] = useState("");
+  const [mySmoking, setMySmoking] = useState(false);
+  const [myAge, setMyAge] = useState("");
 
+  const myId = sessionStorage.getItem("id");
+  console.log(typeof userinfo?.birth);
   const handleModalClose = (
     e: React.MouseEvent<HTMLImageElement, MouseEvent>,
   ) => {
     e.preventDefault();
     setUserModal(false);
   };
-  const handleLoveButton = (
+  const handleLoveButton = async (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
   ) => {
-    // const a = getUserData(userId);
     e.preventDefault();
+
+    setLoveClick(true);
   };
+  useEffect(() => {
+    const getMyData = async () => {
+      if (myId) {
+        try {
+          const result = await getUserData(myId);
+          console.log("handleLobe", result);
+          setMyMbti(result?.mbti);
+          setMyInterested(result?.interested);
+          setMySmoking(result?.smoking);
+          setMyAlcohol(result?.alcohol);
+          setMyAge(result?.age);
+        } catch (error) {
+          console.error("에러 발생:", error);
+        }
+      } else {
+        console.log("myId가 null입니다."); // 또는 다른 예외 처리 로직
+      }
+    };
+    getMyData();
+  }, []);
+
   return (
     <ModalBackground>
       <ModalWrapper>
@@ -45,7 +71,21 @@ const UserProfileModal: React.FC<{
               <h2>
                 <span> ❤ 나와의 궁합점수는? </span>{" "}
                 {loveClick ? (
-                  <span></span>
+                  <ScoreSpan>
+                    {" "}
+                    {calculateLoveSync(
+                      userinfo?.mbti || "",
+                      userinfo?.interested || [],
+                      userinfo?.smoking || false,
+                      userinfo?.alcohol || "",
+                      String(calculateAge(userinfo?.birth || "")),
+                      myMbti || "",
+                      myIntersted || [], // Provide a default value (empty array) if myIntersted is undefined
+                      mySmoking || false, // Provide a default value (false) if mySmoking is undefined
+                      myAlcohol || "", // Provide a default value (empty string) if myAlcohol is undefined
+                      String(calculateAge(myAge || "")), // Provide a default value (empty string) if myAge is undefined
+                    )}
+                  </ScoreSpan>
                 ) : (
                   <LoveButton onClick={handleLoveButton}>확인하기</LoveButton>
                 )}
@@ -290,4 +330,8 @@ const LoveButton = styled.button`
     transform: scale(1.03); // hover 시에 크기를 약간 키우도록 설정
     animation: none; // hover 시에는 애니메이션 중지
   }
+`;
+const ScoreSpan = styled.span`
+  color: red;
+  font-weight: 800;
 `;

@@ -46,6 +46,8 @@ import {
   smokingOptions,
 } from "../../constants/constant";
 import axios from "axios";
+import Box from "@mui/material/Box";
+import LinearProgress from "@mui/material/LinearProgress";
 
 interface SignUpSpecificProps {
   theme: DefaultTheme;
@@ -66,6 +68,7 @@ function SignUpSpecific({ theme }: SignUpSpecificProps) {
   const [smoking, setSmoking] = useRecoilState(smokingState);
   const [activeStep, setActiveStep] = useRecoilState(activeStepState);
   const [isSignUp, setIsSignUp] = useState(false);
+  const [progress, setProgress] = useState(0);
 
   const navigate = useNavigate();
 
@@ -94,8 +97,10 @@ function SignUpSpecific({ theme }: SignUpSpecificProps) {
       if (response.status === 200 && response.data.message === "User created") {
         try {
           setIsSignUp(true);
+          setProgress(40);
           const imageUrl = await getImageDownloadURL(id);
           await UploadImage({ imageName: id, file: profileImage as File });
+          setProgress(70);
           const userData = {
             userId: id,
             password: pw,
@@ -116,6 +121,7 @@ function SignUpSpecific({ theme }: SignUpSpecificProps) {
             tall: tall,
           };
           await addUserData(userData);
+          setProgress(100);
           navigate("/login");
           console.log("가입에 성공했습니다.");
         } catch (error) {
@@ -130,7 +136,10 @@ function SignUpSpecific({ theme }: SignUpSpecificProps) {
         );
       }
     } catch (error) {
-      console.error("회원가입 중 서와와의 에러가 발생했습니다 :", error);
+      console.error("회원가입 중 서버와의 에러가 발생했습니다 :", error);
+      window.alert(
+        "서버와의 연결이 불안정 합니다.\n잠시후 다시 시도해 주세요.",
+      );
     }
   };
 
@@ -138,10 +147,12 @@ function SignUpSpecific({ theme }: SignUpSpecificProps) {
     if (profileImage) {
       try {
         await UploadImage({ imageName: id, file: profileImage as File });
+        setProgress(20);
         const imageUrl = await getImageDownloadURL(id);
         await handleSignUpClick(id, pw, userName, imageUrl);
       } catch (error) {
         console.error("유저 데이터 업로드 실패", error);
+        await deleteImage(id);
       }
     } else {
       console.error("프로필 이미지가 없습니다");
@@ -282,6 +293,9 @@ function SignUpSpecific({ theme }: SignUpSpecificProps) {
         >
           달콤한 만남 시작하기!
         </SignUpButton>
+        <Box sx={{ width: "100%", position: "absolute", bottom: 0 }}>
+          <LinearProgress variant="determinate" value={progress} />
+        </Box>
       </Container>
     ) : (
       <RootErrorMessageWrapper>
@@ -301,6 +315,9 @@ function SignUpSpecific({ theme }: SignUpSpecificProps) {
       <div style={{ fontSize: "20px" }}>
         회원가입이 완료되어 로그인 페이지로 이동중...
       </div>
+      <Box sx={{ width: "100%", position: "absolute", bottom: 0 }}>
+        <LinearProgress variant="determinate" value={progress} />
+      </Box>
     </Container>
   );
 }

@@ -1,29 +1,73 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import { ReactComponent as WhiteChatIcon } from "../../assets/chattingIcon.svg";
+import { ReactComponent as WhiteChatIcon } from "../../assets/chattingWhiteIcons.svg";
 import UserProfileModal from "../common/UserProfileModal";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 export interface UserInfoProps {
   id: string;
-  userId?: string;
-  password?: string;
-  token?: string;
-  nickName?: string;
-  birth?: string;
-  gender?: string;
-  region?: string;
-  profileUrl?: string;
-  myChats?: string[];
-  introduction?: string;
-  interested?: string[];
-  status?: string;
-  alcohol?: string;
-  smoking?: boolean;
-  mbti?: string;
-  job?: string;
-  tall?: number;
+  userId: string;
+  password: string;
+  token: string;
+  nickName: string;
+  birth: string;
+  gender: string;
+  region: string;
+  profileUrl: string;
+  myChats: string[];
+  introduction: string;
+  interested: string[];
+  status: string;
+  alcohol: string;
+  smoking: boolean;
+  mbti: string;
+  job: string;
+  tall: number;
+}
+interface User {
+  id: string;
+  name: string;
+  picture: string;
+}
+interface MakeChattingResponse {
+  id: string;
+  name: string;
+  users: User[]; // 자신을 포함한 참가자들 정보
+  isPrivate: boolean;
+  updatedAt: Date;
+}
+interface LoginRequestBody {
+  name: string;
+  users: string[];
+  isPrivate: boolean;
+}
+interface ChattingResponse {
+  chats: Chat[];
+}
+type GetMyChattingResponse = ChattingResponse;
+
+interface Chat {
+  id: string;
+  name: string;
+  users: User[]; // 속한 유저 id
+  isPrivate: boolean;
+  latestMessage: Message | null;
+  updatedAt: Date;
 }
 
+interface User {
+  id: string;
+  name: string;
+  picture: string;
+}
+
+interface Message {
+  id: string;
+  text: string;
+  userId: string;
+  createAt: Date;
+}
 export const calculateAge = (birthDate: string): number => {
   const currentDate = new Date();
   const birthDateObject = new Date(birthDate);
@@ -43,14 +87,81 @@ export const calculateAge = (birthDate: string): number => {
 
 const UserInfo = ({ userinfo }: { userinfo: UserInfoProps }) => {
   const [userModal, setUserModal] = useState(false);
-
+  const mySession = sessionStorage.getItem("accessToken");
+  const myId = sessionStorage.getItem("id");
   const [userOnOff, setUserOnOff] = useState(true);
+  const navigate = useNavigate();
+
+  const makeChattingRoom = async (id: string, name: string): Promise<void> => {
+    try {
+      const requestBody: LoginRequestBody = {
+        name: name,
+        users: [id],
+        isPrivate: true,
+      };
+
+      const response = await axios.post<MakeChattingResponse>(
+        "https://fastcampus-chat.net/chat",
+        requestBody,
+        {
+          headers: {
+            "content-type": "application/json",
+            serverId: process.env.REACT_APP_SERVER_ID,
+            Authorization: `Bearer ${mySession}`,
+          },
+        },
+      );
+      // console.log(response);
+      if (response.status === 200) {
+        console.log("채팅방생성");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const getMyChattingRooms = async (id: string) => {
+    try {
+      const response = await axios.get<GetMyChattingResponse>(
+        "https://fastcampus-chat.net/chat",
+        {
+          headers: {
+            "content-type": "application/json",
+            serverId: process.env.REACT_APP_SERVER_ID,
+            Authorization: `Bearer ${mySession}`,
+          },
+        },
+      );
+      const filteredChats = response?.data.chats.filter((chat) => {
+        // 채팅이 private이고 users 배열이 존재하며,
+        // users 배열 중에서 id가 desiredUserId와 일치하는 사용자가 있는지 확인
+        return (
+          chat.isPrivate &&
+          chat.users.length === 2 &&
+          chat.users.filter((u) => u.id === id).length === 1
+        );
+      });
+      if (filteredChats?.length >= 1) {
+        console.log(filteredChats[0].id);
+        navigate(`/chat?chatId={${filteredChats[0].id}}`);
+      } else {
+        await makeChattingRoom(userinfo.userId, userinfo.nickName);
+      }
+
+      if (response.status === 200) {
+        console.log("채팅방목록불러오기 성공");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const handleUserChat = (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
   ) => {
     e.preventDefault();
-    console.log("userChat");
+
+    getMyChattingRooms(userinfo?.userId);
   };
 
   const handleDetailModal = (
@@ -63,12 +174,12 @@ const UserInfo = ({ userinfo }: { userinfo: UserInfoProps }) => {
   return (
     <UserCover>
       <UserImage src={userinfo?.profileUrl} onClick={handleDetailModal} />
-      {userOnOff && (
+      {/* {userOnOff && (
         <UserActive>
           <span></span>
           <span> 현재 활동중</span>
         </UserActive>
-      )}
+      )} */}
 
       <UserName>
         <div>
@@ -175,7 +286,8 @@ const UserChatButton = styled.button`
   right: 1rem;
   display: flex;
   justify-content: center;
-
+  background-color: transparent;
+  border: none;
   ${(props) => props.theme.response.tablet} {
     font-size: 1.2rem;
   }
