@@ -1,8 +1,8 @@
 import React, { FC, useEffect, useState } from "react";
 import styled from "styled-components";
 import CommunityModal from "./CommunityModal";
-import { CommonData } from "../../pages/CommunityListPage";
 import { preventScroll } from "../../utils/preventScroll";
+import { CommonData } from "../../constants/constant";
 
 interface CommunityItemProps {
   item: CommonData;

@@ -3,16 +3,16 @@ import styled from "styled-components";
 import Close from "../../assets/close.png";
 import Chat from "../../assets/comments-solid.svg";
 import { useRecoilState } from "recoil";
-import { commonListState, idState } from "../../recoil/atoms";
+import { commonListState } from "../../recoil/atoms";
 import { CommunityButtonWrapper } from "../../styles/community.style";
 import { useNavigate } from "react-router-dom";
 import { deleteData } from "../../utils/firebase";
 import AlertDialogModal from "./DeleteModal";
 import Button from "@mui/joy/Button";
 import axios from "axios";
-import { CommonData } from "../../pages/CommunityListPage";
 import { preventScroll } from "../../utils/preventScroll";
 import UserCard from "./UserCard";
+import { CommonData } from "../../constants/constant";
 
 interface User {
   id: string;
@@ -48,10 +48,10 @@ const CommunityModal: FC<CommunityModalProps> = ({
   setShowToastMsg,
   setToastMsg,
 }) => {
-  const [id] = useRecoilState(idState);
+  const ID = sessionStorage.getItem("id");
+  const ACCESS_TOKEN = sessionStorage.getItem("accessToken");
   const [commonList, setCommonList] = useRecoilState(commonListState);
   const navigate = useNavigate();
-  const ACCESS_TOKEN = sessionStorage.getItem("accessToken");
 
   //그룹 채팅 참여 버튼 클릭
   const handleClickChatButton = async () => {
@@ -97,7 +97,7 @@ const CommunityModal: FC<CommunityModalProps> = ({
 
       // 삭제 완료 글 리스트 새로고침하기
       const newList = commonList.filter((item) => {
-        return item.id !== id;
+        return item.id !== ID;
       });
       setCommonList(newList);
 
@@ -133,21 +133,20 @@ const CommunityModal: FC<CommunityModalProps> = ({
         </CloseButton>
         <ModalContent>
           <ModalLeft>
-            <h3>글 작성자 정보</h3>
-            <UserCard />
+            <UserCard item={item} />
           </ModalLeft>
           <ModalRight>
             <h1>{item.title}</h1>
             <p>{item.content}</p>
             <ButtonWrapper>
-              {id !== item.userId && item.chatId !== "" && (
+              {ID !== item.userId && item.chatId !== "" && (
                 <GoToChatButton onClick={handleClickChatButton}>
                   <img src={Chat} />
                   그룹 채팅 참여
                 </GoToChatButton>
               )}
 
-              {id === item.userId && (
+              {ID === item.userId && (
                 <CommunityButtonWrapper>
                   <AlertDialogModal item={item} handleDelete={handleDelete} />
                   <Button
@@ -228,11 +227,7 @@ const ModalContent = styled.div`
 `;
 
 const ModalLeft = styled.div`
-  h3 {
-    font-size: 1.5rem;
-    font-weight: 600;
-    margin-bottom: 1rem;
-  }
+  width: 40%;
 `;
 
 const ModalRight = styled.div`

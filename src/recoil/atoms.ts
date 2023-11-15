@@ -1,5 +1,5 @@
 import { atom } from "recoil";
-import { CommonData } from "../pages/CommunityListPage";
+import { CommonData } from "../constants/constant";
 export const idState = atom<string>({
   key: "idState",
   default: "",

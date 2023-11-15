@@ -12,18 +12,7 @@ import Button from "@mui/joy/Button";
 import { useRecoilState } from "recoil";
 import { commonListState } from "../recoil/atoms";
 import ToastMessage from "../components/common/ToastMessage";
-
-export interface CommonData {
-  id: string;
-  chatId?: string;
-  userId?: string;
-  title?: string;
-  content?: string;
-  createdAt?: number;
-  nickName?: string;
-  profileUrl?: string;
-  region?: string;
-}
+import { CommonData } from "../constants/constant";
 
 const CommunityList = () => {
   const navigate = useNavigate();
@@ -52,10 +41,8 @@ const CommunityList = () => {
       const matchingUser = userList.find((user) => post.userId === user.userId);
       if (matchingUser) {
         result.push({
+          ...matchingUser,
           ...post,
-          nickName: matchingUser.nickName,
-          profileUrl: matchingUser.profileUrl,
-          region: matchingUser.region,
         });
       }
       return result;
@@ -71,6 +58,8 @@ const CommunityList = () => {
     const newList = findCommonData(userList, postList);
     setCommonList(newList);
   }, [postList, userList, setCommonList]);
+
+  console.log(commonList);
 
   return (
     <Wrapper>
