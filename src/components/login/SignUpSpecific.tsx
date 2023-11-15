@@ -3,7 +3,7 @@ import { regions, genderOptions, ButtonProps } from "../../constants/constant";
 import { calculateMaxDate, isNameValid } from "../../utils/registerFunction";
 import { ReactComponent as SweetLogo } from "../../assets/sweetyLogo.svg";
 import { CorrectText, GreetingText, WarnText } from "./SignUpIDPW";
-import styled, { DefaultTheme } from "styled-components";
+import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import SignUpStepper from "./SignUpStepper";
 import { Container } from "./StartPage";

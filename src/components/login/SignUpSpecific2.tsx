@@ -289,10 +289,10 @@ function SignUpSpecific({ theme }: SignUpSpecificProps) {
   ) : (
     <Container gap="30px">
       <SweetLogo />
-      <div style={{ fontSize: "64px" }}>환영합니다🎉</div>
-      <div style={{ fontSize: "20px" }}>
+      <LoadingText fontSize="64px">환영합니다🎉</LoadingText>
+      <LoadingText fontSize="20px">
         회원가입이 완료되어 로그인 페이지로 이동중...
-      </div>
+      </LoadingText>
       <Box sx={{ width: "100%", position: "absolute", bottom: 0 }}>
         <LinearProgress variant="determinate" value={progress} />
       </Box>
@@ -315,6 +315,10 @@ const SignUpButton = styled.button<SignUpButtonProps>`
     job && isTallValid && mbti && alcohol && smoking != undefined
       ? "pointer"
       : "default"};
+`;
+
+const LoadingText = styled.div<{ fontSize: string }>`
+  font-size: ${(props) => props.fontSize || "16px"};
 `;
 
 export default SignUpSpecific;
