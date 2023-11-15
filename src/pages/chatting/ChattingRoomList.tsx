@@ -1,43 +1,61 @@
 import styled from "styled-components";
 import ChattingRoom from "./ChattingRoom";
-
-export interface ChattingRoomProps {
-  name: string;
-  online: boolean;
-  roomId: number;
-}
+import { useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { ChattingRoomProps } from "../../types/chatting";
 
 const ChattingRoomList = ({
-  roomData,
-  currentRoomNumber,
-  setCurrentRoomNumber,
+  myRoomData,
   setShowRoomList,
 }: {
-  roomData: ChattingRoomProps[];
-  currentRoomNumber: number;
-  setCurrentRoomNumber: React.Dispatch<React.SetStateAction<number>>;
+  myRoomData: ChattingRoomProps[] | undefined;
   setShowRoomList?: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
+  const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const chatId = searchParams.get("chatId");
+  useEffect(() => {
+    if (chatId === undefined && myRoomData) {
+      navigate(`/chat?chatId=${myRoomData[0].id}`);
+    }
+  }, [myRoomData]);
+
   return (
     <MainContainer>
       <PaddingBox />
-      {/* 인덱스 추가하기 */}
-      {roomData.map((item, index) => {
-        const isCurrentRoom = index === currentRoomNumber;
-        return (
-          <ChattingRoom
-            onClick={() => {
-              setCurrentRoomNumber(index);
-              if (setShowRoomList) {
-                setShowRoomList(false);
+      {myRoomData && myRoomData?.length > 0 ? (
+        myRoomData.map((item, index) => {
+          const isCurrentRoom = item.id === chatId;
+          return (
+            <ChattingRoom
+              onClick={
+                isCurrentRoom
+                  ? () => {}
+                  : () => {
+                      navigate(`/chat?chatId=${item.id}`);
+                      if (setShowRoomList) {
+                        setShowRoomList(false);
+                      }
+                    }
               }
-            }}
-            key={index}
-            data={item}
-            isCurrentRoom={isCurrentRoom}
-          />
-        );
-      })}
+              key={index}
+              data={item}
+              isCurrentRoom={isCurrentRoom}
+            />
+          );
+        })
+      ) : (
+        <ChattingRoom
+          onClick={() => {
+            if (setShowRoomList) {
+              setShowRoomList(false);
+            }
+          }}
+          isCurrentRoom={false}
+          data={undefined}
+        />
+      )}
     </MainContainer>
   );
 };
@@ -50,6 +68,7 @@ const MainContainer = styled.div`
   flex-shrink: 0;
   background-color: white;
   height: 100vh;
+  position: relative;
 
   @media screen and (max-width: 1024px) {
     position: absolute;
