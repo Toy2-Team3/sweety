@@ -129,17 +129,23 @@ const Wrapper = styled.div`
 
 const Header = styled.div`
   > div:first-child {
-    font-size: 3.5rem;
+    margin-bottom: 1rem;
+
+    font-size: 50px;
     font-weight: 700;
-    color: #d94e28;
+    color: ${(props) => props.theme.color.primary};
+
     ${(props) => props.theme.response.mobile} {
-      font-size: 2rem;
+      font-size: 45px;
     }
   }
 
   > div:nth-child(2) {
-    font-size: 1rem;
-    font-weight: 600;
+    font-size: 20px;
+
+    ${(props) => props.theme.response.mobile} {
+      font-size: 17px;
+    }
   }
 `;
 
