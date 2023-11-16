@@ -50,7 +50,7 @@ const categories = [
 export default function NavigationBar() {
   const navigate = useNavigate();
   const location = useLocation();
-  const [activeCategory, setActiveCategory] = useState("");
+  const [activeCategory, setActiveCategory] = useState("home");
   const [isSettingClicked, setIsSettingClicked] = useState(false);
   const setLogin = useSetRecoilState(loginState);
 
@@ -70,10 +70,11 @@ export default function NavigationBar() {
   const handleOpenSettingBox = () => {
     setIsSettingClicked(!isSettingClicked);
   };
-
+  
   useEffect(() => {
-    setActiveCategory("home");
-  }, []);
+    const path = location.pathname.replace("/", "");
+    setActiveCategory(path || "home");
+  }, [location]);
 
   // 새로고침 시 저장되도록
   useEffect(() => {
