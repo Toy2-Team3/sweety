@@ -352,6 +352,7 @@ const GenderButton = styled.button`
   border-radius: 12px;
   border: none;
   background: ${(props) => props.theme.color.darkGray};
+  color: ${(props) => props.theme.color.black};
 `;
 
 export const SelectBox = styled.select`
@@ -360,6 +361,7 @@ export const SelectBox = styled.select`
   border-radius: 12px;
   border: 1px solid ${(props) => props.theme.color.borderGray};
   background: #fff;
+  color: ${(props) => props.theme.color.black};
   padding-left: 16px;
   &:focus {
     border: ${(props) => props.theme.color.primary} 1px solid;
