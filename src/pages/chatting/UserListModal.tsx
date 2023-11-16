@@ -1,6 +1,5 @@
 import styled from "styled-components";
 import xIcon from "../../assets/xIcon.svg";
-import ex from "../../assets/ex.jpg";
 import UserStatusWrapper, { ChatUserInfo } from "./UserStatusWrapper";
 
 const UserListModal = ({
@@ -70,6 +69,10 @@ const Container = styled.div`
   padding: 20px;
   display: flex;
   flex-direction: column;
+
+  @media screen and (max-width: 480px) {
+    width: 320px;
+  }
 
   > div:first-child {
     border-bottom: 1px solid grey;

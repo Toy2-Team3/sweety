@@ -19,17 +19,21 @@ const ChattingSection = ({
   myRoomData: ChattingRoomProps[] | undefined;
 }) => {
   const navigate = useNavigate();
+  const scrollRef = useRef<HTMLDivElement>(null);
   const [searchParams] = useSearchParams();
+  const [showRoomList, setShowRoomList] = useState<boolean>(false);
+  const [showUserListModal, setShowUserListModal] = useState<boolean>(false);
   const chatId = searchParams.get("chatId");
   const currentRoom = myRoomData?.find((room) => room.id === chatId);
   const currentRoomName = currentRoom ? currentRoom.name : "";
+  const [chatSocket, setChatSocket] = useState<any>(null);
+  const [onlineUsers, setOnlineUser] = useState<string[] | undefined>([]);
   const [chatMessages, setChatMessages] = useState<Message[]>([]);
   const [newMessages, setNewMessages] = useState<Message>();
-  const [showRoomList, setShowRoomList] = useState<boolean>(false);
-  const [chatSocket, setChatSocket] = useState(getChattingRoomSocket(chatId));
-  const scrollRef = useRef<HTMLDivElement>(null);
-  const [showUserListModal, setShowUserListModal] = useState<boolean>(false);
-  const [onlineUsers, setOnlineUser] = useState<string[] | undefined>([]);
+  const [newEntrance, setNewEntrance] = useState<{
+    id: string;
+    type: "leave" | "join";
+  }>();
 
   useEffect(() => {
     const handleResize = () => {
@@ -43,6 +47,7 @@ const ChattingSection = ({
       window.removeEventListener("resize", handleResize);
       chatSocket?.disconnect();
     };
+    // eslint-disable-next-line
   }, []);
 
   const getSocket = () => {
@@ -52,24 +57,27 @@ const ChattingSection = ({
   const subscribeChatRoom = () => {
     if (chatSocket) {
       chatSocket.emit("users");
-      chatSocket.on("users-to-client", (data) => {
+      chatSocket.emit("fetch-messages");
+
+      chatSocket.on("users-to-client", (data: any) => {
         setOnlineUser(data.users);
       });
-      chatSocket.emit("fetch-messages");
-      chatSocket.on("messages-to-client", (data) => {
+
+      chatSocket.on("messages-to-client", (data: any) => {
         setChatMessages(data.messages);
       });
+
       chatSocket.on("message-to-client", (data: Message) => {
         setNewMessages(data);
       });
-      chatSocket.on("join", (data) => {
-        console.log("join", data);
+
+      chatSocket.on("join", (data: any) => {
+        setNewEntrance({ id: data.joiners[0], type: "join" });
       });
-      chatSocket.on("leave", (data) => {
-        console.log("leave", data);
+
+      chatSocket.on("leave", (data: any) => {
+        setNewEntrance({ id: data.leaver, type: "leave" });
       });
-    } else {
-      getSocket();
     }
   };
 
@@ -77,16 +85,41 @@ const ChattingSection = ({
     // 채팅방을 변경할때마다 해당 채팅방으로 연결하는 소켓을 받아옴
     setChatMessages([]);
     getSocket();
+    // eslint-disable-next-line
   }, [chatId]);
 
   useEffect(() => {
     // 소켓이 변경되면 해당 소켓으로 이벤트들을 구독
     subscribeChatRoom();
+    // eslint-disable-next-line
   }, [chatSocket]);
 
   useEffect(() => {
     if (newMessages) setChatMessages((prev) => [...prev, newMessages]);
   }, [newMessages]);
+
+  const fetchNewUserInfoAndAlert = async () => {
+    if (newEntrance?.id === undefined || null) return;
+    else if (newEntrance.id === sessionStorage.getItem("id")) return;
+    const alertMessage =
+      newEntrance.type === "join" ? "입장하였습니다." : "퇴장하였습니다.";
+    const res = await axios.get(
+      `https://fastcampus-chat.net/user?userId=${newEntrance.id}`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          serverId: `${process.env.REACT_APP_SERVER_ID}`,
+          Authorization: `Bearer ${sessionStorage.getItem("accessToken")}`,
+        },
+      },
+    );
+    alert(`${res.data.user.name}님이 ${alertMessage}`);
+    setNewEntrance(undefined);
+  };
+
+  useEffect(() => {
+    fetchNewUserInfoAndAlert();
+  }, [newEntrance]);
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -97,8 +130,6 @@ const ChattingSection = ({
   const sendMessageAPI = (message: string) => {
     chatSocket?.emit("message-to-server", message);
   };
-
-  // const getUserList =
 
   const onExit = async () => {
     if (window.confirm("정말 채팅방을 나가시겠습니까?")) {
@@ -114,6 +145,7 @@ const ChattingSection = ({
         },
       );
       if (res.status === 200 && myRoomData) {
+        chatSocket.disconnect();
         setTimeout(() => navigate(`/chat`), 500);
       }
     } else {
@@ -206,6 +238,7 @@ const ChattingViewArea = styled.main`
   }
 
   @media screen and (max-width: 480px) {
+    margin-bottom: 63px;
     height: calc(100vh - 183px);
   }
 `;

@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 const ChatBox = (item: Message) => {
   const [userImage, setUserImage] = useState<string | undefined>("");
   const [isFetching, setIsFetching] = useState<boolean>(false);
+  const myId = sessionStorage.getItem("id");
 
   const fetchUserData = async () => {
     try {
@@ -31,7 +32,6 @@ const ChatBox = (item: Message) => {
     fetchUserData();
   }, []);
 
-  const myId = sessionStorage.getItem("id");
   return (
     <div
       style={{
@@ -71,6 +71,7 @@ const ChatBoxWrapper = styled.div<{ $isMyChat: boolean; $isFetching: boolean }>`
     max-width: 600px;
     background-color: ${(props) => (props.$isMyChat ? "#F9744C" : "#d9d9d9")};
     color: ${(props) => (props.$isMyChat ? "#fff" : "#000")};
+    white-space: pre-line;
   }
 `;
 
