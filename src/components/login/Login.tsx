@@ -9,6 +9,7 @@ import { useRecoilState, useSetRecoilState } from "recoil";
 import styled from "styled-components";
 import { useState } from "react";
 import axios from "axios";
+import Spinner from "../common/Spinner";
 
 function Login() {
   const [wrong, setWrong] = useState(false);
@@ -17,6 +18,7 @@ function Login() {
   const [pw, setPw] = useRecoilState(pwState);
   const [noneUser, setNoneUser] = useState(false);
   const setLogin = useSetRecoilState(loginState);
+  const [progress, setProgress] = useState(false);
 
   const navigate = useNavigate();
 
@@ -31,6 +33,7 @@ function Login() {
   }
 
   const signIn = async (id: string, password: string): Promise<void> => {
+    setProgress(true);
     try {
       const requestBody: LoginRequestBody = { id, password };
 
@@ -60,16 +63,19 @@ function Login() {
         } else {
           setNoneUser(true);
           setWrong(false);
+          setProgress(false);
         }
       } else {
         console.error("로그인에 실패했습니다 :", response.status);
         setWrong(true);
         setNoneUser(false);
+        setProgress(false);
       }
     } catch (error) {
       console.error("서버에 로그인 요청을 보내지 못했습니다 :", error);
       setWrong(true);
       setNoneUser(false);
+      setProgress(false);
     }
   };
 
@@ -101,23 +107,27 @@ function Login() {
         </ShowPasswordButton>
       </InputWrapper>
       <InputWrapper>
-        <LoginButton
-          id={id}
-          pw={pw}
-          onClick={async () => {
-            await signIn(id, pw);
-          }}
-          disabled={!id || !pw}
-        >
-          로그인
-        </LoginButton>
+        {/* Conditionally render the button or spinner */}
+        {progress ? (
+          <Spinner />
+        ) : (
+          <LoginButton
+            id={id}
+            pw={pw}
+            onClick={async () => {
+              await signIn(id, pw);
+            }}
+            disabled={!id || !pw || progress} // Disable the button when progress is true
+          >
+            로그인
+          </LoginButton>
+        )}
         {id && pw && noneUser && wrong === false ? (
           <WarnText>탈퇴한 회원입니다</WarnText>
         ) : id && pw && wrong ? (
           <WarnText>아이디 및 비밀번호를 다시 확인해주세요</WarnText>
         ) : null}
       </InputWrapper>
-
       <RegisterLink onClick={() => navigate("/signup1")}>
         회원가입하러 가기
       </RegisterLink>

@@ -50,6 +50,7 @@ import axios from "axios";
 import Box from "@mui/material/Box";
 import LinearProgress from "@mui/material/LinearProgress";
 import { InputWrapper } from "./Login";
+import Spinner from "../common/Spinner";
 
 interface SignUpSpecificProps {
   theme: DefaultTheme;
@@ -261,16 +262,20 @@ function SignUpSpecific({ theme }: SignUpSpecificProps) {
             </SelectBox>
           </div>
         </TwoColumnWrapper>
-        <SignUpButton
-          job={job}
-          isTallValid={isTallValid(tall)}
-          mbti={mbti}
-          alcohol={alcohol}
-          smoking={smoking}
-          onClick={handleSignUpClickWrapper}
-        >
-          달콤한 만남 시작하기!
-        </SignUpButton>
+        {progress === 0 ? (
+          <SignUpButton
+            job={job}
+            isTallValid={isTallValid(tall)}
+            mbti={mbti}
+            alcohol={alcohol}
+            smoking={smoking}
+            onClick={handleSignUpClickWrapper}
+          >
+            달콤한 만남 시작하기!
+          </SignUpButton>
+        ) : (
+          <Spinner />
+        )}
         <Box sx={{ width: "100%", position: "absolute", bottom: 0 }}>
           <LinearProgress variant="determinate" value={progress} />
         </Box>
