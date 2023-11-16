@@ -13,7 +13,3 @@ export const getChattingRoomSocket = (chatId: string | null) => {
 
   return chatSocket;
 };
-
-// export const getServerSocket = () => {
-
-// }
