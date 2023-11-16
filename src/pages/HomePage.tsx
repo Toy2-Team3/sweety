@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import UserInfo from "../components/Home/UserInfo";
-import { IUserData, get } from "../utils/firebase";
+import { IUserData, get, getUserData } from "../utils/firebase";
 import { idState, selectedGenderState } from "../recoil/atoms";
 import { useRecoilState } from "recoil";
 
@@ -46,6 +46,13 @@ const Home = () => {
     const fetchData = async () => {
       try {
         let userData: IUserData[] = [];
+
+        // 성별 가져오기
+        const id = sessionStorage.getItem('id');
+        if (id) {
+          const data = await getUserData(id);
+          setGender(data!.gender);
+  }
 
         if (gender === "female") {
           userData = await get("user", "gender" as keyof UserInfoProps, "male");
