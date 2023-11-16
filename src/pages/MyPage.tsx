@@ -20,7 +20,7 @@ export default function MyPage() {
   const [atBottom, setAtBottom] = useState(false);
   const id = sessionStorage.getItem('id');
   const [profileImage, setProfileImage] = useRecoilState(profileImageState);
-  const [profileImageUrl, setProfileImageUrl] = useRecoilState(profileImageUrlState); 
+  const setProfileImageUrl = useSetRecoilState(profileImageUrlState); 
   const userName = useRecoilValue(userNameState);
   const region = useRecoilValue(selectedRegionState);
   const tall = useRecoilValue(tallState);

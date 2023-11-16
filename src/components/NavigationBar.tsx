@@ -87,7 +87,6 @@ export default function NavigationBar() {
   // 새로고침 시 저장되도록
   useEffect(() => {
     const path = location.pathname.replace("/", "");
-    console.log(path);
 
     if (path) {
       setActiveCategory(path);
