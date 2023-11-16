@@ -51,6 +51,7 @@ const CommunityModal: FC<CommunityModalProps> = ({
   const ACCESS_TOKEN = sessionStorage.getItem("accessToken");
   const [commonList, setCommonList] = useRecoilState(commonListState);
   const navigate = useNavigate();
+  const $isMyData = ID === item.userId;
 
   //그룹 채팅 참여 버튼 클릭
   const handleClickChatButton = async () => {
@@ -136,32 +137,30 @@ const CommunityModal: FC<CommunityModalProps> = ({
               <UserCard item={item} />
             </ModalLeft>
           )}
-          <ModalRight>
+          <ModalRight $isMyData>
             <h1>{item.title}</h1>
             <p>{item.content}</p>
-            <div>
-              {ID !== item.userId && item.chatId !== "" && (
-                <GoToChatButton onClick={handleClickChatButton}>
-                  <img src={Chat} />
-                  그룹 채팅 참여
-                </GoToChatButton>
-              )}
+            {ID !== item.userId && item.chatId !== "" && (
+              <GoToChatButton onClick={handleClickChatButton}>
+                <img src={Chat} />
+                그룹 채팅 참여
+              </GoToChatButton>
+            )}
 
-              {ID === item.userId && (
-                <CommunityButtonWrapper>
-                  <AlertDialogModal item={item} handleDelete={handleDelete} />
-                  <Button
-                    variant="plain"
-                    color="primary"
-                    size="lg"
-                    sx={{ width: 1 / 2 }}
-                    onClick={handleUpdate}
-                  >
-                    수정
-                  </Button>
-                </CommunityButtonWrapper>
-              )}
-            </div>
+            {ID === item.userId && (
+              <CommunityButtonWrapper>
+                <AlertDialogModal item={item} handleDelete={handleDelete} />
+                <Button
+                  variant="plain"
+                  color="primary"
+                  size="lg"
+                  sx={{ width: 1 / 2 }}
+                  onClick={handleUpdate}
+                >
+                  수정
+                </Button>
+              </CommunityButtonWrapper>
+            )}
           </ModalRight>
         </ModalContent>
       </ModalWrapper>
@@ -245,7 +244,8 @@ const ModalLeft = styled.div`
   }
 `;
 
-const ModalRight = styled.div`
+const ModalRight = styled.div<{ $isMyData?: boolean }>`
+  width: ${(props) => (props.$isMyData ? "100%" : "60%")};
   display: flex;
   flex-direction: column;
   gap: 1rem;
