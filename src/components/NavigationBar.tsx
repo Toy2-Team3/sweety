@@ -15,6 +15,7 @@ import { ReactComponent as ActivedMyPageIcon } from "../assets/activedMypageIcon
 import { ReactComponent as ActivedSettingIcon } from "../assets/activedSettingIcon.svg";
 import { useSetRecoilState } from "recoil";
 import { loginState } from "../recoil/atoms";
+import ToastMessage from "./common/ToastMessage";
 
 const categories = [
   {
@@ -53,6 +54,7 @@ export default function NavigationBar() {
   const [activeCategory, setActiveCategory] = useState("home");
   const [isSettingClicked, setIsSettingClicked] = useState(false);
   const setLogin = useSetRecoilState(loginState);
+  const [showToast, setShowToast] = useState(false);
 
   const logOut = async () => {
     setLogin(false);
@@ -70,6 +72,15 @@ export default function NavigationBar() {
   const handleOpenSettingBox = () => {
     setIsSettingClicked(!isSettingClicked);
   };
+
+  const handleToastMessage = () => {
+    setShowToast(true);
+
+    setTimeout(() => {
+      setShowToast(false);
+    }, 2000);
+  };
+  
   
   useEffect(() => {
     const path = location.pathname.replace("/", "");
@@ -122,8 +133,14 @@ export default function NavigationBar() {
         <SettingBox $isClicked={isSettingClicked}>
           <SettingMenu onClick={logOut}>로그아웃</SettingMenu>
           <Divider></Divider>
-          <SettingMenu>다른 설정...</SettingMenu>
+          <SettingMenu onClick={handleToastMessage}>구독하기</SettingMenu>
         </SettingBox>
+        {
+          showToast &&
+            <ToastMessage 
+              content="준비 중인 서비스입니다. 😉"
+            />
+        }
         <ClickedBox $isClicked={isSettingClicked}>
           <SettingButton onClick={handleOpenSettingBox}>
             {isSettingClicked ? <ActivedSettingIcon /> : <SettingIcon />}
