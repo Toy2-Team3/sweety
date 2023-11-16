@@ -4,12 +4,14 @@ import ByeModal from "../components/myPage/ByeModal";
 import OptionalInformation from "../components/myPage/OptionalInformation";
 import RequiredInformation from "../components/myPage/RequiredInformation";
 import theme from "../styles/theme";
-import { useRecoilState, useRecoilValue } from "recoil";
-import { profileImageUrlState, userNameState, introductionState, interestedTagsState, selectedRegionState, tallState, mbtiState, jobState, alcoholState, smokingState, profileImageState } from "../recoil/atoms";
+import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
+import { profileImageUrlState, userNameState, introductionState, interestedTagsState, selectedRegionState, tallState, mbtiState, jobState, alcoholState, smokingState, profileImageState, loginState } from "../recoil/atoms";
 import { UploadImage, getImageDownloadURL, getUserData, updateUserData } from "../utils/firebase";
 import { UserData } from "../constants/constant";
 import ToastMessage from "../components/common/ToastMessage";
 import axios from "axios";
+import { logOut } from "../utils/logOut";
+import { useNavigate } from "react-router-dom";
 
 export type MypageUserData = Partial<UserData>;
 
@@ -34,6 +36,8 @@ export default function MyPage() {
   const [showToast, setShowToast] = useState(false);
   const token = sessionStorage.getItem("accessToken");
   const tempImage = sessionStorage.getItem("tempImage");
+  const setLogin = useSetRecoilState(loginState);
+  const navigate = useNavigate();
   
   const checkIsChanged = (isImageChanged: boolean, 
                           userName: string, 
@@ -228,13 +232,12 @@ export default function MyPage() {
       </InformationWrap>
       {
         atBottom && 
-          <SaveButton
+          <BottomSaveButton
             $isChanged={isChanged}
             onClick={updateMyPageData}
-            style={{marginTop: '-5.5rem', marginBottom: '5rem'}}
           >
             프로필 수정
-          </SaveButton>
+          </BottomSaveButton>
       }
       <ByeButtonWrap>
         <ByeButton onClick={handleOpenModal}>
@@ -254,6 +257,7 @@ export default function MyPage() {
             content="프로필 정보가 수정되었습니다."
           />
       }
+      <LogOutButton onClick={() => logOut(setLogin, navigate)}>로그아웃</LogOutButton>
     </PageWrap>
   )
 }
@@ -268,6 +272,10 @@ const SaveButtonWrap = styled.div`
   position: absolute;
   top: 2rem;
   right: 2.5rem;
+
+  ${(props) => props.theme.response.mobile} {
+    display: none;
+  }
 `;
 
 const SaveButton = styled.button<{ $isChanged: boolean }>`
@@ -288,12 +296,21 @@ const SaveButton = styled.button<{ $isChanged: boolean }>`
   border-radius: 12px;
 `;
 
+const BottomSaveButton = styled(SaveButton)`
+  margin-top: -5.5rem;
+  margin-bottom: 5rem;
+`;
+
 const InformationWrap = styled.div`
   max-width: 342px;
   margin: 8rem 0;
   display: flex;
   flex-direction: column;
   gap: 1.8rem;
+
+  ${(props) => props.theme.response.mobile} {
+    margin-top: 3.5rem;
+  }
 `;
 
 const ByeButtonWrap = styled.div`
@@ -310,5 +327,23 @@ const ByeButton = styled.button`
 
   &:hover {
     cursor: pointer;
+  }
+`;
+
+const LogOutButton = styled.button`
+  display: none;
+
+  ${(props) => props.theme.response.mobile} {
+    display: block;
+    background: ${props => props.theme.color.lightGray};
+    color: ${props => props.theme.color.borderGray};
+    border: none;
+    border-radius: 12px;
+    padding: 10px;
+    margin-bottom: 1.5rem;
+
+    &:hover {
+      cursor: pointer;
+    }
   }
 `;
