@@ -8,13 +8,13 @@ const ChattingTextarea = ({
   sendMessageAPI: (message: string) => void;
 }) => {
   const [message, setMessage] = useState<string>("");
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const [isSending, setIsSending] = useState<boolean>(false);
 
   const handleMessageChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
     setMessage(event.target.value);
     adjustTextareaHeight();
   };
-
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
     adjustTextareaHeight();
@@ -28,8 +28,8 @@ const ChattingTextarea = ({
     }
   };
 
-  const [isSending, setIsSending] = useState<boolean>(false);
   const sendMessage = async () => {
+    if (message.length === 0) return;
     const textarea = textareaRef.current;
     try {
       setIsSending(true);
@@ -42,6 +42,14 @@ const ChattingTextarea = ({
     }
   };
 
+  const handleKeyPress = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (event.key === "Enter" && !event.shiftKey) {
+      // Enter 키를 누르고 Shift 키를 동시에 누르지 않았을 때 sendMessage 호출
+      event.preventDefault(); // Enter 키 기본 동작 방지
+      sendMessage();
+    }
+  };
+
   return (
     <InputContainer>
       <textarea
@@ -50,6 +58,7 @@ const ChattingTextarea = ({
         maxLength={255}
         value={message}
         onChange={handleMessageChange}
+        onKeyDown={handleKeyPress}
       />
       <button onClick={sendMessage} disabled={isSending}>
         <img src={SendChat} alt="" />
@@ -76,7 +85,7 @@ const InputContainer = styled.div`
   @media screen and (max-width: 480px) {
     width: calc(100% - 40px);
     position: fixed;
-    bottom: 123px;
+    bottom: 113px;
     left: 20px;
   }
 

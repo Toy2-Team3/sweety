@@ -1,21 +1,27 @@
 import styled from "styled-components";
 
-interface UserInfo {
-  image: string;
-  name: string;
-  isOnline: boolean;
+export interface ChatUserInfo {
+  id: string;
+  username: string;
+  picture: string;
 }
 
-const UserStatusWrapper = (item: UserInfo) => {
+const UserStatusWrapper = ({
+  item,
+  isOnline,
+}: {
+  item: ChatUserInfo;
+  isOnline: boolean | undefined;
+}) => {
   return (
     <Wrapper>
       <UserInfo>
-        <img src={item.image} alt="" />
-        <span>{item.name}</span>
+        <img src={item.picture} alt="" />
+        <span>{item.username}</span>
       </UserInfo>
       <OnlineStatus>
-        <StatusDot $status={item.isOnline} />
-        {item.isOnline ? "온라인" : "오프라인"}
+        <StatusDot $status={isOnline} />
+        {isOnline ? "온라인" : "오프라인"}
       </OnlineStatus>
     </Wrapper>
   );
@@ -53,7 +59,7 @@ const OnlineStatus = styled.div`
   font-size: 16px;
 `;
 
-const StatusDot = styled.div<{ $status: boolean }>`
+const StatusDot = styled.div<{ $status: boolean | undefined }>`
   width: 12px;
   height: 12px;
   border-radius: 50%;
