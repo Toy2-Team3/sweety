@@ -6,6 +6,7 @@ import {
   IUserData,
   getAllData,
   getAllDataOrderByDate,
+  getOnlyActiveUser,
 } from "../utils/firebase";
 import { useNavigate } from "react-router-dom";
 import Button from "@mui/joy/Button";
@@ -32,7 +33,7 @@ const CommunityList = () => {
   };
 
   const fetchUserData = async () => {
-    const response = await getAllData("user");
+    const response = await getOnlyActiveUser();
     setUserList(response);
   };
 
