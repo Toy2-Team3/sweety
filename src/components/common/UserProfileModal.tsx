@@ -159,7 +159,6 @@ export const ModalBackground = styled.div`
   bottom: 0;
   background-color: rgba(0, 0, 0, 0.6);
   z-index: 10;
-  cursor: pointer;
 `;
 
 export const ModalWrapper = styled.div`
@@ -183,7 +182,7 @@ export const ModalWrapper = styled.div`
 
   ${(props) => props.theme.response.tablet} {
     width: 90%;
-    max-height: 70%;
+    max-height: 80%;
     padding: 2.5rem 2rem;
   }
 
@@ -233,7 +232,6 @@ export const CloseButton = styled.div`
     }
   }
 
-  // 닫기 버튼에 대한 클릭 이벤트 핸들러 추가
   cursor: pointer;
   &:hover {
     opacity: 0.8;
@@ -274,9 +272,8 @@ export const ImageWrapper = styled.div`
     height: 100%;
     object-fit: cover;
     display: block;
-
-    // 이미지 클릭 시 모달 닫기 이벤트 핸들러 호출
     cursor: pointer;
+
     &:hover {
       opacity: 0.8;
     }

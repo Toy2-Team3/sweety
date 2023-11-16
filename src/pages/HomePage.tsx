@@ -122,7 +122,7 @@ const Home = () => {
 export default Home;
 
 const Wrapper = styled.div`
-  width: calc(100vw - 300px);
+  width: calc(100vw - 315px);
   padding: 5rem;
 
   display: flex;
@@ -135,9 +135,6 @@ const Wrapper = styled.div`
   }
 
   ${(props) => props.theme.response.mobile} {
-    display: flex;
-    justify-content: center;
-    align-items: center;
     width: 100%;
     padding: 2rem;
   }
@@ -168,11 +165,6 @@ const Header = styled.div`
 const UsersInfo = styled.div`
   margin-top: 4rem;
   display: grid;
-  gap: 1rem;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  padding: 1rem;
-
-  ${(props) => props.theme.response.mobile} {
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  }
+  gap: 3rem;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
 `;

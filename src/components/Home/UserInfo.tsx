@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import { ReactComponent as WhiteChatIcon } from "../../assets/chattingWhiteIcons.svg";
+import WhiteChatIcon from "../../assets/chattingWhiteIcons.svg";
 import UserProfileModal from "../common/UserProfileModal";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -172,17 +172,18 @@ const UserInfo = ({
     <div>
       <UserCover>
         <UserImage src={userinfo?.profileUrl} onClick={handleDetailModal} />
-        <UserName>
+        <BackgroundBlur>
           <div>
-            <span> {userinfo?.nickName}</span>
-            {userinfo?.birth && <span>({calculateAge(userinfo.birth)})</span>}
+            <UserName>
+              <span> {userinfo?.nickName} </span>
+              {userinfo?.birth && <span>({calculateAge(userinfo.birth)})</span>}
+            </UserName>
+            <UserRegion>{userinfo?.region}</UserRegion>
           </div>
-        </UserName>
-        <UserRegion>{userinfo?.region}</UserRegion>
-        <UserChatButton onClick={handleUserChat}>
-          <WhiteChatIcon />
-        </UserChatButton>
-        <BackgroundBlur />
+          <UserChatButton onClick={handleUserChat}>
+            <img src={WhiteChatIcon} />
+          </UserChatButton>
+        </BackgroundBlur>
       </UserCover>
       {userModal === true && (
         <UserProfileModal userinfo={userinfo} setUserModal={setUserModal} />
@@ -203,97 +204,81 @@ const UserCover = styled.div`
     cursor: pointer;
   }
 `;
-const BackgroundBlur = styled.div`
+
+const UserImage = styled.img`
+  width: 100%;
+  height: 100%;
+
+  position: absolute;
+  top: 0;
+  left: 0;
+
+  object-fit: cover;
   border-radius: 0.5rem;
+  box-shadow: 1px 2px 3px 1px rgba(0, 0, 0, 0.5);
+  transition: all 0.3s;
+`;
+
+const BackgroundBlur = styled.div`
+  width: 100%;
+  height: 25%;
+  padding: 0 1rem;
+
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+
   position: absolute;
   bottom: 0;
   left: 0;
-  width: 100%;
-  height: 20%;
-  background-color: rgba(0, 0, 0, 0.5);
-`;
-const UserImage = styled.img`
-  border-radius: 0.5rem;
 
-  object-fit: cover;
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  top: 0;
-  left: 0;
-  transition: all 0.3s;
-  box-shadow: 1px 2px 3px 1px rgba(0, 0, 0, 0.5);
+  border-radius: 0 0 0.5rem 0.5rem;
+  background-color: rgba(0, 0, 0, 0.5);
 `;
 
 const UserName = styled.div`
-  z-index: 2;
-  position: absolute;
-  bottom: 2rem;
-  color: rgba(255, 255, 255, 1); // Set color to white with full opacity
-  font-size: 1.5rem;
-  left: 0.5rem;
   display: flex;
+  margin-bottom: 0.3rem;
+
+  z-index: 2;
+
+  color: rgba(255, 255, 255, 1);
+  font-size: 1.3rem;
+
+  ${(props) => props.theme.response.tablet} {
+    font-size: 1.2rem;
+  }
+
   span:nth-child(1) {
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
-  }
-
-  span:nth-child(2) {
-    font-size: 1.2rem;
-  }
-  span:nth-child(2) {
-    font-size: 1.2rem;
-  }
-
-  ${(props) => props.theme.response.tablet} {
-    position: absolute;
-    bottom: 2rem;
-    font-size: 1.2rem;
-    span:nth-child(2) {
-      font-size: 1rem;
-    }
-  }
-  ${(props) => props.theme.response.mobile} {
-    position: absolute;
-    bottom: 2rem;
-    font-size: 1.2rem;
-    span:nth-child(2) {
-      font-size: 1rem;
-    }
   }
 `;
 
 const UserRegion = styled.div`
   z-index: 2;
 
-  position: absolute;
-  bottom: 0.7rem;
-  left: 0.5rem;
   font-size: 1rem;
   color: white;
-
-  ${(props) => props.theme.response.tablet} {
-    font-size: 0.8rem;
-  }
 `;
+
 const UserChatButton = styled.button`
   z-index: 2;
-  position: absolute;
-  bottom: 1rem;
-  font-size: 2rem;
-  color: white;
-  right: 1rem;
+
   display: flex;
   justify-content: center;
   background-color: transparent;
   border: none;
-  ${(props) => props.theme.response.tablet} {
-    font-size: 1.2rem;
-  }
   transition: all 0.3s;
+
   &:hover {
     transform: scale(1.05);
     cursor: pointer;
+  }
+
+  img {
+    width: 80%;
   }
 `;
