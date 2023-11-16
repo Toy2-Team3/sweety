@@ -12,6 +12,8 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useSearchParams } from "react-router-dom";
 import UserListModal from "./UserListModal";
+import ToastMessage from "../../components/common/ToastMessage";
+import { relative } from "path";
 
 const ChattingSection = ({
   myRoomData,
@@ -19,16 +21,25 @@ const ChattingSection = ({
   myRoomData: ChattingRoomProps[] | undefined;
 }) => {
   const navigate = useNavigate();
+  const scrollRef = useRef<HTMLDivElement>(null);
   const [searchParams] = useSearchParams();
+  const [showRoomList, setShowRoomList] = useState<boolean>(false);
+  const [showUserListModal, setShowUserListModal] = useState<boolean>(false);
   const chatId = searchParams.get("chatId");
   const currentRoom = myRoomData?.find((room) => room.id === chatId);
   const currentRoomName = currentRoom ? currentRoom.name : "";
+  const [chatSocket, setChatSocket] = useState<any>(null);
+  const [onlineUsers, setOnlineUser] = useState<string[] | undefined>([]);
   const [chatMessages, setChatMessages] = useState<Message[]>([]);
   const [newMessages, setNewMessages] = useState<Message>();
-  const [showRoomList, setShowRoomList] = useState<boolean>(false);
-  const [chatSocket, setChatSocket] = useState(getChattingRoomSocket(chatId));
-  const scrollRef = useRef<HTMLDivElement>(null);
-  const [showUserListModal, setShowUserListModal] = useState<boolean>(false);
+  const [newEntrance, setNewEntrance] = useState<{
+    id: string;
+    type: "leave" | "join";
+  }>();
+  const [toastMessage, setToastMessage] = useState<{
+    show: boolean;
+    content: string;
+  }>({ show: false, content: "" });
 
   useEffect(() => {
     const handleResize = () => {
@@ -38,47 +49,94 @@ const ChattingSection = ({
     };
     window.addEventListener("resize", handleResize);
 
+    if (scrollRef.current && scrollRef.current.scrollTop > 0) {
+      scrollRef.current.scrollTop = scrollRef.current.scrollTop + 60;
+    }
+
     return () => {
       window.removeEventListener("resize", handleResize);
       chatSocket?.disconnect();
     };
+    // eslint-disable-next-line
   }, []);
 
+  const getSocket = () => {
+    setChatSocket(getChattingRoomSocket(chatId));
+  };
+
+  const subscribeChatRoom = () => {
+    if (chatSocket) {
+      chatSocket.emit("users");
+      chatSocket.emit("fetch-messages");
+
+      chatSocket.on("users-to-client", (data: any) => {
+        setOnlineUser(data.users);
+      });
+
+      chatSocket.on("messages-to-client", (data: any) => {
+        setChatMessages(data.messages);
+      });
+
+      chatSocket.on("message-to-client", (data: Message) => {
+        setNewMessages(data);
+      });
+
+      chatSocket.on("join", (data: any) => {
+        setNewEntrance({ id: data.joiners[0], type: "join" });
+      });
+
+      chatSocket.on("leave", (data: any) => {
+        setNewEntrance({ id: data.leaver, type: "leave" });
+      });
+    }
+  };
+
   useEffect(() => {
+    // 채팅방을 변경할때마다 해당 채팅방으로 연결하는 소켓을 받아옴
     setChatMessages([]);
-    const getSocket = () => {
-      setChatSocket(getChattingRoomSocket(chatId));
-    };
     getSocket();
+    // eslint-disable-next-line
   }, [chatId]);
 
   useEffect(() => {
-    const subscribeChatRoom = () => {
-      if (chatSocket) {
-        chatSocket.emit("fetch-messages");
-        chatSocket.on("messages-to-client", (data) => {
-          setChatMessages(data.messages);
-        });
-        chatSocket.on("message-to-client", (data: Message) => {
-          setNewMessages(data);
-        });
-        chatSocket.on("join", () => {
-          // console.log("join", data);
-        });
-        chatSocket.on("leave", () => {
-          // console.log("leave", data);
-        });
-        chatSocket.on("users-to-client", () => {
-          // console.log("users-to-client", data);
-        });
-      }
-    };
+    // 소켓이 변경되면 해당 소켓으로 이벤트들을 구독
     subscribeChatRoom();
+    // eslint-disable-next-line
   }, [chatSocket]);
 
   useEffect(() => {
     if (newMessages) setChatMessages((prev) => [...prev, newMessages]);
   }, [newMessages]);
+
+  const fetchNewUserInfoAndAlert = async () => {
+    if (newEntrance?.id === undefined || null) return;
+    else if (newEntrance.id === sessionStorage.getItem("id")) return;
+    const alertMessage =
+      newEntrance.type === "join" ? "입장하였습니다." : "퇴장하였습니다.";
+    const res = await axios.get(
+      `https://fastcampus-chat.net/user?userId=${newEntrance.id}`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          serverId: `${process.env.REACT_APP_SERVER_ID}`,
+          Authorization: `Bearer ${sessionStorage.getItem("accessToken")}`,
+        },
+      },
+    );
+    setToastMessage({
+      show: true,
+      content: `${res.data.user.name}님이 ${alertMessage}`,
+    });
+    setTimeout(() => {
+      setToastMessage({ show: false, content: "" });
+    }, 2000);
+
+    setNewEntrance(undefined);
+  };
+
+  useEffect(() => {
+    fetchNewUserInfoAndAlert();
+  }, [newEntrance]);
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -104,6 +162,7 @@ const ChattingSection = ({
         },
       );
       if (res.status === 200 && myRoomData) {
+        chatSocket.disconnect();
         setTimeout(() => navigate(`/chat`), 500);
       }
     } else {
@@ -113,6 +172,7 @@ const ChattingSection = ({
 
   return (
     <MainContainer>
+      {toastMessage.show && <ToastMessage content={toastMessage?.content} />}
       <div className="chatting-room-controller">
         {showRoomList && (
           <ChattingRoomList
@@ -121,7 +181,7 @@ const ChattingSection = ({
           />
         )}
       </div>
-      <Header>
+      <Header $chatId={chatId}>
         <img
           onClick={() => {
             setShowRoomList(true);
@@ -132,7 +192,10 @@ const ChattingSection = ({
         <h1>{currentRoomName}</h1>
         <div>
           <img
-            onClick={() => setShowUserListModal((prev) => !prev)}
+            onClick={() => {
+              setShowUserListModal((prev) => !prev);
+              setShowRoomList(false);
+            }}
             src={chatRoomUserList}
             alt=""
           />
@@ -156,7 +219,11 @@ const ChattingSection = ({
         )}
       </div>
       {showUserListModal && (
-        <UserListModal setShowUserListModal={setShowUserListModal} />
+        <UserListModal
+          setShowUserListModal={setShowUserListModal}
+          allUsers={currentRoom?.users}
+          onlineUsers={onlineUsers}
+        />
       )}
     </MainContainer>
   );
@@ -185,15 +252,16 @@ const ChattingViewArea = styled.main`
   padding: 73px 30px 10px;
 
   @media screen and (max-width: 1024px) {
-    padding: 73px 20px 10px;
+    padding: 73px 20px 20px;
   }
 
   @media screen and (max-width: 480px) {
-    height: calc(100vh - 183px);
+    padding-bottom: 90px;
+    height: calc(100vh - 186px);
   }
 `;
 
-const Header = styled.header`
+const Header = styled.header<{ $chatId: string | null }>`
   position: fixed;
   display: flex;
   width: calc(100% - 564px);
@@ -225,6 +293,7 @@ const Header = styled.header`
   img {
     cursor: pointer;
     flex-shrink: 0;
+    display: ${(props) => (props.$chatId ? "" : "none")};
   }
 
   h1 {
@@ -235,6 +304,7 @@ const Header = styled.header`
     white-space: nowrap;
     word-break: break-all;
     line-height: 24px;
+    padding: 0 10px;
 
     @media screen and (max-width: 480px) {
       font-size: 18px;
