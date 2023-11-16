@@ -10,7 +10,7 @@ import styled, { DefaultTheme } from "styled-components";
 import { UploadImage } from "../../utils/firebase";
 import { useNavigate } from "react-router-dom";
 import SignUpStepper from "./SignUpStepper";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useSetRecoilState } from "recoil";
 import { Container } from "./StartPage";
 import { useEffect, useState } from "react";
 import {
@@ -50,6 +50,7 @@ import axios from "axios";
 import Box from "@mui/material/Box";
 import LinearProgress from "@mui/material/LinearProgress";
 import { InputWrapper } from "./Login";
+import Spinner from "../common/Spinner";
 
 interface SignUpSpecificProps {
   theme: DefaultTheme;
@@ -68,7 +69,7 @@ function SignUpSpecific({ theme }: SignUpSpecificProps) {
   const [mbti, setMbti] = useRecoilState(mbtiState);
   const [alcohol, setAlcohol] = useRecoilState(alcoholState);
   const [smoking, setSmoking] = useRecoilState(smokingState);
-  const [activeStep, setActiveStep] = useRecoilState(activeStepState);
+  const setActiveStep = useSetRecoilState(activeStepState);
   const [isSignUp, setIsSignUp] = useState(false);
   const [progress, setProgress] = useState(0);
 
@@ -108,7 +109,7 @@ function SignUpSpecific({ theme }: SignUpSpecificProps) {
             password: pw,
             token: "",
             nickName: userName,
-            birth: birthday,
+            birth: birthday as string,
             gender: selectedGender,
             region: selectedRegion,
             profileUrl: imageUrl,
@@ -163,7 +164,6 @@ function SignUpSpecific({ theme }: SignUpSpecificProps) {
 
   useEffect(() => {
     setActiveStep(2);
-    console.log(activeStep);
   });
 
   return !isSignUp ? (
@@ -261,16 +261,20 @@ function SignUpSpecific({ theme }: SignUpSpecificProps) {
             </SelectBox>
           </div>
         </TwoColumnWrapper>
-        <SignUpButton
-          job={job}
-          isTallValid={isTallValid(tall)}
-          mbti={mbti}
-          alcohol={alcohol}
-          smoking={smoking}
-          onClick={handleSignUpClickWrapper}
-        >
-          달콤한 만남 시작하기!
-        </SignUpButton>
+        {progress === 0 ? (
+          <SignUpButton
+            job={job}
+            isTallValid={isTallValid(tall)}
+            mbti={mbti}
+            alcohol={alcohol}
+            smoking={smoking}
+            onClick={handleSignUpClickWrapper}
+          >
+            달콤한 만남 시작하기!
+          </SignUpButton>
+        ) : (
+          <Spinner />
+        )}
         <Box sx={{ width: "100%", position: "absolute", bottom: 0 }}>
           <LinearProgress variant="determinate" value={progress} />
         </Box>

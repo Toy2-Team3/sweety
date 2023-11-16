@@ -61,7 +61,6 @@ function SignUpSpecific() {
 
   useEffect(() => {
     setActiveStep(1);
-    console.log(activeStep);
   });
 
   useEffect(() => {

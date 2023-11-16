@@ -75,8 +75,8 @@ export const compatibilityMessages: { [key: string]: string } = {
   ESTJ: "저기...사랑이 뭔지 아시나요?",
   ESFJ: "그거 아세요? ISFP, ISTP와 궁합이 정말 좋대요!",
   ESTP: "ISFJ, ISTJ와는 실용주의적 성향이 잘 맞는다고 하네요!",
-  ESFP: "ISFJ, ISTJ와 함꼐라면 항상 즐거울 겁니다!",
-  ENFJ: "그거 아세요? ISFP,INFP와 특히 잘 어울린대요!",
+  ESFP: "ISFJ, ISTJ와 함께라면 항상 즐거울 겁니다!",
+  ENFJ: "그거 아세요? ISFP, INFP와 특히 잘 어울린대요!",
   ENTJ: "INTJ, INTP와는 비슷한 가치관을 가져서 궁합이 좋대요!",
   ENFP: "INFJ, INTJ와는 창의적인 아이디어가 넘치는 커플이래요!",
   ENTP: "그거 아세요? INTJ, INTP와 최고의 궁합이래요!",
@@ -270,7 +270,7 @@ export interface UserData {
   password: string;
   token: string;
   nickName: string;
-  birth: string | null;
+  birth: string;
   gender: string;
   region: string;
   profileUrl: string;
