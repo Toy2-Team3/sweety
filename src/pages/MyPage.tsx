@@ -9,6 +9,7 @@ import { profileImageUrlState, userNameState, introductionState, interestedTagsS
 import { UploadImage, getImageDownloadURL, getUserData, updateUserData } from "../utils/firebase";
 import { UserData } from "../constants/constant";
 import ToastMessage from "../components/common/ToastMessage";
+import axios from "axios";
 
 export type MypageUserData = Partial<UserData>;
 
@@ -31,6 +32,8 @@ export default function MyPage() {
   const [isChanged, setIsChanged] = useState(false);
   const [isImageChanged, setIsImageChanged] = useState(false);
   const [showToast, setShowToast] = useState(false);
+  const token = sessionStorage.getItem("accessToken");
+  const tempImage = sessionStorage.getItem("tempImage");
   
   const checkIsChanged = (isImageChanged: boolean, 
                           userName: string, 
@@ -58,7 +61,6 @@ export default function MyPage() {
         setIsChanged(false);
       }
     }
-    // console.log(isChanged);
   }
 
   const getUserInformation = async (): Promise<void> => {
@@ -125,72 +127,94 @@ export default function MyPage() {
       window.removeEventListener("scroll", handleScrolling);
     };
   }, []);
-  
-
-  const updateToFireStore = async () => {
-    if(id) {
-      // 이미지 업로드
-      if(isImageChanged) {
-        UploadImage({ imageName: id, file: profileImage as File });
-        setProfileImage(profileImage);
-      }
-   
-      const imageUrl = await getImageDownloadURL(id); 
-      setProfileImageUrl(imageUrl);
-      
-      // 수정한 데이터 업데이트
-      const changedUserData: MypageUserData = {
-        profileUrl: imageUrl,
-        nickName: userName,
-        region: region,
-        tall: tall,
-        mbti: mbti,
-        job: job,
-        alcohol: alcohol,
-        smoking: smoking,
-        introduction: introduction,
-        interested: interestedTags,
-      };
-
-      // 파이어베이스에 업데이트
-      await updateUserData(id, changedUserData);
-      console.log(`${id}의 정보가 수정되었습니다.`);
-    }
-  }
 
   const updateMyPageData = async () => {
     if(!isChanged)
       return;
 
     try {
-      await updateToFireStore();
 
-      setIsChanged(false);
-      setShowToast(true);
+      if(id) {
+        // 이미지 업로드
+        if(isImageChanged) {
+          UploadImage({ imageName: id, file: profileImage as File });
+          setProfileImage(profileImage);
+        }
+     
+        const imageUrl = await getImageDownloadURL(id); 
+        setProfileImageUrl(imageUrl);
 
-      setTimeout(() => {
-        setShowToast(false);
-        window.location.reload();
-        setIsImageChanged(false);
-      }, 2000);
 
+        // 서버로 전송
+        const response = await axios.patch(
+          "https://fastcampus-chat.net/user",
+          {
+            name: userName,
+            picture: imageUrl
+          },
+          {
+            headers: {
+              "content-type": "application/json",
+              serverId: process.env.REACT_APP_SERVER_ID,
+              Authorization: `Bearer ${token}`,
+            },
+           },
+        );
+  
+        // 서버 응답이 200이면 파이어베이스에 업데이트
+        if(response.status === 200) {
+          const changedUserData: MypageUserData = {
+            profileUrl: imageUrl,
+            nickName: userName,
+            region: region,
+            tall: tall,
+            mbti: mbti,
+            job: job,
+            alcohol: alcohol,
+            smoking: smoking,
+            introduction: introduction,
+            interested: interestedTags,
+          };
+
+          await updateUserData(id, changedUserData);
+          console.log(`${id}의 정보가 수정되었습니다.`);
+  
+          setIsChanged(false);
+          setShowToast(true);
+  
+          setTimeout(() => {
+            setShowToast(false);
+            window.location.reload();
+            setIsImageChanged(false);
+          }, 2000);
+        }
+        else {
+          // 응답이 200이 아닐 경우 이전의 프로필 이미지로 되돌리기
+          const file = new Blob([tempImage!], { type: "File" });
+          UploadImage({ imageName: id, file: file as File });
+          const imageUrl = await getImageDownloadURL(id); 
+          setProfileImage(profileImage);
+          setProfileImageUrl(imageUrl);
+          await updateUserData(id, {profileUrl: imageUrl});
+          console.log('프로필 수정을 실패했습니다');
+
+          return;
+        }
+      }
     } catch (error) {
       console.log(`[ERROR]: ${error}`)
     }
   };
-
-    // TODO : 
-    // default 정보: 파이어베이스에서 가져온 회원 정보 => O
-    // 하나의 값이라도 수정한다면 버튼 색 바뀌도록 => O
-    // 프로필 수정 버튼 클릭 시 변경된 정보 파이어베이스 및 서버로 전송 => 파이어베이스만 O
-
 
   return (
     <PageWrap>
       <SaveButtonWrap>
         {
           !atBottom && 
-            <SaveButton $isChanged={isChanged} onClick={updateMyPageData}>
+            <SaveButton 
+              $isChanged={isChanged} 
+              onClick={updateMyPageData}
+            >
               프로필 수정
             </SaveButton>
         }

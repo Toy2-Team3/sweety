@@ -264,3 +264,15 @@ export const updateUserData = async (
 
   await updateDoc(docRef, props);
 }; 
+
+export const urlToBlob = async (tempImage: string) => {
+  try{
+    const response = await fetch(tempImage);
+    const blob = await response.blob();
+    const blobURL = URL.createObjectURL(blob);
+    return blobURL;
+
+  } catch (error) {
+    console.error("Error loading image:", error);
+  }
+}

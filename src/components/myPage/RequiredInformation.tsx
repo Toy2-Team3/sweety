@@ -5,7 +5,7 @@ import { CorrectText, WarnText } from "../login/SignUpIDPW";
 import { isTallValid } from "../../utils/registerFunction";
 import { useRecoilState } from "recoil";
 import { useEffect, useState } from "react";
-import { getUserData } from "../../utils/firebase";
+import { getUserData, urlToBlob } from "../../utils/firebase";
 import {
   alcoholState,
   birthdayState,
@@ -51,6 +51,10 @@ export default function RequiredInformation({ theme, onImageChange }: SignUpSpec
       const userData = await getUserData(id);
 
       if (userData) {
+        // 서버 응답이 취소일 경우를 대비해서 이전 이미지 url을 blob형태로 가지고 있기
+        const tempImage = await urlToBlob(userData.profileUrl);
+        sessionStorage.setItem('tempImage', tempImage!);
+
         setPrevProfileImageUrl(userData.profileUrl);
         setUserName(userData.nickName);
         setAlcohol(userData.alcohol);
