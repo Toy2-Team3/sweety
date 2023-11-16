@@ -19,6 +19,7 @@ import {
 } from "firebase/storage";
 import { db, storage } from "./firebase.config";
 import { UserData } from "../constants/constant";
+import { MypageUserData } from "../pages/MyPage";
 
 export interface IUserData {
   id: string;
@@ -266,3 +267,25 @@ export const get = async (
     throw error;
   }
 };
+
+// 미아페이지 유저 데이터 업데이트
+export const updateUserData = async (
+  userId: string,
+  props: MypageUserData
+): Promise<void> => {
+  const docRef = doc(db, "user", userId);
+
+  await updateDoc(docRef, props);
+}; 
+
+export const urlToBlob = async (tempImage: string) => {
+  try{
+    const response = await fetch(tempImage);
+    const blob = await response.blob();
+    const blobURL = URL.createObjectURL(blob);
+    return blobURL;
+
+  } catch (error) {
+    console.error("Error loading image:", error);
+  }
+}
