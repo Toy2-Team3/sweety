@@ -13,6 +13,7 @@ import { useNavigate } from "react-router-dom";
 import { useSearchParams } from "react-router-dom";
 import UserListModal from "./UserListModal";
 import ToastMessage from "../../components/common/ToastMessage";
+import { relative } from "path";
 
 const ChattingSection = ({
   myRoomData,
@@ -47,6 +48,10 @@ const ChattingSection = ({
       }
     };
     window.addEventListener("resize", handleResize);
+
+    if (scrollRef.current && scrollRef.current.scrollTop > 0) {
+      scrollRef.current.scrollTop = scrollRef.current.scrollTop + 60;
+    }
 
     return () => {
       window.removeEventListener("resize", handleResize);
@@ -176,7 +181,7 @@ const ChattingSection = ({
           />
         )}
       </div>
-      <Header>
+      <Header $chatId={chatId}>
         <img
           onClick={() => {
             setShowRoomList(true);
@@ -247,16 +252,16 @@ const ChattingViewArea = styled.main`
   padding: 73px 30px 10px;
 
   @media screen and (max-width: 1024px) {
-    padding: 73px 20px 10px;
+    padding: 73px 20px 20px;
   }
 
   @media screen and (max-width: 480px) {
-    margin-bottom: 63px;
-    height: calc(100vh - 183px);
+    padding-bottom: 90px;
+    height: calc(100vh - 186px);
   }
 `;
 
-const Header = styled.header`
+const Header = styled.header<{ $chatId: string | null }>`
   position: fixed;
   display: flex;
   width: calc(100% - 564px);
@@ -288,6 +293,7 @@ const Header = styled.header`
   img {
     cursor: pointer;
     flex-shrink: 0;
+    display: ${(props) => (props.$chatId ? "" : "none")};
   }
 
   h1 {

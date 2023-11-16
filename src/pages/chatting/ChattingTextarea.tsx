@@ -85,7 +85,7 @@ const InputContainer = styled.div`
   @media screen and (max-width: 480px) {
     width: calc(100% - 40px);
     position: fixed;
-    bottom: 123px;
+    bottom: 113px;
     left: 20px;
   }
 
