@@ -29,6 +29,7 @@ const ChattingTextarea = ({
   };
 
   const sendMessage = async () => {
+    if (message.length === 0) return;
     const textarea = textareaRef.current;
     try {
       setIsSending(true);
