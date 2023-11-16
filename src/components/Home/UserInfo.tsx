@@ -98,9 +98,14 @@ const UserInfo = ({
           },
         },
       );
-      console.log(response);
       if (response.status === 200) {
-        navigate(`/chat?chatId=${response.data.id}`);
+        setToastMsg("선택하신 채팅방으로 이동합니다 ✈️");
+        setShowToastMsg(true);
+
+        setTimeout(() => {
+          setShowToastMsg(false);
+          navigate(`/chat?chatId=${response.data.id}`);
+        }, 2000);
       }
     } catch (error) {
       console.log(error);
@@ -132,8 +137,13 @@ const UserInfo = ({
         });
 
         if (filteredChats?.length >= 1) {
-          console.log(filteredChats[0].id);
-          navigate(`/chat?chatId=${filteredChats[0].id}`);
+          setToastMsg("이미 참여한 채팅입니다! 채팅방으로 이동합니다 ✈️");
+          setShowToastMsg(true);
+
+          setTimeout(() => {
+            setShowToastMsg(false);
+            navigate(`/chat?chatId=${filteredChats[0].id}`);
+          }, 2000);
         } else {
           await makeChattingRoom(userinfo.userId, userinfo.nickName);
         }
