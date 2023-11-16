@@ -1,4 +1,5 @@
 import { atom } from "recoil";
+import { CommonData } from "../constants/constant";
 export const idState = atom<string>({
   key: "idState",
   default: "",
@@ -72,4 +73,19 @@ export const loginState = atom<boolean>({
 export const activeStepState = atom<number>({
   key: "activeStepState",
   default: 0,
+});
+
+export const introductionState = atom<string>({
+  key: "introductionState",
+  default: "",
+});
+
+export const interestedTagsState = atom<string[]>({
+  key: "interestedTagsState",
+  default: [],
+});
+
+export const commonListState = atom<CommonData[]>({
+  key: "commonListState",
+  default: [],
 });

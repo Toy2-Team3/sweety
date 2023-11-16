@@ -1,7 +1,7 @@
 import SignUpSpecific2 from "./components/login/SignUpSpecific2";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import SignUpSpecific from "./components/login/SignUpSpecific";
-import CommunityEditPage from "./pages/CommunityEditPage";
+import CommunityCreatePage from "./pages/CommunityCreatePage";
 import CommunityListPage from "./pages/CommunityListPage";
 import NavigationBar from "./components/NavigationBar";
 import SignUpIDPW from "./components/login/SignUpIDPW";
@@ -17,6 +17,7 @@ import styled from "styled-components";
 import MyPage from "./pages/MyPage";
 import "./App.css";
 import { useEffect } from "react";
+import CommunityUpdatePage from "./pages/CommunityUpdatePage";
 
 function App() {
   const [login, setLogin] = useRecoilState(loginState);
@@ -39,7 +40,14 @@ function App() {
             <Routes>
               <Route path="/" element={<HomePage />} />
               <Route path="/community" element={<CommunityListPage />} />
-              <Route path="/community/edit" element={<CommunityEditPage />} />
+              <Route
+                path="/community/create"
+                element={<CommunityCreatePage />}
+              />
+              <Route
+                path="/community/update/:id"
+                element={<CommunityUpdatePage />}
+              />
               <Route path="/chat" element={<ChatPage />} />
               <Route path="/mypage" element={<MyPage />} />
             </Routes>

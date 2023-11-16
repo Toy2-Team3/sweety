@@ -4,10 +4,16 @@ import Close from "../../assets/close.png";
 import { UserInfoProps, calculateAge } from "../Home/UserInfo";
 import { calculateLoveSync } from "../../utils/loveSync";
 import { getUserData } from "../../utils/firebase";
-const UserProfileModal: React.FC<{
+
+interface UserProfileModalProps {
   userinfo: UserInfoProps;
   setUserModal: React.Dispatch<React.SetStateAction<boolean>>;
-}> = ({ userinfo, setUserModal }) => {
+}
+
+const UserProfileModal: React.FC<UserProfileModalProps> = ({
+  userinfo,
+  setUserModal,
+}) => {
   const [loveClick, setLoveClick] = useState(false);
   const [myMbti, setMyMbti] = useState("");
   const [myIntersted, setMyInterested] = useState([]);
@@ -16,38 +22,39 @@ const UserProfileModal: React.FC<{
   const [myAge, setMyAge] = useState("");
 
   const myId = sessionStorage.getItem("id");
-  console.log(typeof userinfo?.birth);
+
   const handleModalClose = (
     e: React.MouseEvent<HTMLImageElement, MouseEvent>,
   ) => {
     e.preventDefault();
     setUserModal(false);
   };
-  const handleLoveButton = async (
+
+  const handleLoveButton = (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
   ) => {
     e.preventDefault();
-
     setLoveClick(true);
   };
-  useEffect(() => {
-    const getMyData = async () => {
-      if (myId) {
-        try {
-          const result = await getUserData(myId);
-          console.log("handleLobe", result);
-          setMyMbti(result?.mbti);
-          setMyInterested(result?.interested);
-          setMySmoking(result?.smoking);
-          setMyAlcohol(result?.alcohol);
-          setMyAge(result?.age);
-        } catch (error) {
-          console.error("에러 발생:", error);
-        }
-      } else {
-        console.log("myId가 null입니다."); // 또는 다른 예외 처리 로직
+
+  const getMyData = async () => {
+    if (myId) {
+      try {
+        const result = await getUserData(myId);
+        setMyMbti(result?.mbti);
+        setMyInterested(result?.interested);
+        setMySmoking(result?.smoking);
+        setMyAlcohol(result?.alcohol);
+        setMyAge(result?.age);
+      } catch (error) {
+        console.error("에러 발생:", error);
       }
-    };
+    } else {
+      console.log("myId가 null입니다."); // 또는 다른 예외 처리 로직
+    }
+  };
+
+  useEffect(() => {
     getMyData();
   }, []);
 
@@ -65,11 +72,10 @@ const UserProfileModal: React.FC<{
             <div>
               <h1>
                 {userinfo?.nickName} (
-                {userinfo?.birth && <span>{calculateAge(userinfo.birth)}</span>}
-                )
+                {userinfo?.birth && calculateAge(userinfo.birth)})
               </h1>
               <h2>
-                <span> ❤ 나와의 궁합점수는? </span>{" "}
+                <span> 🧡 나와의 궁합점수는? </span>{" "}
                 {loveClick ? (
                   <ScoreSpan>
                     {" "}
@@ -80,10 +86,10 @@ const UserProfileModal: React.FC<{
                       userinfo?.alcohol || "",
                       String(calculateAge(userinfo?.birth || "")),
                       myMbti || "",
-                      myIntersted || [], // Provide a default value (empty array) if myIntersted is undefined
-                      mySmoking || false, // Provide a default value (false) if mySmoking is undefined
-                      myAlcohol || "", // Provide a default value (empty string) if myAlcohol is undefined
-                      String(calculateAge(myAge || "")), // Provide a default value (empty string) if myAge is undefined
+                      myIntersted || [],
+                      mySmoking || false,
+                      myAlcohol || "",
+                      String(calculateAge(myAge || "")),
                     )}
                   </ScoreSpan>
                 ) : (
@@ -104,8 +110,8 @@ const UserProfileModal: React.FC<{
                     {userinfo?.alcohol === "N"
                       ? "안 마셔요"
                       : userinfo?.alcohol === "S"
-                      ? "가끔 마셔요"
-                      : "자주 마셔요"}
+                        ? "가끔 마셔요"
+                        : "자주 마셔요"}
                   </p>
                 </div>
                 <div>
@@ -116,7 +122,7 @@ const UserProfileModal: React.FC<{
             </div>
           </InfoWrapper>
         </ModalTop>
-        <ModalBottom>
+        <div>
           <>
             {userinfo?.introduction !== "" && (
               <>
@@ -128,11 +134,15 @@ const UserProfileModal: React.FC<{
             {userinfo?.interested && userinfo.interested.length !== 0 && (
               <>
                 <h3>관심사</h3>
-                <div>{userinfo.interested.join(", ")}</div>
+                <div>
+                  {userinfo.interested?.map((value) => {
+                    return <Tag key={value}>{value}</Tag>;
+                  })}
+                </div>
               </>
             )}
           </>
-        </ModalBottom>
+        </div>
       </ModalWrapper>
     </ModalBackground>
   );
@@ -271,7 +281,7 @@ export const ImageWrapper = styled.div`
   }
 `;
 
-const InfoWrapper = styled.div`
+export const InfoWrapper = styled.div`
   width: 60%;
   height: 100%;
 
@@ -282,16 +292,15 @@ const InfoWrapper = styled.div`
     width: 100%;
     height: 100%;
   }
-`;
 
-const ModalBottom = styled.div`
   h2 {
-    font-size: 1.5rem;
-    font-weight: bold;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: ${(props) => props.theme.color.secondary};
   }
 `;
 
-const InfoBottom = styled.div`
+export const InfoBottom = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: space-around;
@@ -300,6 +309,7 @@ const InfoBottom = styled.div`
     width: 50%;
   }
 `;
+
 const pulseAnimation = keyframes`
   0% {
     transform: scale(1);
@@ -332,6 +342,16 @@ const LoveButton = styled.button`
   }
 `;
 const ScoreSpan = styled.span`
-  color: red;
+  color: ${(props) => props.theme.color.secondary};
   font-weight: 800;
+`;
+
+const Tag = styled.span`
+  display: inline-block;
+  border-radius: 6px;
+  margin: 0.3rem;
+  padding: 0.3rem;
+  background-color: ${(props) => props.theme.color.darkGray};
+  font-size: 1rem;
+  color: ${(props) => props.theme.color.black};
 `;

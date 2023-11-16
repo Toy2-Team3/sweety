@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { ReactComponent as WhiteChatIcon } from "../../assets/chattingWhiteIcons.svg";
 import UserProfileModal from "../common/UserProfileModal";
@@ -88,8 +88,6 @@ export const calculateAge = (birthDate: string): number => {
 const UserInfo = ({ userinfo }: { userinfo: UserInfoProps }) => {
   const [userModal, setUserModal] = useState(false);
   const mySession = sessionStorage.getItem("accessToken");
-  const myId = sessionStorage.getItem("id");
-  const [userOnOff, setUserOnOff] = useState(true);
   const navigate = useNavigate();
 
   const makeChattingRoom = async (id: string, name: string): Promise<void> => {
@@ -172,30 +170,25 @@ const UserInfo = ({ userinfo }: { userinfo: UserInfoProps }) => {
   };
 
   return (
-    <UserCover>
-      <UserImage src={userinfo?.profileUrl} onClick={handleDetailModal} />
-      {/* {userOnOff && (
-        <UserActive>
-          <span></span>
-          <span> 현재 활동중</span>
-        </UserActive>
-      )} */}
-
-      <UserName>
-        <div>
-          <span> {userinfo?.nickName}</span>
-          {userinfo?.birth && <span>({calculateAge(userinfo.birth)})</span>}
-        </div>
-      </UserName>
-      <UserRegion>{userinfo?.region}</UserRegion>
-      <UserChatButton onClick={handleUserChat}>
-        <WhiteChatIcon />
-      </UserChatButton>
+    <div>
+      <UserCover>
+        <UserImage src={userinfo?.profileUrl} onClick={handleDetailModal} />
+        <UserName>
+          <div>
+            <span> {userinfo?.nickName}</span>
+            {userinfo?.birth && <span>({calculateAge(userinfo.birth)})</span>}
+          </div>
+        </UserName>
+        <UserRegion>{userinfo?.region}</UserRegion>
+        <UserChatButton onClick={handleUserChat}>
+          <WhiteChatIcon />
+        </UserChatButton>
+        <BackgroundBlur />
+      </UserCover>
       {userModal === true && (
         <UserProfileModal userinfo={userinfo} setUserModal={setUserModal} />
       )}
-      <BackgroundBlur />
-    </UserCover>
+    </div>
   );
 };
 
@@ -205,7 +198,11 @@ const UserCover = styled.div`
   width: 100%;
   padding-top: 100%;
   position: relative;
-  cursor: pointer;
+
+  &:hover {
+    transform: scale(1.03);
+    cursor: pointer;
+  }
 `;
 const BackgroundBlur = styled.div`
   border-radius: 0.5rem;
@@ -214,12 +211,7 @@ const BackgroundBlur = styled.div`
   left: 0;
   width: 100%;
   height: 20%;
-  background-color: rgba(
-    0,
-    0,
-    0,
-    0.5
-  ); /* Adjust the alpha value for transparency */
+  background-color: rgba(0, 0, 0, 0.5);
 `;
 const UserImage = styled.img`
   border-radius: 0.5rem;
@@ -232,10 +224,6 @@ const UserImage = styled.img`
   left: 0;
   transition: all 0.3s;
   box-shadow: 1px 2px 3px 1px rgba(0, 0, 0, 0.5);
-  &:hover {
-    transform: scale(1.03);
-    cursor: pointer;
-  }
 `;
 
 const UserName = styled.div`
@@ -308,25 +296,5 @@ const UserChatButton = styled.button`
   &:hover {
     transform: scale(1.05);
     cursor: pointer;
-  }
-`;
-const UserActive = styled.div`
-  position: absolute;
-  top: 1rem;
-  left: 0.5rem;
-  font-size: 1rem;
-  color: white;
-  display: flex;
-  align-items: center;
-  > span:first-child {
-    display: inline-block;
-    width: 0.5rem;
-    height: 0.5rem;
-    border-radius: 50%;
-    background-color: green;
-    margin-right: 0.5rem;
-  }
-  ${(props) => props.theme.response.mobile} {
-    font-size: 0.8rem;
   }
 `;

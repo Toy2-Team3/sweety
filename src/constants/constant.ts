@@ -286,3 +286,47 @@ export interface UserData {
 }
 
 export const steps = ["아이디 비밀번호", "기본 프로필 정보", "매칭 필수 정보"];
+
+export const interested = [
+  { value: "🎮 게임", label: "게임" },
+  { value: "📸 사진", label: "사진" },
+  { value: "🏋🏻‍♀️ 운동", label: "운동" },
+  { value: "🛍️ 패션/미용", label: "패션/미용" },
+  { value: "✈️ 여행", label: "여행" },
+  { value: "🚗 드라이브", label: "드라이브" },
+  { value: "🌿 봉사활동", label: "봉사활동" },
+  { value: "🖥️ IT", label: "IT" },
+  { value: "☕️ 맛집/카페", label: "맛집/카페" },
+  { value: "📝 자기계발", label: "자기계발" },
+  { value: "🐶 반려동물", label: "반려동물" },
+  { value: "🏠 인테리어", label: "인테리어" },
+  { value: "🎶 노래/악기", label: "노래/악기" },
+  { value: "🎫 문화 관람", label: "문화 관람" },
+  { value: "📚 문학", label: "문학" },
+  { value: "🍳 요리", label: "요리" },
+];
+
+export interface CommonData {
+  id: string;
+  alcohol?: string;
+  birth?: string;
+  chatId?: string;
+  content?: string;
+  createdAt?: number;
+  gender?: string;
+  interested?: string[];
+  introduction?: string;
+  job?: string;
+  mbti?: string;
+  myChats?: string[];
+  nickName?: string;
+  password?: string;
+  profileUrl?: string;
+  region?: string;
+  smoking?: boolean;
+  status?: string;
+  tall?: number;
+  title?: string;
+  token?: string;
+  userId?: string;
+}
