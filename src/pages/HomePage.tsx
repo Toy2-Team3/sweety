@@ -5,7 +5,8 @@ import { IUserData, get, getUserData } from "../utils/firebase";
 import { selectedGenderState } from "../recoil/atoms";
 import { useRecoilState } from "recoil";
 import ToastMessage from "../components/common/ToastMessage";
-
+import { doc, onSnapshot } from "firebase/firestore";
+import { db } from "../utils/firebase.config";
 export interface HomeUserInfo {
   id: string;
   userId: string;
@@ -28,7 +29,7 @@ export interface HomeUserInfo {
 }
 
 const Home = () => {
-  const [gender, setGender] = useRecoilState(selectedGenderState);
+  const [gender, setGender] = useState("");
   const [users, setUsers] = useState<HomeUserInfo[]>([]);
   const [showToastMsg, setShowToastMsg] = useState<boolean>(false);
   const [toastMsg, setToastMsg] = useState<string>("");
@@ -52,9 +53,14 @@ const Home = () => {
 
         // 성별 가져오기
         const id = sessionStorage.getItem("id");
+        console.log("id", id);
+
         if (id) {
           const data = await getUserData(id);
           setGender(data!.gender);
+          const unsub = onSnapshot(doc(db, "user", id), (a) => {
+            console.log("Current data: ", a.data());
+          });
         }
 
         if (gender === "female") {
