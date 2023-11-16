@@ -268,7 +268,7 @@ const ModalRight = styled.div`
   }
   h1 {
     font-size: 2rem;
-    font-weight: bold;
+    font-weight: 500;
     line-height: 2.5rem;
 
     ${(props) => props.theme.response.tablet} {
