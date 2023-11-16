@@ -30,7 +30,7 @@ function IntroPage() {
         <ContentWrapper where="up">
           <ImageTextWrapper where="top">
             <PreviewImage number="1" src={homeIntroImage} alt="Description" />
-            <Box style={{}}>
+            <Box where="top">
               <DescriptionText>
                 <BoldText>쉽고 빠른 채팅</BoldText>
                 마음에 드는 상대가 있나요?
@@ -147,21 +147,15 @@ const ContentWrapper = styled.div<{ where?: string }>`
   display: flex;
   flex-direction: column;
   width: 100vw;
+  gap: 100px;
+
   ${({ where }) =>
     where === "up"
       ? { marginTop: "150px" }
       : { marginBottom: "150px", alignItems: "center" }}
-
-  @media ${(props) => props.theme.response.tablet} {
-    gap: 50px;
-  }
-  @media ${(props) => props.theme.response.mobile} {
-    gap: 20px;
-  }
-  gap: 100px;
 `;
 
-const Box = styled.div`
+const Box = styled.div<{ where?: string }>`
   width: auto;
   height: 200px;
   display: flex;
@@ -170,6 +164,7 @@ const Box = styled.div`
   flex-direction: column;
   height: auto;
   text-align: center;
+  ${({ where }) => (where === "top" ? { gap: "30px" } : null)}
 `;
 
 const CopyText = styled.h2`
@@ -242,16 +237,8 @@ const ImageTextWrapper = styled.div<{ where: string }>`
   display: flex;
   justify-content: center;
 
-  @media ${(props) => props.theme.response.tablet} {
-    gap: 50px;
-  }
-  @media ${(props) => props.theme.response.mobile} {
-    gap: 20px;
-  }
-
-  gap: 100px
-    ${({ where }) =>
-      where === "bottom"
-        ? { flexDirection: "column" }
-        : { flexDirection: "row" }};
+  ${({ where }) =>
+    where === "bottom"
+      ? { flexDirection: "column" }
+      : { flexDirection: "row", gap: "50px" }};
 `;
