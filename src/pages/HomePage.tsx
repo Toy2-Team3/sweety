@@ -111,9 +111,9 @@ const Home = () => {
         <div>좋은 사람과 좋은 날을 만들어보세요</div>
       </Header>
       <UsersInfo>
-        {users.map((user, index) => (
+        {users.map((user) => (
           <UserInfo
-            key={index}
+            key={user.id}
             userinfo={user}
             setShowToastMsg={setShowToastMsg}
             setToastMsg={setToastMsg}

@@ -304,4 +304,15 @@ export const onStatusChange = (
   });
 
   return unsubscribe;
+
+export const getOnlyActiveUser = async () => {
+  const docRef = collection(db, "user");
+  const q = query(docRef, where("status", "==", "A"));
+  const userList: IUserData[] = [];
+  const querySnapshot = await getDocs(q);
+
+  querySnapshot.forEach((doc) => {
+    userList.push({ ...doc.data() } as IUserData);
+  });
+  return userList;
 };

@@ -141,7 +141,7 @@ const CommunityCreate = () => {
             <Button
               type="submit"
               variant="outlined"
-              color="primary"
+              color="danger"
               size="lg"
               sx={{ width: 1 / 2 }}
             >
