@@ -2,10 +2,11 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import UserInfo from "../components/Home/UserInfo";
 import { IUserData, get, getUserData } from "../utils/firebase";
-import { idState, selectedGenderState } from "../recoil/atoms";
+import { selectedGenderState } from "../recoil/atoms";
 import { useRecoilState } from "recoil";
+import ToastMessage from "../components/common/ToastMessage";
 
-export interface UserInfoProps {
+export interface HomeUserInfo {
   id: string;
   userId: string;
   password: string;
@@ -28,7 +29,9 @@ export interface UserInfoProps {
 
 const Home = () => {
   const [gender, setGender] = useRecoilState(selectedGenderState);
-  const [users, setUsers] = useState<UserInfoProps[]>([]);
+  const [users, setUsers] = useState<HomeUserInfo[]>([]);
+  const [showToastMsg, setShowToastMsg] = useState<boolean>(false);
+  const [toastMsg, setToastMsg] = useState<string>("");
 
   function shuffleArray<T>(array: T[]): T[] {
     const shuffledArray = [...array];
@@ -48,23 +51,23 @@ const Home = () => {
         let userData: IUserData[] = [];
 
         // 성별 가져오기
-        const id = sessionStorage.getItem('id');
+        const id = sessionStorage.getItem("id");
         if (id) {
           const data = await getUserData(id);
           setGender(data!.gender);
-  }
+        }
 
         if (gender === "female") {
-          userData = await get("user", "gender" as keyof UserInfoProps, "male");
+          userData = await get("user", "gender" as keyof HomeUserInfo, "male");
         } else {
           userData = await get(
             "user",
-            "gender" as keyof UserInfoProps,
+            "gender" as keyof HomeUserInfo,
             "female",
           );
         }
 
-        const userInfoArray: UserInfoProps[] = userData.map((user) => ({
+        const userInfoArray: HomeUserInfo[] = userData.map((user) => ({
           id: user.id,
           userId: user.userId || "",
           password: user.password || "",
@@ -99,13 +102,19 @@ const Home = () => {
     <Wrapper>
       <Header>
         <div>Home</div>
-        <div>좋은 사람과 좋은 날을 만들어보세요.</div>
+        <div>좋은 사람과 좋은 날을 만들어보세요</div>
       </Header>
       <UsersInfo>
         {users.map((user, index) => (
-          <UserInfo key={index} userinfo={user} />
+          <UserInfo
+            key={index}
+            userinfo={user}
+            setShowToastMsg={setShowToastMsg}
+            setToastMsg={setToastMsg}
+          />
         ))}
       </UsersInfo>
+      {showToastMsg && <ToastMessage content={toastMsg} />}
     </Wrapper>
   );
 };
@@ -113,7 +122,7 @@ const Home = () => {
 export default Home;
 
 const Wrapper = styled.div`
-  width: calc(100vw - 300px);
+  width: calc(100vw - 315px);
   padding: 5rem;
 
   display: flex;
@@ -126,9 +135,6 @@ const Wrapper = styled.div`
   }
 
   ${(props) => props.theme.response.mobile} {
-    display: flex;
-    justify-content: center;
-    align-items: center;
     width: 100%;
     padding: 2rem;
   }
@@ -159,11 +165,6 @@ const Header = styled.div`
 const UsersInfo = styled.div`
   margin-top: 4rem;
   display: grid;
-  gap: 1rem;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  padding: 1rem;
-
-  ${(props) => props.theme.response.mobile} {
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  }
+  gap: 3rem;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
 `;
