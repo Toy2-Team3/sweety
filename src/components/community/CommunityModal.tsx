@@ -72,16 +72,17 @@ const CommunityModal: FC<CommunityModalProps> = ({
       );
 
       if (response.status === 200) {
-        handleClosePostModal();
-        navigate(`/chat?chatId=${item.chatId}`);
+        setToastMsg("채팅방으로 이동합니다 ✈️");
+        setShowToastMsg(true);
       } else {
         console.log("그룹 채팅 참여하기 실패", response);
+        return;
       }
     } catch (error) {
       console.log(error);
       setToastMsg("이미 참여한 채팅입니다! 채팅방으로 이동합니다 ✈️");
       setShowToastMsg(true);
-
+    } finally {
       setTimeout(() => {
         setShowToastMsg(false);
         handleClosePostModal();
@@ -95,8 +96,8 @@ const CommunityModal: FC<CommunityModalProps> = ({
       await deleteData("community", id);
 
       // 삭제 완료 글 리스트 새로고침하기
-      const newList = commonList.filter((item) => {
-        return item.id !== ID;
+      const newList = commonList.filter((val) => {
+        return item.id !== val.id;
       });
       setCommonList(newList);
 
@@ -139,29 +140,27 @@ const CommunityModal: FC<CommunityModalProps> = ({
           <ModalRight>
             <h1>{item.title}</h1>
             <p>{item.content}</p>
-            <div>
-              {ID !== item.userId && item.chatId !== "" && (
-                <GoToChatButton onClick={handleClickChatButton}>
-                  <img src={Chat} />
-                  그룹 채팅 참여
-                </GoToChatButton>
-              )}
+            {ID !== item.userId && item.chatId !== "" && (
+              <GoToChatButton onClick={handleClickChatButton}>
+                <img src={Chat} />
+                그룹 채팅 참여
+              </GoToChatButton>
+            )}
 
-              {ID === item.userId && (
-                <CommunityButtonWrapper>
-                  <AlertDialogModal item={item} handleDelete={handleDelete} />
-                  <Button
-                    variant="plain"
-                    color="primary"
-                    size="lg"
-                    sx={{ width: 1 / 2 }}
-                    onClick={handleUpdate}
-                  >
-                    수정
-                  </Button>
-                </CommunityButtonWrapper>
-              )}
-            </div>
+            {ID === item.userId && (
+              <CommunityButtonWrapper>
+                <AlertDialogModal item={item} handleDelete={handleDelete} />
+                <Button
+                  variant="plain"
+                  color="primary"
+                  size="lg"
+                  sx={{ width: 1 / 2 }}
+                  onClick={handleUpdate}
+                >
+                  수정
+                </Button>
+              </CommunityButtonWrapper>
+            )}
           </ModalRight>
         </ModalContent>
       </ModalWrapper>
@@ -246,6 +245,7 @@ const ModalLeft = styled.div`
 `;
 
 const ModalRight = styled.div`
+  width: 100%;
   display: flex;
   flex-direction: column;
   gap: 1rem;

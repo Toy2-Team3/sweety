@@ -1,5 +1,11 @@
 import { useState } from "react";
 import styled from "styled-components";
+import { updateUserData } from "../../utils/firebase";
+import { useNavigate } from "react-router-dom";
+import { logOut } from '../../utils/logOut';
+import { useSetRecoilState } from "recoil";
+import { loginState } from "../../recoil/atoms";
+import ToastMessage from "../common/ToastMessage";
 
 interface ByeModalProps {
   isOpen: boolean;
@@ -11,20 +17,49 @@ export default function ByeModal({ isOpen, closeModal } : ByeModalProps) {
   const content = `sweety를 떠나시면 더 이상 달콤한 인연을 찾을 수 없어요..\n그래도 떠나시고 싶다면 아래 문구를 정확하게 입력해주세요.`;
   const byeMessage = `이제 그만 sweety를 떠날게요...`;
   const [inputValue, setInputValue] = useState("");
+  const id = sessionStorage.getItem("id");
+  const setLogin = useSetRecoilState(loginState);
+  const navigate = useNavigate();
+  const [showByeToast, setShowByeToast] = useState(false);
+  const [showWarningToast, setShowWarningToast] = useState(false);
 
   const onClickCancelButton = () => {
     closeModal();
   };
 
+  const handleByeToastMessage = () => {
+    setShowByeToast(true);
+
+    setTimeout(() => {
+      setShowByeToast(false);
+    }, 2000);
+  };
+
+  const handleWarningToastMessage = () => {
+    setShowWarningToast(true);
+
+    setTimeout(() => {
+      setShowWarningToast(false);
+    }, 2000);
+  };
+
   const onClickDeleteButton = async () => {
     if (inputValue === byeMessage) {
-      alert('다음에 또 만나요👋');
-
-      // TODO: 회원 탈퇴 로직
-
-      closeModal();
+      if(id) {
+        try {
+          await updateUserData(id, { status: 'D' });
+          handleByeToastMessage();
+          console.log(`${id} 탈퇴 처리`);
+        } catch (error) {
+          console.log(error);
+        }
+      }
+      setTimeout(() => {
+        closeModal();
+        logOut(setLogin, navigate);
+      }, 2000);
     } else {
-      alert('문구가 다르면 탈퇴할 수 없어요😔');
+      handleWarningToastMessage();
     }
   };
 
@@ -49,6 +84,18 @@ export default function ByeModal({ isOpen, closeModal } : ByeModalProps) {
           <DeleteButton onClick={onClickDeleteButton}>삭제</DeleteButton>
         </ButtonWrap>
       </Modal>
+      {
+        showByeToast &&
+          <ToastMessage 
+            content="다음에 또 만나요. 👋"
+          />
+      }
+      {
+        showWarningToast &&
+          <ToastMessage 
+            content="문구가 다르면 탈퇴할 수 없어요. 😔"
+          />
+      }
     </ModalWrap>
   )
 }
