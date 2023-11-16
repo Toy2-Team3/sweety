@@ -51,6 +51,7 @@ import Box from "@mui/material/Box";
 import LinearProgress from "@mui/material/LinearProgress";
 import { InputWrapper } from "./Login";
 import Spinner from "../common/Spinner";
+import NotValidPage from "../common/NotValidPage";
 
 interface SignUpSpecificProps {
   theme: DefaultTheme;
@@ -280,15 +281,10 @@ function SignUpSpecific({ theme }: SignUpSpecificProps) {
         </Box>
       </Container>
     ) : (
-      <RootErrorMessageWrapper>
-        <SweetLogo />
-        <RootErrorMessage>
-          올바른 경로로 회원가입을 진행해주세요🥲
-        </RootErrorMessage>
-        <GobackLink onClick={() => navigate("/")}>
-          회원가입으로 돌아가기
-        </GobackLink>
-      </RootErrorMessageWrapper>
+      <NotValidPage
+        content="올바른 경로로 회원가입을 진행해주세요 🥲"
+        navigaton="회원가입으로 돌아가기"
+      />
     )
   ) : (
     <Container gap="30px">

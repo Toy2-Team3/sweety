@@ -19,6 +19,7 @@ import MyPage from "./pages/MyPage";
 import "./App.css";
 import { useEffect } from "react";
 import CommunityUpdatePage from "./pages/CommunityUpdatePage";
+import NotFoundPage from "./pages/NotFoundPage";
 
 function App() {
   const [login, setLogin] = useRecoilState(loginState);
@@ -36,7 +37,7 @@ function App() {
     <ThemeProvider theme={theme}>
       <BrowserRouter>
         <div className="App" style={{ display: "flex" }}>
-          <NavigationBar></NavigationBar>
+          <NavigationBar />
           <PageWrap>
             <Routes>
               <Route path="/" element={<HomePage />} />
@@ -51,6 +52,7 @@ function App() {
               />
               <Route path="/chat" element={<ChatPage />} />
               <Route path="/mypage" element={<MyPage />} />
+              <Route path="/*" element={<NotFoundPage />} />
             </Routes>
           </PageWrap>
         </div>
@@ -66,6 +68,7 @@ function App() {
           <Route path="/signup3" element={<SignUpSpecific2 theme={theme} />} />
           <Route path="/login" element={<Login />} />
           <Route path="/intro" element={<IntroPage />} />
+          <Route path="/*" element={<NotFoundPage />} />
         </Routes>
       </BrowserRouter>
     </ThemeProvider>
