@@ -3,7 +3,7 @@ import { regions, genderOptions } from "../../constants/constant";
 import { isNameValid } from "../../utils/registerFunction";
 import { CorrectText, WarnText } from "../login/SignUpIDPW";
 import { isTallValid } from "../../utils/registerFunction";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useSetRecoilState } from "recoil";
 import { useEffect, useState } from "react";
 import { getUserData, urlToBlob } from "../../utils/firebase";
 import {
@@ -32,7 +32,7 @@ interface SignUpSpecificProps {
 
 export default function RequiredInformation({ theme, onImageChange }: SignUpSpecificProps & { onImageChange: () => void }) {
   const [prevProfileImageUrl, setPrevProfileImageUrl] = useState("")
-  const [, setProfileImage] = useRecoilState(profileImageState)
+  const setProfileImage = useSetRecoilState(profileImageState)
   const [newProfileImageUrl, setNewProfileImageUrl] = useState("");
   const [isUploaded, setIsUploaded] = useState(false);
   const [userName, setUserName] = useRecoilState(userNameState);
@@ -99,7 +99,7 @@ export default function RequiredInformation({ theme, onImageChange }: SignUpSpec
           accept=".jpg, .jpeg, .png"
         />
       </ProfileWrapper>
-      <div style={{ position: "relative" }}>
+      <RelativeWrap>
         <p>닉네임</p>
         <NameInput
           placeholder="닉네임을 입력해주세요"
@@ -113,7 +113,7 @@ export default function RequiredInformation({ theme, onImageChange }: SignUpSpec
             <WarnText>영문, 한글 조합 20자 이하입니다</WarnText>
           )
         ) : null}
-      </div>
+      </RelativeWrap>
       <TwoColumnWrapper>
         <div>
           <p>생년월일</p>
@@ -146,15 +146,14 @@ export default function RequiredInformation({ theme, onImageChange }: SignUpSpec
           value={selectedRegion}
           onChange={(e) => setSelectedRegion(e.target.value)}
         >
-          <option
+          <Option
             value=""
             disabled
             selected
             hidden
-            style={{ color: theme.color.darkGray }}
           >
             거주지역을 선택해주세요
-          </option>
+          </Option>
           {regions.map((region) => (
             <OptionBox key={region.value} value={region.value}>
               {region.label}
@@ -162,7 +161,7 @@ export default function RequiredInformation({ theme, onImageChange }: SignUpSpec
           ))}
         </SelectBox>
       </div>
-      <div style={{ position: "relative" }}>
+      <RelativeWrap>
         <p>키</p>
         <NameInput
           placeholder="키를 입력해주세요"
@@ -176,39 +175,37 @@ export default function RequiredInformation({ theme, onImageChange }: SignUpSpec
             <WarnText>100~250사이의 숫자만 입력해 주세요</WarnText>
           )
         ) : null}
-      </div>
-      <div style={{ position: "relative" }}>
+      </RelativeWrap>
+      <RelativeWrap>
         <p>MBTI</p>
         <SelectBox value={mbti} onChange={(e) => setMbti(e.target.value)}>
-          <option
+          <Option
             value=""
             disabled
             selected
             hidden
-            style={{ color: theme.color.darkGray }}
           >
             {mbti}
-          </option>
+          </Option>
           {mbtiTypes.map((mbti) => (
             <OptionBox key={mbti.value} value={mbti.value}>
               {mbti.label}
             </OptionBox>
           ))}
         </SelectBox>
-        {mbti ? <CorrectText style={{whiteSpace:'nowrap'}}>{compatibilityMessages[mbti]}</CorrectText> : null}
-      </div>
+        {mbti ? <NoWrapCorrectText>{compatibilityMessages[mbti]}</NoWrapCorrectText> : null}
+      </RelativeWrap>
       <div>
         <p>직업</p>
         <SelectBox value={job} onChange={(e) => setJob(e.target.value)}>
-          <option
+          <Option
             value=""
             disabled
             selected
             hidden
-            style={{ color: theme.color.darkGray }}
           >
             해당하는 직업을 선택해주세요
-          </option>
+          </Option>
           {jobOptions.map((job) => (
             <OptionBox key={job.value} value={job.value}>
               {job.label}
@@ -219,43 +216,39 @@ export default function RequiredInformation({ theme, onImageChange }: SignUpSpec
       <TwoColumnWrapper>
         <div>
           <p>음주</p>
-          <SelectBox
-            style={{ width: "150px" }}
+          <CustomSelectBox
             value={alcohol}
             onChange={(e) => setAlcohol(e.target.value)}
           >
-            <option
+            <Option
               value=""
               disabled
               selected
               hidden
-              style={{ color: theme.color.darkGray }}
             >
               음주는 하시나요?
-            </option>
+            </Option>
             {alcoholOptions.map((alcohol) => (
               <OptionBox key={alcohol.value} value={alcohol.value}>
                 {alcohol.label}
               </OptionBox>
             ))}
-          </SelectBox>
+          </CustomSelectBox>
         </div>
         <div>
           <p>흡연</p>
-          <SelectBox
-            style={{ width: "150px" }}
+          <CustomSelectBox
             value={`${smoking}`}
             onChange={(e) => setSmoking(e.target.value === "true")}
           >
-            <option
+            <Option
               value=""
               disabled
               selected
               hidden
-              style={{ color: theme.color.darkGray }}
             >
               흡연은 하시나요?
-            </option>
+            </Option>
             {smokingOptions.map((smoking) => (
               <OptionBox
                 key={String(smoking.value)}
@@ -264,7 +257,7 @@ export default function RequiredInformation({ theme, onImageChange }: SignUpSpec
                 {smoking.label}
               </OptionBox>
             ))}
-          </SelectBox>
+          </CustomSelectBox>
         </div>
       </TwoColumnWrapper>
     </RequiredInformationWrap>
@@ -278,6 +271,17 @@ const RequiredInformationWrap = styled.div`
   gap: 1.8rem;
 `;
 
+const RelativeWrap = styled.div`
+  position: relative;
+`;
+
+const Option = styled.option`
+  color: ${(props) => props.theme.color.darkGray};
+`;
+
+const NoWrapCorrectText = styled(CorrectText)`
+  white-space: nowrap;
+`;
 
 const ProfileWrapper = styled.div`
   display: flex;
@@ -361,6 +365,10 @@ export const SelectBox = styled.select`
     border: ${(props) => props.theme.color.primary} 1px solid;
     outline: none;
   }
+`;
+
+const CustomSelectBox = styled(SelectBox)`
+  width: 150px;
 `;
 
 export const OptionBox = styled.option`
