@@ -111,8 +111,8 @@ const UserProfileModal: React.FC<UserProfileModalProps> = ({
                     {userinfo?.alcohol === "N"
                       ? "안 마셔요"
                       : userinfo?.alcohol === "S"
-                        ? "가끔 마셔요"
-                        : "자주 마셔요"}
+                      ? "가끔 마셔요"
+                      : "자주 마셔요"}
                   </p>
                 </div>
                 <div>
@@ -195,6 +195,9 @@ export const ModalWrapper = styled.div`
     }
   }
   h2 {
+    display: flex;
+    align-items: center;
+    height: 40px;
     font-size: 1.4rem;
     white-space: pre-wrap;
     ${(props) => props.theme.response.tablet} {
@@ -333,6 +336,7 @@ const LoveButton = styled.button`
 
   ${(props) => props.theme.response.tablet} {
     padding: 0.2rem 1rem;
+    font-size: 0.8rem;
   }
 
   &:hover {

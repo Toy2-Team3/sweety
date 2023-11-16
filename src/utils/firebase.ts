@@ -9,6 +9,7 @@ import {
   query,
   orderBy,
   where,
+  onSnapshot,
 } from "firebase/firestore";
 import {
   ref,
@@ -247,14 +248,15 @@ export const get = async (
       const q = query(Ref, where(key, "==", value));
       const querySnapshot = await getDocs(q);
       const userData: IUserData[] = [];
-
       querySnapshot.forEach((doc) => {
         userData.push(doc.data() as IUserData);
       });
+      console.log("q", q);
       return userData;
     } else {
       const Ref = collection(db, initialCollection);
       const userData: IUserData[] = [];
+
       const querySnapshot = await getDocs(Ref);
 
       querySnapshot.forEach((doc) => {
@@ -271,21 +273,35 @@ export const get = async (
 // 미아페이지 유저 데이터 업데이트
 export const updateUserData = async (
   userId: string,
-  props: MypageUserData
+  props: MypageUserData,
 ): Promise<void> => {
   const docRef = doc(db, "user", userId);
 
   await updateDoc(docRef, props);
-}; 
+};
 
 export const urlToBlob = async (tempImage: string) => {
-  try{
+  try {
     const response = await fetch(tempImage);
     const blob = await response.blob();
     const blobURL = URL.createObjectURL(blob);
     return blobURL;
-
   } catch (error) {
     console.error("Error loading image:", error);
   }
-}
+};
+export const onStatusChange = (
+  userId: string,
+  callback: (status: string) => void,
+) => {
+  const docRef = doc(db, "user", userId);
+
+  const unsubscribe = onSnapshot(docRef, (doc) => {
+    if (doc.exists()) {
+      const userData = doc.data();
+      callback(userData?.status);
+    }
+  });
+
+  return unsubscribe;
+};

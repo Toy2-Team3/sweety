@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import WhiteChatIcon from "../../assets/chattingWhiteIcons.svg";
 import UserProfileModal from "../common/UserProfileModal";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { HomeUserInfo } from "../../pages/HomePage";
+import { onStatusChange } from "../../utils/firebase";
 
 interface User {
   id: string;
@@ -78,7 +79,17 @@ const UserInfo = ({
   const [userModal, setUserModal] = useState(false);
   const mySession = sessionStorage.getItem("accessToken");
   const navigate = useNavigate();
+  const [userStatus, setUserStatus] = useState(userinfo.status);
+  useEffect(() => {
+    const unsubscribe = onStatusChange(userinfo.userId, (status: string) => {
+      setUserStatus(status);
+    });
 
+    return () => {
+      // Unsubscribe from the listener when the component unmounts
+      unsubscribe();
+    };
+  }, [userinfo.userId]);
   const makeChattingRoom = async (id: string, name: string): Promise<void> => {
     try {
       const requestBody: LoginRequestBody = {
@@ -168,24 +179,24 @@ const UserInfo = ({
     setUserModal(true);
   };
 
-  return (
+  return userStatus === "D" ? null : (
     <div>
       <UserCover>
         <UserImage src={userinfo?.profileUrl} onClick={handleDetailModal} />
         <BackgroundBlur>
           <div>
             <UserName>
-              <span> {userinfo?.nickName} </span>
+              <span>{userinfo?.nickName}</span>
               {userinfo?.birth && <span>({calculateAge(userinfo.birth)})</span>}
             </UserName>
             <UserRegion>{userinfo?.region}</UserRegion>
           </div>
           <UserChatButton onClick={handleUserChat}>
-            <img src={WhiteChatIcon} />
+            <img src={WhiteChatIcon} alt="Chat Icon" />
           </UserChatButton>
         </BackgroundBlur>
       </UserCover>
-      {userModal === true && (
+      {userModal && (
         <UserProfileModal userinfo={userinfo} setUserModal={setUserModal} />
       )}
     </div>
