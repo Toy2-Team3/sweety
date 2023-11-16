@@ -1,30 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import { ReactComponent as WhiteChatIcon } from "../../assets/chattingWhiteIcons.svg";
+import WhiteChatIcon from "../../assets/chattingWhiteIcons.svg";
 import UserProfileModal from "../common/UserProfileModal";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { HomeUserInfo } from "../../pages/HomePage";
+import { onStatusChange } from "../../utils/firebase";
 
-export interface UserInfoProps {
-  id: string;
-  userId: string;
-  password: string;
-  token: string;
-  nickName: string;
-  birth: string;
-  gender: string;
-  region: string;
-  profileUrl: string;
-  myChats: string[];
-  introduction: string;
-  interested: string[];
-  status: string;
-  alcohol: string;
-  smoking: boolean;
-  mbti: string;
-  job: string;
-  tall: number;
-}
 interface User {
   id: string;
   name: string;
@@ -85,11 +67,29 @@ export const calculateAge = (birthDate: string): number => {
   return age;
 };
 
-const UserInfo = ({ userinfo }: { userinfo: UserInfoProps }) => {
+const UserInfo = ({
+  userinfo,
+  setShowToastMsg,
+  setToastMsg,
+}: {
+  userinfo: HomeUserInfo;
+  setShowToastMsg: (value: boolean) => void;
+  setToastMsg: (content: string) => void;
+}) => {
   const [userModal, setUserModal] = useState(false);
   const mySession = sessionStorage.getItem("accessToken");
   const navigate = useNavigate();
+  const [userStatus, setUserStatus] = useState(userinfo.status);
+  useEffect(() => {
+    const unsubscribe = onStatusChange(userinfo.userId, (status: string) => {
+      setUserStatus(status);
+    });
 
+    return () => {
+      // Unsubscribe from the listener when the component unmounts
+      unsubscribe();
+    };
+  }, [userinfo.userId]);
   const makeChattingRoom = async (id: string, name: string): Promise<void> => {
     try {
       const requestBody: LoginRequestBody = {
@@ -109,9 +109,14 @@ const UserInfo = ({ userinfo }: { userinfo: UserInfoProps }) => {
           },
         },
       );
-      console.log(response);
       if (response.status === 200) {
-        navigate(`/chat?chatId=${response.data.id}`);
+        setToastMsg("선택하신 채팅방으로 이동합니다 ✈️");
+        setShowToastMsg(true);
+
+        setTimeout(() => {
+          setShowToastMsg(false);
+          navigate(`/chat?chatId=${response.data.id}`);
+        }, 2000);
       }
     } catch (error) {
       console.log(error);
@@ -143,8 +148,13 @@ const UserInfo = ({ userinfo }: { userinfo: UserInfoProps }) => {
         });
 
         if (filteredChats?.length >= 1) {
-          console.log(filteredChats[0].id);
-          navigate(`/chat?chatId=${filteredChats[0].id}`);
+          setToastMsg("이미 참여한 채팅입니다! 채팅방으로 이동합니다 ✈️");
+          setShowToastMsg(true);
+
+          setTimeout(() => {
+            setShowToastMsg(false);
+            navigate(`/chat?chatId=${filteredChats[0].id}`);
+          }, 2000);
         } else {
           await makeChattingRoom(userinfo.userId, userinfo.nickName);
         }
@@ -169,23 +179,24 @@ const UserInfo = ({ userinfo }: { userinfo: UserInfoProps }) => {
     setUserModal(true);
   };
 
-  return (
+  return userStatus === "D" ? null : (
     <div>
       <UserCover>
         <UserImage src={userinfo?.profileUrl} onClick={handleDetailModal} />
-        <UserName>
+        <BackgroundBlur>
           <div>
-            <span> {userinfo?.nickName}</span>
-            {userinfo?.birth && <span>({calculateAge(userinfo.birth)})</span>}
+            <UserName>
+              <span>{userinfo?.nickName}</span>
+              {userinfo?.birth && <span>({calculateAge(userinfo.birth)})</span>}
+            </UserName>
+            <UserRegion>{userinfo?.region}</UserRegion>
           </div>
-        </UserName>
-        <UserRegion>{userinfo?.region}</UserRegion>
-        <UserChatButton onClick={handleUserChat}>
-          <WhiteChatIcon />
-        </UserChatButton>
-        <BackgroundBlur />
+          <UserChatButton onClick={handleUserChat}>
+            <img src={WhiteChatIcon} alt="Chat Icon" />
+          </UserChatButton>
+        </BackgroundBlur>
       </UserCover>
-      {userModal === true && (
+      {userModal && (
         <UserProfileModal userinfo={userinfo} setUserModal={setUserModal} />
       )}
     </div>
@@ -204,97 +215,81 @@ const UserCover = styled.div`
     cursor: pointer;
   }
 `;
-const BackgroundBlur = styled.div`
+
+const UserImage = styled.img`
+  width: 100%;
+  height: 100%;
+
+  position: absolute;
+  top: 0;
+  left: 0;
+
+  object-fit: cover;
   border-radius: 0.5rem;
+  box-shadow: 1px 2px 3px 1px rgba(0, 0, 0, 0.5);
+  transition: all 0.3s;
+`;
+
+const BackgroundBlur = styled.div`
+  width: 100%;
+  height: 25%;
+  padding: 0 1rem;
+
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+
   position: absolute;
   bottom: 0;
   left: 0;
-  width: 100%;
-  height: 20%;
-  background-color: rgba(0, 0, 0, 0.5);
-`;
-const UserImage = styled.img`
-  border-radius: 0.5rem;
 
-  object-fit: cover;
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  top: 0;
-  left: 0;
-  transition: all 0.3s;
-  box-shadow: 1px 2px 3px 1px rgba(0, 0, 0, 0.5);
+  border-radius: 0 0 0.5rem 0.5rem;
+  background-color: rgba(0, 0, 0, 0.5);
 `;
 
 const UserName = styled.div`
-  z-index: 2;
-  position: absolute;
-  bottom: 2rem;
-  color: rgba(255, 255, 255, 1); // Set color to white with full opacity
-  font-size: 1.5rem;
-  left: 0.5rem;
   display: flex;
+  margin-bottom: 0.3rem;
+
+  z-index: 2;
+
+  color: rgba(255, 255, 255, 1);
+  font-size: 1.3rem;
+
+  ${(props) => props.theme.response.tablet} {
+    font-size: 1.2rem;
+  }
+
   span:nth-child(1) {
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
-  }
-
-  span:nth-child(2) {
-    font-size: 1.2rem;
-  }
-  span:nth-child(2) {
-    font-size: 1.2rem;
-  }
-
-  ${(props) => props.theme.response.tablet} {
-    position: absolute;
-    bottom: 2rem;
-    font-size: 1.2rem;
-    span:nth-child(2) {
-      font-size: 1rem;
-    }
-  }
-  ${(props) => props.theme.response.mobile} {
-    position: absolute;
-    bottom: 2rem;
-    font-size: 1.2rem;
-    span:nth-child(2) {
-      font-size: 1rem;
-    }
   }
 `;
 
 const UserRegion = styled.div`
   z-index: 2;
 
-  position: absolute;
-  bottom: 0.7rem;
-  left: 0.5rem;
   font-size: 1rem;
   color: white;
-
-  ${(props) => props.theme.response.tablet} {
-    font-size: 0.8rem;
-  }
 `;
+
 const UserChatButton = styled.button`
   z-index: 2;
-  position: absolute;
-  bottom: 1rem;
-  font-size: 2rem;
-  color: white;
-  right: 1rem;
+
   display: flex;
   justify-content: center;
   background-color: transparent;
   border: none;
-  ${(props) => props.theme.response.tablet} {
-    font-size: 1.2rem;
-  }
   transition: all 0.3s;
+
   &:hover {
     transform: scale(1.05);
     cursor: pointer;
+  }
+
+  img {
+    width: 80%;
   }
 `;

@@ -19,6 +19,7 @@ const ChattingRoomList = ({
     if (chatId === undefined && myRoomData) {
       navigate(`/chat?chatId=${myRoomData[0].id}`);
     }
+    // eslint-disable-next-line
   }, [myRoomData]);
 
   return (
@@ -69,10 +70,13 @@ const MainContainer = styled.div`
   background-color: white;
   height: 100vh;
   position: relative;
+  z-index: 3;
 
   @media screen and (max-width: 1024px) {
     position: absolute;
-    z-index: 2;
+  }
+  @media screen and (max-width: 480px) {
+    height: calc(100vh - 103px);
   }
 `;
 

@@ -20,6 +20,7 @@ import {
   userNameState,
 } from "../../recoil/atoms";
 import { InputWrapper } from "./Login";
+import NotValidPage from "../common/NotValidPage";
 
 interface GenderButtonProps {
   selected: boolean;
@@ -61,7 +62,6 @@ function SignUpSpecific() {
 
   useEffect(() => {
     setActiveStep(1);
-    console.log(activeStep);
   });
 
   useEffect(() => {
@@ -160,15 +160,10 @@ function SignUpSpecific() {
       </SignUpButton>
     </Container>
   ) : (
-    <RootErrorMessageWrapper>
-      <SweetLogo />
-      <RootErrorMessage>
-        올바른 경로로 회원가입을 진행해주세요🥲
-      </RootErrorMessage>
-      <GobackLink onClick={() => navigate("/")}>
-        회원가입으로 돌아가기
-      </GobackLink>
-    </RootErrorMessageWrapper>
+    <NotValidPage
+      content="올바른 경로로 회원가입을 진행해주세요 🥲"
+      navigaton="회원가입으로 돌아가기"
+    />
   );
 }
 

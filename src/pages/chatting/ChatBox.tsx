@@ -1,8 +1,37 @@
 import styled from "styled-components";
 import { Message } from "../../types/chatting";
+import axios from "axios";
+import { useEffect, useState } from "react";
 
 const ChatBox = (item: Message) => {
+  const [userImage, setUserImage] = useState<string | undefined>("");
+  const [isFetching, setIsFetching] = useState<boolean>(false);
   const myId = sessionStorage.getItem("id");
+
+  const fetchUserData = async () => {
+    try {
+      setIsFetching(true);
+      const res = await axios.get(
+        `https://fastcampus-chat.net/user?userId=${item.userId}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            serverId: `${process.env.REACT_APP_SERVER_ID}`,
+            Authorization: `Bearer ${sessionStorage.getItem("accessToken")}`,
+          },
+        },
+      );
+      setUserImage(res.data.user.picture);
+      setIsFetching(false);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  useEffect(() => {
+    fetchUserData();
+  }, []);
+
   return (
     <div
       style={{
@@ -10,15 +39,15 @@ const ChatBox = (item: Message) => {
         justifyContent: item.userId === myId ? "flex-end" : "flex-start",
       }}
     >
-      <ChatBoxWrapper $isMyChat={item.userId === myId}>
-        {/* {!item.isMine && <img src={item.profileImage} alt="" />} */}
+      <ChatBoxWrapper $isMyChat={item.userId === myId} $isFetching={isFetching}>
+        {item.userId !== myId && <img src={userImage} alt="" />}
         <div>{item.text}</div>
       </ChatBoxWrapper>
     </div>
   );
 };
 
-const ChatBoxWrapper = styled.div<{ $isMyChat: boolean }>`
+const ChatBoxWrapper = styled.div<{ $isMyChat: boolean; $isFetching: boolean }>`
   display: flex;
   align-items: center;
   gap: 16px;
@@ -30,6 +59,7 @@ const ChatBoxWrapper = styled.div<{ $isMyChat: boolean }>`
     object-fit: cover;
     border-radius: 50%;
     border: 0.3px solid #d9d9d9;
+    background-color: ${(props) => (props.$isFetching ? "grey" : "none")};
   }
 
   div {
@@ -41,6 +71,7 @@ const ChatBoxWrapper = styled.div<{ $isMyChat: boolean }>`
     max-width: 600px;
     background-color: ${(props) => (props.$isMyChat ? "#F9744C" : "#d9d9d9")};
     color: ${(props) => (props.$isMyChat ? "#fff" : "#000")};
+    white-space: pre-line;
   }
 `;
 
