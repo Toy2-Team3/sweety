@@ -102,7 +102,7 @@ const Home = () => {
     <Wrapper>
       <Header>
         <div>Home</div>
-        <div>좋은 사람과 좋은 날을 만들어보세요.</div>
+        <div>좋은 사람과 좋은 날을 만들어보세요</div>
       </Header>
       <UsersInfo>
         {users.map((user, index) => (
