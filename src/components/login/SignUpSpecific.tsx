@@ -70,9 +70,9 @@ function SignUpSpecific({ theme }: SignUpSpecificProps) {
   }, [profileImage]);
 
   return id && pw ? (
-    <Container style={{ gap: "18px" }}>
+    <Container style={{ gap: "30px", marginTop: "30px" }}>
       <SignUpStepper />
-      <GreetingText>환영합니다🎉</GreetingText>
+      <GreetingText>회원가입</GreetingText>
       <ProfileWrapper>
         <ProfileUploadLabel
           backgroundImage={prevProfileImageUrl || ""}
