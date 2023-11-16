@@ -271,21 +271,32 @@ export const get = async (
 // 미아페이지 유저 데이터 업데이트
 export const updateUserData = async (
   userId: string,
-  props: MypageUserData
+  props: MypageUserData,
 ): Promise<void> => {
   const docRef = doc(db, "user", userId);
 
   await updateDoc(docRef, props);
-}; 
+};
 
 export const urlToBlob = async (tempImage: string) => {
-  try{
+  try {
     const response = await fetch(tempImage);
     const blob = await response.blob();
     const blobURL = URL.createObjectURL(blob);
     return blobURL;
-
   } catch (error) {
     console.error("Error loading image:", error);
   }
-}
+};
+
+export const getOnlyActiveUser = async () => {
+  const docRef = collection(db, "user");
+  const q = query(docRef, where("status", "==", "A"));
+  const userList: IUserData[] = [];
+  const querySnapshot = await getDocs(q);
+
+  querySnapshot.forEach((doc) => {
+    userList.push({ ...doc.data() } as IUserData);
+  });
+  return userList;
+};

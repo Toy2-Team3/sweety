@@ -4,11 +4,10 @@ import CommunityItem from "../components/community/CommunityItem";
 import {
   CommunityData,
   IUserData,
-  getAllData,
   getAllDataOrderByDate,
+  getOnlyActiveUser,
 } from "../utils/firebase";
 import { useNavigate } from "react-router-dom";
-import Button from "@mui/joy/Button";
 import { useRecoilState } from "recoil";
 import { commonListState } from "../recoil/atoms";
 import ToastMessage from "../components/common/ToastMessage";
@@ -32,7 +31,7 @@ const CommunityList = () => {
   };
 
   const fetchUserData = async () => {
-    const response = await getAllData("user");
+    const response = await getOnlyActiveUser();
     setUserList(response);
   };
 
@@ -66,14 +65,7 @@ const CommunityList = () => {
         <div>당신의 관심사를 공유해보세요</div>
       </Header>
       <AddButtonWrapper>
-        <Button
-          variant="solid"
-          color="danger"
-          size="lg"
-          onClick={handleCreateNewItem}
-        >
-          새 글 등록
-        </Button>
+        <AddButton onClick={handleCreateNewItem}>새 글 등록</AddButton>
       </AddButtonWrapper>
       <ItemWrapper>
         {commonList.map((item) => {
@@ -144,4 +136,21 @@ const ItemWrapper = styled.div`
   display: flex;
   flex-direction: column;
   gap: 2rem;
+`;
+
+const AddButton = styled.button`
+  background-color: ${(props) => props.theme.color.primary};
+  font-size: 1rem;
+  font-weight: 500;
+  color: white;
+
+  padding: 0.7rem 2rem;
+  border: none;
+  border-radius: 0.5rem;
+  transition: all 0.3s;
+
+  &:hover {
+    transform: scale(1.05);
+    cursor: pointer;
+  }
 `;
