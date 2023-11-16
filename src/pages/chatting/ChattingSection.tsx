@@ -12,6 +12,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useSearchParams } from "react-router-dom";
 import UserListModal from "./UserListModal";
+import ToastMessage from "../../components/common/ToastMessage";
 
 const ChattingSection = ({
   myRoomData,
@@ -34,6 +35,10 @@ const ChattingSection = ({
     id: string;
     type: "leave" | "join";
   }>();
+  const [toastMessage, setToastMessage] = useState<{
+    show: boolean;
+    content: string;
+  }>({ show: false, content: "" });
 
   useEffect(() => {
     const handleResize = () => {
@@ -113,7 +118,14 @@ const ChattingSection = ({
         },
       },
     );
-    alert(`${res.data.user.name}님이 ${alertMessage}`);
+    setToastMessage({
+      show: true,
+      content: `${res.data.user.name}님이 ${alertMessage}`,
+    });
+    setTimeout(() => {
+      setToastMessage({ show: false, content: "" });
+    }, 2000);
+
     setNewEntrance(undefined);
   };
 
@@ -155,6 +167,7 @@ const ChattingSection = ({
 
   return (
     <MainContainer>
+      {toastMessage.show && <ToastMessage content={toastMessage?.content} />}
       <div className="chatting-room-controller">
         {showRoomList && (
           <ChattingRoomList
