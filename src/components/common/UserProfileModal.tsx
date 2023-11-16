@@ -60,10 +60,10 @@ const UserProfileModal: React.FC<UserProfileModalProps> = ({
   }, []);
 
   return (
-    <ModalBackground>
-      <ModalWrapper>
-        <CloseButton>
-          <img src={Close} alt="Close" onClick={handleModalClose} />
+    <ModalBackground onClick={handleModalClose}>
+      <ModalWrapper onClick={(e) => e.stopPropagation()}>
+        <CloseButton onClick={handleModalClose}>
+          <img src={Close} alt="Close" />
         </CloseButton>
         <ModalTop>
           <ImageWrapper>
@@ -159,6 +159,7 @@ export const ModalBackground = styled.div`
   bottom: 0;
   background-color: rgba(0, 0, 0, 0.6);
   z-index: 10;
+  cursor: pointer;
 `;
 
 export const ModalWrapper = styled.div`
