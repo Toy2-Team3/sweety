@@ -304,7 +304,7 @@ export const onStatusChange = (
   });
 
   return unsubscribe;
-
+};
 export const getOnlyActiveUser = async () => {
   const docRef = collection(db, "user");
   const q = query(docRef, where("status", "==", "A"));

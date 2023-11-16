@@ -111,8 +111,8 @@ const UserProfileModal: React.FC<UserProfileModalProps> = ({
                     {userinfo?.alcohol === "N"
                       ? "안 마셔요"
                       : userinfo?.alcohol === "S"
-                      ? "가끔 마셔요"
-                      : "자주 마셔요"}
+                        ? "가끔 마셔요"
+                        : "자주 마셔요"}
                   </p>
                 </div>
                 <div>

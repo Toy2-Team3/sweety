@@ -29,7 +29,7 @@ export interface HomeUserInfo {
 }
 
 const Home = () => {
-  const [gender, setGender] = useRecoilState(selectedGenderState);
+  const [gender, setGender] = useState("");
   const [users, setUsers] = useState<HomeUserInfo[]>([]);
   const [showToastMsg, setShowToastMsg] = useState<boolean>(false);
   const [toastMsg, setToastMsg] = useState<string>("");
