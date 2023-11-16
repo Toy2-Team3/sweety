@@ -12,7 +12,7 @@ function IntroPage() {
   return (
     <>
       <LogoWrapper>
-        <SweetLogo width="120px" />
+        <SweetLogo width="170px" />
       </LogoWrapper>
       <Header>
         <HeaderWrapper>
@@ -147,7 +147,7 @@ const ContentWrapper = styled.div<{ where?: string }>`
   display: flex;
   flex-direction: column;
   width: 100vw;
-  gap: 100px;
+  gap: 70px;
 
   ${({ where }) =>
     where === "up"
@@ -173,33 +173,54 @@ const CopyText = styled.h2`
 
 const DescriptionText = styled.p`
   line-height: 140%;
+  font-size: 26px;
+
+  @media screen and (max-width: 1024px) {
+    font-size: 22px;
+  }
+  @media screen and (max-width: 480px) {
+    font-size: 20px;
+  }
 `;
 
 const PreviewImage = styled.img<{ number: string }>`
-  width: 220px;
-  height: auto;
-
   ${({ number }) => {
     switch (number) {
+      case "1":
+        return `
+        width:250px;
+          @media screen and (max-width: 1024px) {
+            width: 250px;
+          }
+          @media screen and (max-width: 480px) {
+            width: 160px;
+          }
+      `;
       case "2":
         return `
-          width: 280px;
+        width:300px;
+          @media screen and (max-width: 1024px) {
+            width:250px;
+          }
+          @media screen and (max-width: 480px) {
+            width: 200px;
+          }
         `;
       case "3":
         return `
-          width: 320px;
+        width:350px;
+          @media screen and (max-width: 1024px) {
+            width: 350px;
+          }
+          @media screen and (max-width: 480px) {
+            width: 300px;
+          }
+         
         `;
       default:
         return null;
     }
   }}
-  @media ${(props) => props.theme.response.mobile} {
-    width: 180px;
-  }
-
-  @media ${(props) => props.theme.response.tablet} {
-    width: 150px;
-  }
 `;
 
 const BoldText = styled.p`
@@ -213,6 +234,9 @@ const ContactInfo = styled.a`
 
 const LogoWrapper = styled.div`
   position: fixed;
+  width: 100vw;
+  background-color: #f9dbc5;
+  padding: 10px 10px 0px 10px;
 `;
 
 const HeaderWrapper = styled.div`
@@ -237,8 +261,30 @@ const ImageTextWrapper = styled.div<{ where: string }>`
   display: flex;
   justify-content: center;
 
-  ${({ where }) =>
-    where === "bottom"
-      ? { flexDirection: "column" }
-      : { flexDirection: "row", gap: "50px" }};
+  ${({ where }) => {
+    switch (where) {
+      case "bottom":
+        return `
+          flex-direction: column;
+          gap: 50px;
+          @media screen and (max-width: 1024px) {
+            gap: 40px;
+          }
+          @media screen and (max-width: 480px) {
+            gap: 20px;
+          }
+        `;
+      default:
+        return `
+          flex-direction: row;
+          gap: 50px;
+          @media screen and (max-width: 1024px) {
+            gap: 40px;
+          }
+          @media screen and (max-width: 480px) {
+            gap: 20px;
+          }
+        `;
+    }
+  }}
 `;
