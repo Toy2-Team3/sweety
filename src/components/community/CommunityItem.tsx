@@ -98,7 +98,7 @@ const Container = styled.div`
 
   h1 {
     font-size: 1.6rem;
-    font-weight: bold;
+    font-weight: 500;
 
     ${(props) => props.theme.response.mobile} {
       font-size: 1.4rem;
