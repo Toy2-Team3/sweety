@@ -50,7 +50,7 @@ function Login() {
 
       if (response.status === 200) {
         const userData = await getUserData(id);
-        console.log(userData);
+
         if (userData && userData.status === "A") {
           setWrong(true);
           const data = response.data.accessToken;

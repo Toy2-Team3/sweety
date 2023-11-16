@@ -10,7 +10,7 @@ import styled, { DefaultTheme } from "styled-components";
 import { UploadImage } from "../../utils/firebase";
 import { useNavigate } from "react-router-dom";
 import SignUpStepper from "./SignUpStepper";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useSetRecoilState } from "recoil";
 import { Container } from "./StartPage";
 import { useEffect, useState } from "react";
 import {
@@ -69,7 +69,7 @@ function SignUpSpecific({ theme }: SignUpSpecificProps) {
   const [mbti, setMbti] = useRecoilState(mbtiState);
   const [alcohol, setAlcohol] = useRecoilState(alcoholState);
   const [smoking, setSmoking] = useRecoilState(smokingState);
-  const [activeStep, setActiveStep] = useRecoilState(activeStepState);
+  const setActiveStep = useSetRecoilState(activeStepState);
   const [isSignUp, setIsSignUp] = useState(false);
   const [progress, setProgress] = useState(0);
 
@@ -164,7 +164,6 @@ function SignUpSpecific({ theme }: SignUpSpecificProps) {
 
   useEffect(() => {
     setActiveStep(2);
-    console.log(activeStep);
   });
 
   return !isSignUp ? (

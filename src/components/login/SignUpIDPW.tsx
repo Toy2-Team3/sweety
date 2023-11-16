@@ -58,7 +58,6 @@ function SignUpIDPW() {
 
   useEffect(() => {
     setActiveStep(0);
-    console.log(activeStep);
     if (id) {
       debouncedCheckIdDuplication.call({}, id);
     }
