@@ -294,6 +294,7 @@ const SaveButton = styled.button<{ $isChanged: boolean }>`
     }; 
   border: none;
   border-radius: 12px;
+  font-size: ${(props) => props.theme.font.mediumSize};
 `;
 
 const BottomSaveButton = styled(SaveButton)`
@@ -341,6 +342,7 @@ const LogOutButton = styled.button`
     border-radius: 12px;
     padding: 10px;
     margin-bottom: 1.5rem;
+    font-size: ${(props) => props.theme.font.smallSize};
 
     &:hover {
       cursor: pointer;
