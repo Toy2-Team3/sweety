@@ -210,5 +210,5 @@ export const ShowPasswordButton = styled.div`
   font-size: 20px;
   position: absolute;
   right: 16px;
-  bottom: 10px;
+  bottom: 15px;
 `;
