@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from "react";
 import styled, { keyframes } from "styled-components";
 import Close from "../../assets/close.png";
-import { UserInfoProps, calculateAge } from "../Home/UserInfo";
+import { calculateAge } from "../Home/UserInfo";
 import { calculateLoveSync } from "../../utils/loveSync";
 import { getUserData } from "../../utils/firebase";
+import { HomeUserInfo } from "../../pages/HomePage";
 
 interface UserProfileModalProps {
-  userinfo: UserInfoProps;
+  userinfo: HomeUserInfo;
   setUserModal: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
@@ -135,7 +136,7 @@ const UserProfileModal: React.FC<UserProfileModalProps> = ({
               <>
                 <h3>관심사</h3>
                 <div>
-                  {userinfo.interested?.map((value) => {
+                  {userinfo.interested?.map((value: string) => {
                     return <Tag key={value}>{value}</Tag>;
                   })}
                 </div>

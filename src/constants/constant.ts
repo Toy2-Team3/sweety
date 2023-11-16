@@ -270,7 +270,7 @@ export interface UserData {
   password: string;
   token: string;
   nickName: string;
-  birth: string | null;
+  birth: string;
   gender: string;
   region: string;
   profileUrl: string;

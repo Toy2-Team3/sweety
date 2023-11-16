@@ -108,7 +108,7 @@ function SignUpSpecific({ theme }: SignUpSpecificProps) {
             password: pw,
             token: "",
             nickName: userName,
-            birth: birthday,
+            birth: birthday as string,
             gender: selectedGender,
             region: selectedRegion,
             profileUrl: imageUrl,

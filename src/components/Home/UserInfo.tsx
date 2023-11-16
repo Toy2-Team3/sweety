@@ -4,27 +4,8 @@ import { ReactComponent as WhiteChatIcon } from "../../assets/chattingWhiteIcons
 import UserProfileModal from "../common/UserProfileModal";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { HomeUserInfo } from "../../pages/HomePage";
 
-export interface UserInfoProps {
-  id: string;
-  userId: string;
-  password: string;
-  token: string;
-  nickName: string;
-  birth: string;
-  gender: string;
-  region: string;
-  profileUrl: string;
-  myChats: string[];
-  introduction: string;
-  interested: string[];
-  status: string;
-  alcohol: string;
-  smoking: boolean;
-  mbti: string;
-  job: string;
-  tall: number;
-}
 interface User {
   id: string;
   name: string;
@@ -85,7 +66,15 @@ export const calculateAge = (birthDate: string): number => {
   return age;
 };
 
-const UserInfo = ({ userinfo }: { userinfo: UserInfoProps }) => {
+const UserInfo = ({
+  userinfo,
+  setShowToastMsg,
+  setToastMsg,
+}: {
+  userinfo: HomeUserInfo;
+  setShowToastMsg: (value: boolean) => void;
+  setToastMsg: (content: string) => void;
+}) => {
   const [userModal, setUserModal] = useState(false);
   const mySession = sessionStorage.getItem("accessToken");
   const navigate = useNavigate();
