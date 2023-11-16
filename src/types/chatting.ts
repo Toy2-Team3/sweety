@@ -8,7 +8,8 @@ export interface Message {
 export interface ChattingRoomProps {
   id: string;
   isPrivate: boolean;
-  latestMessage: string | null;
+  latestMessage: Message | null;
   name: string;
   updateAt: string;
+  users?: { id: string; username: string; picture: string }[];
 }

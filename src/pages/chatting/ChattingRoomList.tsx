@@ -19,6 +19,7 @@ const ChattingRoomList = ({
     if (chatId === undefined && myRoomData) {
       navigate(`/chat?chatId=${myRoomData[0].id}`);
     }
+    // eslint-disable-next-line
   }, [myRoomData]);
 
   return (

@@ -3,6 +3,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import SignUpSpecific from "./components/login/SignUpSpecific";
 import CommunityCreatePage from "./pages/CommunityCreatePage";
 import CommunityListPage from "./pages/CommunityListPage";
+import IntroPage from "./components/introPage/IntroPage";
 import NavigationBar from "./components/NavigationBar";
 import SignUpIDPW from "./components/login/SignUpIDPW";
 import StartPage from "./components/login/StartPage";
@@ -64,6 +65,7 @@ function App() {
           <Route path="/signup2" element={<SignUpSpecific />} />
           <Route path="/signup3" element={<SignUpSpecific2 theme={theme} />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/intro" element={<IntroPage />} />
         </Routes>
       </BrowserRouter>
     </ThemeProvider>

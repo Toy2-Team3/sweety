@@ -24,7 +24,7 @@ function StartPage() {
         <SignInButton onClick={navigateToLogin}>로그인</SignInButton>
       </div>
       <>
-        <IntroLink href="#">서비스 소개</IntroLink>
+        <IntroLink href="/intro">서비스 소개</IntroLink>
       </>
     </Container>
   );
