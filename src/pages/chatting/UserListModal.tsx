@@ -1,35 +1,27 @@
 import styled from "styled-components";
 import xIcon from "../../assets/xIcon.svg";
 import ex from "../../assets/ex.jpg";
-import UserStatusWrapper from "./UserStatusWrapper";
+import UserStatusWrapper, { ChatUserInfo } from "./UserStatusWrapper";
 
 const UserListModal = ({
   setShowUserListModal,
+  allUsers,
+  onlineUsers,
 }: {
   setShowUserListModal: React.Dispatch<React.SetStateAction<boolean>>;
+  allUsers: { id: string; username: string; picture: string }[] | undefined;
+  onlineUsers: string[] | undefined;
 }) => {
   const handleModalOff = () => {
     setShowUserListModal(false);
   };
-
-  const dummyUserList = [
-    { image: ex, name: "윤석민", isOnline: true },
-    { image: ex, name: "윤석민", isOnline: true },
-    { image: ex, name: "윤석민", isOnline: true },
-    { image: ex, name: "윤석민", isOnline: false },
-    { image: ex, name: "윤석민", isOnline: false },
-    { image: ex, name: "윤석민", isOnline: false },
-    { image: ex, name: "윤석민", isOnline: false },
-    { image: ex, name: "윤석민", isOnline: false },
-    { image: ex, name: "윤석민", isOnline: false },
-  ];
 
   return (
     <>
       <ModalBackground onClick={handleModalOff} />
       <Container>
         <div>
-          <h1>대화 상대 ({dummyUserList.length}명)</h1>
+          <h1>대화 상대 ({allUsers?.length}명)</h1>
           <img
             src={xIcon}
             alt=""
@@ -38,8 +30,14 @@ const UserListModal = ({
           />
         </div>
         <div>
-          {dummyUserList.map((item, index) => {
-            return <UserStatusWrapper key={index} {...item} />;
+          {allUsers?.map((item: ChatUserInfo, index) => {
+            return (
+              <UserStatusWrapper
+                key={index}
+                item={item}
+                isOnline={onlineUsers?.includes(item.id)}
+              />
+            );
           })}
         </div>
       </Container>
@@ -65,7 +63,7 @@ const Container = styled.div`
   background-color: white;
   width: 400px;
   min-height: 400px;
-  max-height: 800px;
+  max-height: 500px;
   overflow: scroll;
   border: 1px solid #f9744c;
   border-radius: 20px;

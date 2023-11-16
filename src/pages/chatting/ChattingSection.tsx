@@ -29,6 +29,7 @@ const ChattingSection = ({
   const [chatSocket, setChatSocket] = useState(getChattingRoomSocket(chatId));
   const scrollRef = useRef<HTMLDivElement>(null);
   const [showUserListModal, setShowUserListModal] = useState<boolean>(false);
+  const [onlineUsers, setOnlineUser] = useState<string[] | undefined>([]);
 
   useEffect(() => {
     const handleResize = () => {
@@ -44,35 +45,42 @@ const ChattingSection = ({
     };
   }, []);
 
+  const getSocket = () => {
+    setChatSocket(getChattingRoomSocket(chatId));
+  };
+
+  const subscribeChatRoom = () => {
+    if (chatSocket) {
+      chatSocket.emit("users");
+      chatSocket.on("users-to-client", (data) => {
+        setOnlineUser(data.users);
+      });
+      chatSocket.emit("fetch-messages");
+      chatSocket.on("messages-to-client", (data) => {
+        setChatMessages(data.messages);
+      });
+      chatSocket.on("message-to-client", (data: Message) => {
+        setNewMessages(data);
+      });
+      chatSocket.on("join", (data) => {
+        console.log("join", data);
+      });
+      chatSocket.on("leave", (data) => {
+        console.log("leave", data);
+      });
+    } else {
+      getSocket();
+    }
+  };
+
   useEffect(() => {
+    // 채팅방을 변경할때마다 해당 채팅방으로 연결하는 소켓을 받아옴
     setChatMessages([]);
-    const getSocket = () => {
-      setChatSocket(getChattingRoomSocket(chatId));
-    };
     getSocket();
   }, [chatId]);
 
   useEffect(() => {
-    const subscribeChatRoom = () => {
-      if (chatSocket) {
-        chatSocket.emit("fetch-messages");
-        chatSocket.on("messages-to-client", (data) => {
-          setChatMessages(data.messages);
-        });
-        chatSocket.on("message-to-client", (data: Message) => {
-          setNewMessages(data);
-        });
-        chatSocket.on("join", () => {
-          // console.log("join", data);
-        });
-        chatSocket.on("leave", () => {
-          // console.log("leave", data);
-        });
-        chatSocket.on("users-to-client", () => {
-          // console.log("users-to-client", data);
-        });
-      }
-    };
+    // 소켓이 변경되면 해당 소켓으로 이벤트들을 구독
     subscribeChatRoom();
   }, [chatSocket]);
 
@@ -89,6 +97,8 @@ const ChattingSection = ({
   const sendMessageAPI = (message: string) => {
     chatSocket?.emit("message-to-server", message);
   };
+
+  // const getUserList =
 
   const onExit = async () => {
     if (window.confirm("정말 채팅방을 나가시겠습니까?")) {
@@ -132,7 +142,10 @@ const ChattingSection = ({
         <h1>{currentRoomName}</h1>
         <div>
           <img
-            onClick={() => setShowUserListModal((prev) => !prev)}
+            onClick={() => {
+              setShowUserListModal((prev) => !prev);
+              setShowRoomList(false);
+            }}
             src={chatRoomUserList}
             alt=""
           />
@@ -156,7 +169,11 @@ const ChattingSection = ({
         )}
       </div>
       {showUserListModal && (
-        <UserListModal setShowUserListModal={setShowUserListModal} />
+        <UserListModal
+          setShowUserListModal={setShowUserListModal}
+          allUsers={currentRoom?.users}
+          onlineUsers={onlineUsers}
+        />
       )}
     </MainContainer>
   );
@@ -235,6 +252,7 @@ const Header = styled.header`
     white-space: nowrap;
     word-break: break-all;
     line-height: 24px;
+    padding: 0 10px;
 
     @media screen and (max-width: 480px) {
       font-size: 18px;
