@@ -44,7 +44,7 @@ export const calculateMaxDate = () => {
 };
 
 export const isNameValid = (userName: string) => {
-  if (userName.length > 20) return false;
+  if (userName.length > 8) return false;
   const nameRegex = /^[A-Za-z가-힣]+$/;
   return nameRegex.test(userName);
 };
