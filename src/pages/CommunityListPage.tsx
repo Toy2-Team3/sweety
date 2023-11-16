@@ -1,9 +1,64 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import CommunityItem from "../components/community/CommunityItem";
-import { Button } from "../components/community/CommunityItemButtons";
+import {
+  CommunityData,
+  IUserData,
+  getAllData,
+  getAllDataOrderByDate,
+} from "../utils/firebase";
+import { useNavigate } from "react-router-dom";
+import Button from "@mui/joy/Button";
+import { useRecoilState } from "recoil";
+import { commonListState } from "../recoil/atoms";
+import ToastMessage from "../components/common/ToastMessage";
+import { CommonData } from "../constants/constant";
 
 const CommunityList = () => {
+  const navigate = useNavigate();
+  const [commonList, setCommonList] = useRecoilState(commonListState);
+  const [postList, setPostList] = useState<CommunityData[]>([]);
+  const [userList, setUserList] = useState<IUserData[]>([]);
+  const [showToastMsg, setShowToastMsg] = useState<boolean>(false);
+  const [toastMsg, setToastMsg] = useState<string>("");
+
+  const handleCreateNewItem = () => {
+    navigate("/community/create");
+  };
+
+  const fetchCommunityData = async () => {
+    const response = await getAllDataOrderByDate();
+    setPostList(response);
+  };
+
+  const fetchUserData = async () => {
+    const response = await getAllData("user");
+    setUserList(response);
+  };
+
+  function findCommonData(userList: IUserData[], postList: CommunityData[]) {
+    return postList.reduce((result: CommonData[], post) => {
+      const matchingUser = userList.find((user) => post.userId === user.userId);
+      if (matchingUser) {
+        result.push({
+          ...matchingUser,
+          ...post,
+        });
+      }
+      return result;
+    }, []);
+  }
+
+  useEffect(() => {
+    fetchCommunityData();
+    fetchUserData();
+  }, []);
+
+  useEffect(() => {
+    const newList = findCommonData(userList, postList);
+    setCommonList(newList);
+  }, [postList, userList, setCommonList]);
+
   return (
     <Wrapper>
       <Header>
@@ -11,17 +66,28 @@ const CommunityList = () => {
         <div>당신의 관심사를 공유해보세요</div>
       </Header>
       <AddButtonWrapper>
-        <AddButton>새 글 등록</AddButton>
+        <Button
+          variant="solid"
+          color="danger"
+          size="lg"
+          onClick={handleCreateNewItem}
+        >
+          새 글 등록
+        </Button>
       </AddButtonWrapper>
       <ItemWrapper>
-        <CommunityItem />
-        <CommunityItem />
-        <CommunityItem />
-        <CommunityItem />
-        <CommunityItem />
-        <CommunityItem />
-        <CommunityItem />
+        {commonList.map((item) => {
+          return (
+            <CommunityItem
+              key={item.id}
+              item={item}
+              setShowToastMsg={setShowToastMsg}
+              setToastMsg={setToastMsg}
+            />
+          );
+        })}
       </ItemWrapper>
+      {showToastMsg && <ToastMessage content={toastMsg} />}
     </Wrapper>
   );
 };
@@ -29,7 +95,7 @@ const CommunityList = () => {
 export default CommunityList;
 
 const Wrapper = styled.div`
-  width: calc(100vw - 300px);
+  width: calc(100vw - 315px);
   padding: 5rem;
 
   display: flex;
@@ -72,11 +138,6 @@ const Header = styled.div`
 const AddButtonWrapper = styled.div`
   display: flex;
   justify-content: right;
-`;
-
-const AddButton = styled(Button)`
-  padding: 0.5rem 2rem;
-  flex: 0;
 `;
 
 const ItemWrapper = styled.div`

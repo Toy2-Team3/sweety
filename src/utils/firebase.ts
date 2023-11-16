@@ -6,8 +6,9 @@ import {
   setDoc,
   deleteDoc,
   updateDoc,
-  where,
   query,
+  orderBy,
+  where,
 } from "firebase/firestore";
 import {
   ref,
@@ -47,6 +48,7 @@ export interface CommunityData {
   userId?: string;
   title?: string;
   content?: string;
+  createdAt?: number;
 }
 
 export async function UploadImage({
@@ -149,6 +151,20 @@ export const getAllData = async (
   return docs;
 };
 
+//커뮤니티 모든 문서 읽기 (최신순)
+export const getAllDataOrderByDate = async (): Promise<CommunityData[]> => {
+  const ref = collection(db, "community");
+  const q = query(ref, orderBy("createdAt", "desc"));
+  const querySnapshot = await getDocs(q);
+  const docs = querySnapshot.docs.map((doc) => {
+    return {
+      ...doc.data(),
+      id: doc.id,
+    };
+  });
+  return docs;
+};
+
 //단일 문서 읽기
 export const getSingleData = async (collectionName: string, docId: string) => {
   const docRef = doc(db, collectionName, docId);
@@ -156,7 +172,7 @@ export const getSingleData = async (collectionName: string, docId: string) => {
   if (docSnap.exists()) {
     return {
       ...docSnap.data(),
-      id: docSnap.data().id as string,
+      // id: docSnap.data().id as string,
     };
   }
 };
@@ -172,19 +188,20 @@ export const setUserData = async (
 };
 
 //커뮤니티 데이터 추가
-export const setCommunityData = async (props: CommunityData): Promise<void> => {
+export const setCommunityData = async (
+  props: Omit<CommunityData, "id">,
+): Promise<void> => {
   const newRef = doc(collection(db, "community")); //자동 랜덤 id
 
   await setDoc(newRef, props);
 };
 
-//업데이트
+//커뮤니티 데이터 업데이트
 export const updateData = async (
-  collectionName: string,
   docId: string,
-  props: Omit<IUserData | CommunityData, "id">,
+  props: Omit<CommunityData, "id">,
 ): Promise<void> => {
-  const docRef = doc(db, collectionName, docId);
+  const docRef = doc(db, "community", docId);
 
   await updateDoc(docRef, props);
 };
@@ -234,8 +251,6 @@ export const get = async (
       querySnapshot.forEach((doc) => {
         userData.push(doc.data() as IUserData);
       });
-
-      console.log("good");
       return userData;
     } else {
       const Ref = collection(db, initialCollection);
@@ -245,8 +260,6 @@ export const get = async (
       querySnapshot.forEach((doc) => {
         userData.push(doc.data() as IUserData);
       });
-
-      console.log("good");
       return userData;
     }
   } catch (error) {

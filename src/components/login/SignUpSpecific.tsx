@@ -99,7 +99,7 @@ function SignUpSpecific() {
           isNameValid(userName) ? (
             <CorrectText>정말 매력적인 닉네임이네요!</CorrectText>
           ) : (
-            <WarnText>영문, 한글 조합 20자 이하입니다</WarnText>
+            <WarnText>영문, 한글 조합 8자 이하입니다</WarnText>
           )
         ) : null}
       </InputWrapper>

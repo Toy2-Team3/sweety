@@ -305,3 +305,28 @@ export const interested = [
   { value: "📚 문학", label: "문학" },
   { value: "🍳 요리", label: "요리" },
 ];
+
+export interface CommonData {
+  id: string;
+  alcohol?: string;
+  birth?: string;
+  chatId?: string;
+  content?: string;
+  createdAt?: number;
+  gender?: string;
+  interested?: string[];
+  introduction?: string;
+  job?: string;
+  mbti?: string;
+  myChats?: string[];
+  nickName?: string;
+  password?: string;
+  profileUrl?: string;
+  region?: string;
+  smoking?: boolean;
+  status?: string;
+  tall?: number;
+  title?: string;
+  token?: string;
+  userId?: string;
+}
