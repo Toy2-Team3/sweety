@@ -77,11 +77,16 @@ export default function NavigationBar() {
 
   // 새로고침 시 저장되도록
   useEffect(() => {
-    const savedCategory = location.pathname.replace("/", "");
-    console.log(savedCategory);
+    const path = location.pathname.replace("/", "");
+    console.log(path);
 
-    if (savedCategory) {
-      setActiveCategory(savedCategory);
+    if (path) {
+      setActiveCategory(path);
+    }
+
+    // 커뮤니티 글 작성, 수정 페이지 navigate
+    if (path.includes("community")) {
+      setActiveCategory("community");
     }
   }, [location]);
 
