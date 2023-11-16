@@ -1,31 +1,41 @@
 import styled from "styled-components";
-import ChattingRoomList, { ChattingRoomProps } from "./ChattingRoomList";
+import ChattingRoomList from "./ChattingRoomList";
 import ChattingSection from "./ChattingSection";
-import { useState } from "react";
+import { ChattingRoomProps } from "../../types/chatting";
+import { useState, useEffect } from "react";
+import axios from "axios";
+import { useSearchParams } from "react-router-dom";
 
 const Chatting = () => {
-  const [dummyRoomData] = useState<ChattingRoomProps[]>([
-    { name: "User 1과의 채팅", online: true, roomId: 1 },
-    { name: "User 2과의 채팅", online: true, roomId: 2 },
-    { name: "바이크 소모임 그룹 채팅", online: false, roomId: 3 },
-  ]);
+  const [searchParams] = useSearchParams();
+  const chatId = searchParams.get("chatId");
+  const [myRoomData, setMyRoomData] = useState<ChattingRoomProps[]>();
 
-  const [currentRoomNumber, setCurrentRoomNumber] = useState<number>(0);
+  useEffect(() => {
+    try {
+      const fetchMyChattingRooms = async () => {
+        const res = await axios.get("https://fastcampus-chat.net/chat", {
+          headers: {
+            "Content-Type": "application/json",
+            serverId: `${process.env.REACT_APP_SERVER_ID}`,
+            Authorization: `Bearer ${sessionStorage.getItem("accessToken")}`,
+          },
+        });
+        setMyRoomData(res.data.chats);
+      };
+
+      fetchMyChattingRooms();
+    } catch (e) {
+      console.log("error: ", e);
+    }
+  }, [chatId]);
 
   return (
     <PageContainer>
       <div className="roomlist-controller">
-        <ChattingRoomList
-          roomData={dummyRoomData}
-          currentRoomNumber={currentRoomNumber}
-          setCurrentRoomNumber={setCurrentRoomNumber}
-        />
+        <ChattingRoomList myRoomData={myRoomData} />
       </div>
-      <ChattingSection
-        roomData={dummyRoomData}
-        currentRoomNumber={currentRoomNumber}
-        setCurrentRoomNumber={setCurrentRoomNumber}
-      />
+      <ChattingSection myRoomData={myRoomData} />
     </PageContainer>
   );
 };

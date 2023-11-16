@@ -1,47 +1,194 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
-import { ReactComponent as WhiteChatIcon } from "../../assets/chattingWhiteIcon.svg";
+import { ReactComponent as WhiteChatIcon } from "../../assets/chattingWhiteIcons.svg";
+import UserProfileModal from "../common/UserProfileModal";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
-interface UserInfoProps {
-  picture: string;
+export interface UserInfoProps {
+  id: string;
+  userId: string;
+  password: string;
+  token: string;
+  nickName: string;
+  birth: string;
+  gender: string;
+  region: string;
+  profileUrl: string;
+  myChats: string[];
+  introduction: string;
+  interested: string[];
+  status: string;
+  alcohol: string;
+  smoking: boolean;
+  mbti: string;
+  job: string;
+  tall: number;
+}
+interface User {
+  id: string;
   name: string;
+  picture: string;
+}
+interface MakeChattingResponse {
+  id: string;
+  name: string;
+  users: User[]; // 자신을 포함한 참가자들 정보
+  isPrivate: boolean;
+  updatedAt: Date;
+}
+interface LoginRequestBody {
+  name: string;
+  users: string[];
+  isPrivate: boolean;
+}
+interface ChattingResponse {
+  chats: Chat[];
+}
+type GetMyChattingResponse = ChattingResponse;
+
+interface Chat {
+  id: string;
+  name: string;
+  users: User[]; // 속한 유저 id
+  isPrivate: boolean;
+  latestMessage: Message | null;
+  updatedAt: Date;
 }
 
-const UserInfo: React.FC<UserInfoProps> = ({ picture, name }) => {
-  const [first, setfirst] = useState("♂");
-  const [userOnOff, setUserOnOff] = useState(false);
+interface User {
+  id: string;
+  name: string;
+  picture: string;
+}
+
+interface Message {
+  id: string;
+  text: string;
+  userId: string;
+  createAt: Date;
+}
+export const calculateAge = (birthDate: string): number => {
+  const currentDate = new Date();
+  const birthDateObject = new Date(birthDate);
+
+  let age = currentDate.getFullYear() - birthDateObject.getFullYear();
+
+  if (
+    currentDate.getMonth() < birthDateObject.getMonth() ||
+    (currentDate.getMonth() === birthDateObject.getMonth() &&
+      currentDate.getDate() < birthDateObject.getDate())
+  ) {
+    age--;
+  }
+
+  return age;
+};
+
+const UserInfo = ({ userinfo }: { userinfo: UserInfoProps }) => {
+  const [userModal, setUserModal] = useState(false);
+  const mySession = sessionStorage.getItem("accessToken");
+  const navigate = useNavigate();
+
+  const makeChattingRoom = async (id: string, name: string): Promise<void> => {
+    try {
+      const requestBody: LoginRequestBody = {
+        name: name,
+        users: [id],
+        isPrivate: true,
+      };
+
+      const response = await axios.post<MakeChattingResponse>(
+        "https://fastcampus-chat.net/chat",
+        requestBody,
+        {
+          headers: {
+            "content-type": "application/json",
+            serverId: process.env.REACT_APP_SERVER_ID,
+            Authorization: `Bearer ${mySession}`,
+          },
+        },
+      );
+      console.log(response);
+      if (response.status === 200) {
+        navigate(`/chat?chatId=${response.data.id}`);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const getMyChattingRooms = async (id: string) => {
+    try {
+      const response = await axios.get<GetMyChattingResponse>(
+        "https://fastcampus-chat.net/chat",
+        {
+          headers: {
+            "content-type": "application/json",
+            serverId: process.env.REACT_APP_SERVER_ID,
+            Authorization: `Bearer ${mySession}`,
+          },
+        },
+      );
+
+      if (response.status === 200) {
+        const filteredChats = response?.data.chats.filter((chat) => {
+          // 채팅이 private이고 users 배열이 존재하며,
+          // users 배열 중에서 id가 desiredUserId와 일치하는 사용자가 있는지 확인
+          return (
+            chat.isPrivate &&
+            chat.users.length === 2 &&
+            chat.users.filter((u) => u.id === id).length === 1
+          );
+        });
+
+        if (filteredChats?.length >= 1) {
+          console.log(filteredChats[0].id);
+          navigate(`/chat?chatId=${filteredChats[0].id}`);
+        } else {
+          await makeChattingRoom(userinfo.userId, userinfo.nickName);
+        }
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const handleUserChat = (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
   ) => {
     e.preventDefault();
-    console.log("userChat");
-  };
-  useEffect(() => {
-    setfirst("♀");
-    setUserOnOff(true);
-  }, []);
-  return (
-    <UserCover>
-      <UserImage src={picture} />
-      {userOnOff && (
-        <UserActive>
-          <span></span>
-          <span> 현재 활동중</span>
-        </UserActive>
-      )}
 
-      <UserName>
-        <div>
-          <span> {name}</span>
-          <span>{"(29)"}</span>
-        </div>
-      </UserName>
-      <UserRegion>서울거주</UserRegion>
-      <UserChatButton onClick={handleUserChat}>
-        <WhiteChatIcon />
-        {/* <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 512 512"><!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. --><path d="M160 368c26.5 0 48 21.5 48 48v16l72.5-54.4c8.3-6.2 18.4-9.6 28.8-9.6H448c8.8 0 16-7.2 16-16V64c0-8.8-7.2-16-16-16H64c-8.8 0-16 7.2-16 16V352c0 8.8 7.2 16 16 16h96zm48 124l-.2 .2-5.1 3.8-17.1 12.8c-4.8 3.6-11.3 4.2-16.8 1.5s-8.8-8.2-8.8-14.3V474.7v-6.4V468v-4V416H112 64c-35.3 0-64-28.7-64-64V64C0 28.7 28.7 0 64 0H448c35.3 0 64 28.7 64 64V352c0 35.3-28.7 64-64 64H309.3L208 492z"/></svg> */}
-      </UserChatButton>
-    </UserCover>
+    getMyChattingRooms(userinfo?.userId);
+  };
+
+  const handleDetailModal = (
+    e: React.MouseEvent<HTMLDivElement, MouseEvent>,
+  ) => {
+    e.preventDefault();
+    setUserModal(true);
+  };
+
+  return (
+    <div>
+      <UserCover>
+        <UserImage src={userinfo?.profileUrl} onClick={handleDetailModal} />
+        <UserName>
+          <div>
+            <span> {userinfo?.nickName}</span>
+            {userinfo?.birth && <span>({calculateAge(userinfo.birth)})</span>}
+          </div>
+        </UserName>
+        <UserRegion>{userinfo?.region}</UserRegion>
+        <UserChatButton onClick={handleUserChat}>
+          <WhiteChatIcon />
+        </UserChatButton>
+        <BackgroundBlur />
+      </UserCover>
+      {userModal === true && (
+        <UserProfileModal userinfo={userinfo} setUserModal={setUserModal} />
+      )}
+    </div>
   );
 };
 
@@ -50,28 +197,52 @@ export default UserInfo;
 const UserCover = styled.div`
   width: 100%;
   padding-top: 100%;
-  background-color: red;
   position: relative;
-  overflow: hidden;
-`;
 
+  &:hover {
+    transform: scale(1.03);
+    cursor: pointer;
+  }
+`;
+const BackgroundBlur = styled.div`
+  border-radius: 0.5rem;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 20%;
+  background-color: rgba(0, 0, 0, 0.5);
+`;
 const UserImage = styled.img`
+  border-radius: 0.5rem;
+
   object-fit: cover;
   position: absolute;
   width: 100%;
   height: 100%;
   top: 0;
   left: 0;
+  transition: all 0.3s;
+  box-shadow: 1px 2px 3px 1px rgba(0, 0, 0, 0.5);
 `;
 
 const UserName = styled.div`
+  z-index: 2;
   position: absolute;
   bottom: 2rem;
   color: rgba(255, 255, 255, 1); // Set color to white with full opacity
   font-size: 1.5rem;
   left: 0.5rem;
   display: flex;
+  span:nth-child(1) {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
 
+  span:nth-child(2) {
+    font-size: 1.2rem;
+  }
   span:nth-child(2) {
     font-size: 1.2rem;
   }
@@ -95,6 +266,8 @@ const UserName = styled.div`
 `;
 
 const UserRegion = styled.div`
+  z-index: 2;
+
   position: absolute;
   bottom: 0.7rem;
   left: 0.5rem;
@@ -106,6 +279,7 @@ const UserRegion = styled.div`
   }
 `;
 const UserChatButton = styled.button`
+  z-index: 2;
   position: absolute;
   bottom: 1rem;
   font-size: 2rem;
@@ -113,28 +287,14 @@ const UserChatButton = styled.button`
   right: 1rem;
   display: flex;
   justify-content: center;
-
+  background-color: transparent;
+  border: none;
   ${(props) => props.theme.response.tablet} {
     font-size: 1.2rem;
   }
-`;
-const UserActive = styled.div`
-  position: absolute;
-  top: 1rem;
-  left: 0.5rem;
-  font-size: 1rem;
-  color: white;
-  display: flex;
-  align-items: center;
-  > span:first-child {
-    display: inline-block;
-    width: 0.5rem;
-    height: 0.5rem;
-    border-radius: 50%;
-    background-color: green;
-    margin-right: 0.5rem;
-  }
-  ${(props) => props.theme.response.mobile} {
-    font-size: 0.8rem;
+  transition: all 0.3s;
+  &:hover {
+    transform: scale(1.05);
+    cursor: pointer;
   }
 `;

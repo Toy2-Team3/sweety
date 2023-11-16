@@ -36,6 +36,7 @@ import {
   RootErrorMessage,
   GobackLink,
   NameInput,
+  DefaultOption,
 } from "./SignUpSpecific";
 import {
   SignUpButtonProps,
@@ -46,6 +47,9 @@ import {
   smokingOptions,
 } from "../../constants/constant";
 import axios from "axios";
+import Box from "@mui/material/Box";
+import LinearProgress from "@mui/material/LinearProgress";
+import { InputWrapper } from "./Login";
 
 interface SignUpSpecificProps {
   theme: DefaultTheme;
@@ -66,6 +70,7 @@ function SignUpSpecific({ theme }: SignUpSpecificProps) {
   const [smoking, setSmoking] = useRecoilState(smokingState);
   const [activeStep, setActiveStep] = useRecoilState(activeStepState);
   const [isSignUp, setIsSignUp] = useState(false);
+  const [progress, setProgress] = useState(0);
 
   const navigate = useNavigate();
 
@@ -94,8 +99,10 @@ function SignUpSpecific({ theme }: SignUpSpecificProps) {
       if (response.status === 200 && response.data.message === "User created") {
         try {
           setIsSignUp(true);
+          setProgress(40);
           const imageUrl = await getImageDownloadURL(id);
           await UploadImage({ imageName: id, file: profileImage as File });
+          setProgress(70);
           const userData = {
             userId: id,
             password: pw,
@@ -116,6 +123,7 @@ function SignUpSpecific({ theme }: SignUpSpecificProps) {
             tall: tall,
           };
           await addUserData(userData);
+          setProgress(100);
           navigate("/login");
           console.log("가입에 성공했습니다.");
         } catch (error) {
@@ -130,7 +138,10 @@ function SignUpSpecific({ theme }: SignUpSpecificProps) {
         );
       }
     } catch (error) {
-      console.error("회원가입 중 서와와의 에러가 발생했습니다 :", error);
+      console.error("회원가입 중 서버와의 에러가 발생했습니다 :", error);
+      window.alert(
+        "서버와의 연결이 불안정 합니다.\n잠시후 다시 시도해 주세요.",
+      );
     }
   };
 
@@ -138,10 +149,12 @@ function SignUpSpecific({ theme }: SignUpSpecificProps) {
     if (profileImage) {
       try {
         await UploadImage({ imageName: id, file: profileImage as File });
+        setProgress(20);
         const imageUrl = await getImageDownloadURL(id);
         await handleSignUpClick(id, pw, userName, imageUrl);
       } catch (error) {
         console.error("유저 데이터 업로드 실패", error);
+        await deleteImage(id);
       }
     } else {
       console.error("프로필 이미지가 없습니다");
@@ -161,11 +174,11 @@ function SignUpSpecific({ theme }: SignUpSpecificProps) {
     profileImage &&
     selectedGender &&
     selectedRegion ? (
-      <Container style={{ gap: "26px", marginTop: "20px" }}>
+      <Container gap="26px" marginTop="20px">
         <SignUpStepper />
         <GreetingText>회원가입</GreetingText>
 
-        <div style={{ position: "relative" }}>
+        <InputWrapper margin="5px 0 0 0">
           <p>키</p>
           <NameInput
             placeholder="키를 입력해주세요"
@@ -179,19 +192,13 @@ function SignUpSpecific({ theme }: SignUpSpecificProps) {
               <WarnText>100~250사이의 숫자만 입력해 주세요</WarnText>
             )
           ) : null}
-        </div>
-        <div style={{ position: "relative" }}>
+        </InputWrapper>
+        <InputWrapper>
           <p>MBTI</p>
           <SelectBox defaultValue="" onChange={(e) => setMbti(e.target.value)}>
-            <option
-              value=""
-              disabled
-              selected
-              hidden
-              style={{ color: theme.color.darkGray }}
-            >
+            <DefaultOption value="" disabled selected hidden>
               MBTI를 선택해주세요
-            </option>
+            </DefaultOption>
             {mbtiTypes.map((mbti) => (
               <OptionBox key={mbti.value} value={mbti.value}>
                 {mbti.label}
@@ -201,19 +208,13 @@ function SignUpSpecific({ theme }: SignUpSpecificProps) {
           {mbti ? (
             <CorrectText>{compatibilityMessages[mbti]}</CorrectText>
           ) : null}
-        </div>
+        </InputWrapper>
         <div>
           <p>직업</p>
           <SelectBox defaultValue="" onChange={(e) => setJob(e.target.value)}>
-            <option
-              value=""
-              disabled
-              selected
-              hidden
-              style={{ color: theme.color.darkGray }}
-            >
+            <DefaultOption value="" disabled selected hidden>
               해당하는 직업을 선택해주세요
-            </option>
+            </DefaultOption>
             {jobOptions.map((job) => (
               <OptionBox key={job.value} value={job.value}>
                 {job.label}
@@ -225,19 +226,13 @@ function SignUpSpecific({ theme }: SignUpSpecificProps) {
           <div>
             <p>음주</p>
             <SelectBox
-              style={{ width: "150px" }}
+              width="150px"
               defaultValue=""
               onChange={(e) => setAlcohol(e.target.value)}
             >
-              <option
-                value=""
-                disabled
-                selected
-                hidden
-                style={{ color: theme.color.darkGray }}
-              >
+              <DefaultOption value="" disabled selected hidden>
                 음주는 하시나요?
-              </option>
+              </DefaultOption>
               {alcoholOptions.map((alcohol) => (
                 <OptionBox key={alcohol.value} value={alcohol.value}>
                   {alcohol.label}
@@ -248,19 +243,13 @@ function SignUpSpecific({ theme }: SignUpSpecificProps) {
           <div>
             <p>흡연</p>
             <SelectBox
-              style={{ width: "150px" }}
+              width="150px"
               defaultValue=""
               onChange={(e) => setSmoking(e.target.value === "true")}
             >
-              <option
-                value=""
-                disabled
-                selected
-                hidden
-                style={{ color: theme.color.darkGray }}
-              >
+              <DefaultOption value="" disabled selected hidden>
                 흡연은 하시나요?
-              </option>
+              </DefaultOption>
               {smokingOptions.map((smoking) => (
                 <OptionBox
                   key={String(smoking.value)}
@@ -282,6 +271,9 @@ function SignUpSpecific({ theme }: SignUpSpecificProps) {
         >
           달콤한 만남 시작하기!
         </SignUpButton>
+        <Box sx={{ width: "100%", position: "absolute", bottom: 0 }}>
+          <LinearProgress variant="determinate" value={progress} />
+        </Box>
       </Container>
     ) : (
       <RootErrorMessageWrapper>
@@ -295,12 +287,15 @@ function SignUpSpecific({ theme }: SignUpSpecificProps) {
       </RootErrorMessageWrapper>
     )
   ) : (
-    <Container style={{ gap: "30px" }}>
+    <Container gap="30px">
       <SweetLogo />
-      <div style={{ fontSize: "64px" }}>환영합니다🎉</div>
-      <div style={{ fontSize: "20px" }}>
+      <LoadingText fontSize="64px">환영합니다🎉</LoadingText>
+      <LoadingText fontSize="20px">
         회원가입이 완료되어 로그인 페이지로 이동중...
-      </div>
+      </LoadingText>
+      <Box sx={{ width: "100%", position: "absolute", bottom: 0 }}>
+        <LinearProgress variant="determinate" value={progress} />
+      </Box>
     </Container>
   );
 }
@@ -320,6 +315,10 @@ const SignUpButton = styled.button<SignUpButtonProps>`
     job && isTallValid && mbti && alcohol && smoking != undefined
       ? "pointer"
       : "default"};
+`;
+
+const LoadingText = styled.div<{ fontSize: string }>`
+  font-size: ${(props) => props.fontSize || "16px"};
 `;
 
 export default SignUpSpecific;

@@ -6,6 +6,9 @@ import {
   setDoc,
   deleteDoc,
   updateDoc,
+  query,
+  orderBy,
+  where,
 } from "firebase/firestore";
 import {
   ref,
@@ -16,6 +19,7 @@ import {
 } from "firebase/storage";
 import { db, storage } from "./firebase.config";
 import { UserData } from "../constants/constant";
+import { MypageUserData } from "../pages/MyPage";
 
 export interface IUserData {
   id: string;
@@ -44,6 +48,7 @@ export interface CommunityData {
   userId?: string;
   title?: string;
   content?: string;
+  createdAt?: number;
 }
 
 export async function UploadImage({
@@ -54,7 +59,6 @@ export async function UploadImage({
   file: File;
 }): Promise<void> {
   const storageRef = ref(storage, "userProfile/" + imageName);
-
   try {
     await uploadBytes(storageRef, file);
     console.log("이미지를 업로드 했습니다.");
@@ -62,7 +66,6 @@ export async function UploadImage({
     console.error("업로드에 실패 했습니다 :", error);
   }
 }
-
 export async function getImageDownloadURL(imageName: string): Promise<string> {
   const storageRef = ref(storage, "userProfile/" + imageName);
   try {
@@ -148,6 +151,20 @@ export const getAllData = async (
   return docs;
 };
 
+//커뮤니티 모든 문서 읽기 (최신순)
+export const getAllDataOrderByDate = async (): Promise<CommunityData[]> => {
+  const ref = collection(db, "community");
+  const q = query(ref, orderBy("createdAt", "desc"));
+  const querySnapshot = await getDocs(q);
+  const docs = querySnapshot.docs.map((doc) => {
+    return {
+      ...doc.data(),
+      id: doc.id,
+    };
+  });
+  return docs;
+};
+
 //단일 문서 읽기
 export const getSingleData = async (collectionName: string, docId: string) => {
   const docRef = doc(db, collectionName, docId);
@@ -155,7 +172,7 @@ export const getSingleData = async (collectionName: string, docId: string) => {
   if (docSnap.exists()) {
     return {
       ...docSnap.data(),
-      id: docSnap.data().id as string,
+      // id: docSnap.data().id as string,
     };
   }
 };
@@ -171,19 +188,20 @@ export const setUserData = async (
 };
 
 //커뮤니티 데이터 추가
-export const setCommunityData = async (props: CommunityData): Promise<void> => {
+export const setCommunityData = async (
+  props: Omit<CommunityData, "id">,
+): Promise<void> => {
   const newRef = doc(collection(db, "community")); //자동 랜덤 id
 
   await setDoc(newRef, props);
 };
 
-//업데이트
+//커뮤니티 데이터 업데이트
 export const updateData = async (
-  collectionName: string,
   docId: string,
-  props: Omit<IUserData | CommunityData, "id">,
+  props: Omit<CommunityData, "id">,
 ): Promise<void> => {
-  const docRef = doc(db, collectionName, docId);
+  const docRef = doc(db, "community", docId);
 
   await updateDoc(docRef, props);
 };
@@ -217,3 +235,57 @@ export const addImage = (imageName: string, image: File) => {
     );
   });
 };
+
+export const get = async (
+  initialCollection: string,
+  key: keyof IUserData | null = null,
+  value: string | null = null,
+): Promise<IUserData[]> => {
+  try {
+    if (key) {
+      const Ref = collection(db, initialCollection);
+      const q = query(Ref, where(key, "==", value));
+      const querySnapshot = await getDocs(q);
+      const userData: IUserData[] = [];
+
+      querySnapshot.forEach((doc) => {
+        userData.push(doc.data() as IUserData);
+      });
+      return userData;
+    } else {
+      const Ref = collection(db, initialCollection);
+      const userData: IUserData[] = [];
+      const querySnapshot = await getDocs(Ref);
+
+      querySnapshot.forEach((doc) => {
+        userData.push(doc.data() as IUserData);
+      });
+      return userData;
+    }
+  } catch (error) {
+    console.error("bad: ", error);
+    throw error;
+  }
+};
+
+// 미아페이지 유저 데이터 업데이트
+export const updateUserData = async (
+  userId: string,
+  props: MypageUserData
+): Promise<void> => {
+  const docRef = doc(db, "user", userId);
+
+  await updateDoc(docRef, props);
+}; 
+
+export const urlToBlob = async (tempImage: string) => {
+  try{
+    const response = await fetch(tempImage);
+    const blob = await response.blob();
+    const blobURL = URL.createObjectURL(blob);
+    return blobURL;
+
+  } catch (error) {
+    console.error("Error loading image:", error);
+  }
+}

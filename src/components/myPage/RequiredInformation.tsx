@@ -1,21 +1,22 @@
 import styled, { DefaultTheme } from "styled-components";
 import { regions, genderOptions } from "../../constants/constant";
-import { calculateMaxDate, isNameValid } from "../../utils/registerFunction";
+import { isNameValid } from "../../utils/registerFunction";
 import { CorrectText, WarnText } from "../login/SignUpIDPW";
 import { isTallValid } from "../../utils/registerFunction";
 import { useRecoilState } from "recoil";
 import { useEffect, useState } from "react";
+import { getUserData, urlToBlob } from "../../utils/firebase";
 import {
-  jobState,
-  tallState,
-  mbtiState,
   alcoholState,
-  smokingState,
-  userNameState,
   birthdayState,
-  profileImageState,
-  selectedGenderState,
-  selectedRegionState,
+  jobState, 
+  mbtiState, 
+  profileImageState, 
+  selectedGenderState, 
+  selectedRegionState, 
+  smokingState, 
+  tallState, 
+  userNameState,
 } from "../../recoil/atoms";
 import {
   alcoholOptions,
@@ -29,38 +30,65 @@ interface SignUpSpecificProps {
   theme: DefaultTheme;
 }
 
-export default function RequiredInformation({ theme }: SignUpSpecificProps) {
-  const [prevProfileImageUrl, setPrevProfileImageUrl] = useState("");
-  const [profileImage, setProfileImage] = useRecoilState(profileImageState);
+export default function RequiredInformation({ theme, onImageChange }: SignUpSpecificProps & { onImageChange: () => void }) {
+  const [prevProfileImageUrl, setPrevProfileImageUrl] = useState("")
+  const [, setProfileImage] = useRecoilState(profileImageState)
+  const [newProfileImageUrl, setNewProfileImageUrl] = useState("");
+  const [isUploaded, setIsUploaded] = useState(false);
   const [userName, setUserName] = useRecoilState(userNameState);
-  const [birthday] = useRecoilState(birthdayState);
-  const [selectedGender] = useRecoilState(selectedGenderState);
-  const [selectedRegion, setSelectedRegion] = useRecoilState(selectedRegionState);
-  const [job, setJob] = useRecoilState(jobState);
-  const [tall, setTall] = useRecoilState(tallState);
-  const [mbti, setMbti] = useRecoilState(mbtiState);
-  const [alcohol, setAlcohol] = useRecoilState(alcoholState);
-  const [smoking, setSmoking] = useRecoilState(smokingState);
+  const [birthday, setBirthday] =  useRecoilState(birthdayState);
+  const [selectedGender, setSelectedGender] =  useRecoilState(selectedGenderState);
+  const [selectedRegion, setSelectedRegion] =  useRecoilState(selectedRegionState);
+  const [job, setJob] =  useRecoilState(jobState);
+  const [tall, setTall] =  useRecoilState(tallState);
+  const [mbti, setMbti] =  useRecoilState(mbtiState);
+  const [alcohol, setAlcohol] =  useRecoilState(alcoholState);
+  const [smoking, setSmoking] =  useRecoilState(smokingState);
+  const id = sessionStorage.getItem('id');
+
+  const getUserInformation = async (): Promise<void> => {
+    if(id) {
+      const userData = await getUserData(id);
+
+      if (userData) {
+        // 서버 응답이 취소일 경우를 대비해서 이전 이미지 url을 blob형태로 가지고 있기
+        const tempImage = await urlToBlob(userData.profileUrl);
+        sessionStorage.setItem('tempImage', tempImage!);
+
+        setPrevProfileImageUrl(userData.profileUrl);
+        setUserName(userData.nickName);
+        setAlcohol(userData.alcohol);
+        setBirthday(userData.birth);
+        setSelectedGender(userData.gender);
+        setSelectedRegion(userData.region);
+        setJob(userData.job);
+        setTall(userData.tall);
+        setMbti(userData.mbti);
+        setSmoking(userData.smoking);
+      }
+    }
+  };
+
+  useEffect(() => {
+    getUserInformation();
+  }, [id]);
 
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
     if (files && files.length > 0) {
       const imageFile = files[0];
       setProfileImage(imageFile);
+      setNewProfileImageUrl(URL.createObjectURL(imageFile));
+      onImageChange();
+      setIsUploaded(true);
     }
   };
-
-  useEffect(() => {
-    if (profileImage) {
-      setPrevProfileImageUrl(URL.createObjectURL(profileImage));
-    }
-  }, [profileImage]);
 
   return (
     <RequiredInformationWrap>
       <ProfileWrapper>
         <ProfileUploadLabel
-          backgroundImage={prevProfileImageUrl || ""}
+          backgroundImage={isUploaded ? newProfileImageUrl : prevProfileImageUrl}
           htmlFor="profile"
         >
         </ProfileUploadLabel>
@@ -89,7 +117,7 @@ export default function RequiredInformation({ theme }: SignUpSpecificProps) {
       <TwoColumnWrapper>
         <div>
           <p>생년월일</p>
-          <Birthday>YYYY-MM-DD</Birthday>
+          <Birthday>{birthday}</Birthday>
         </div>
         <div>
           <p>성별</p>
@@ -115,7 +143,7 @@ export default function RequiredInformation({ theme }: SignUpSpecificProps) {
       <div>
         <p>지역</p>
         <SelectBox
-          defaultValue=""
+          value={selectedRegion}
           onChange={(e) => setSelectedRegion(e.target.value)}
         >
           <option
@@ -151,7 +179,7 @@ export default function RequiredInformation({ theme }: SignUpSpecificProps) {
       </div>
       <div style={{ position: "relative" }}>
         <p>MBTI</p>
-        <SelectBox defaultValue="" onChange={(e) => setMbti(e.target.value)}>
+        <SelectBox value={mbti} onChange={(e) => setMbti(e.target.value)}>
           <option
             value=""
             disabled
@@ -159,7 +187,7 @@ export default function RequiredInformation({ theme }: SignUpSpecificProps) {
             hidden
             style={{ color: theme.color.darkGray }}
           >
-            MBTI를 선택해주세요
+            {mbti}
           </option>
           {mbtiTypes.map((mbti) => (
             <OptionBox key={mbti.value} value={mbti.value}>
@@ -171,7 +199,7 @@ export default function RequiredInformation({ theme }: SignUpSpecificProps) {
       </div>
       <div>
         <p>직업</p>
-        <SelectBox defaultValue="" onChange={(e) => setJob(e.target.value)}>
+        <SelectBox value={job} onChange={(e) => setJob(e.target.value)}>
           <option
             value=""
             disabled
@@ -193,7 +221,7 @@ export default function RequiredInformation({ theme }: SignUpSpecificProps) {
           <p>음주</p>
           <SelectBox
             style={{ width: "150px" }}
-            defaultValue=""
+            value={alcohol}
             onChange={(e) => setAlcohol(e.target.value)}
           >
             <option
@@ -216,7 +244,7 @@ export default function RequiredInformation({ theme }: SignUpSpecificProps) {
           <p>흡연</p>
           <SelectBox
             style={{ width: "150px" }}
-            defaultValue=""
+            value={`${smoking}`}
             onChange={(e) => setSmoking(e.target.value === "true")}
           >
             <option
