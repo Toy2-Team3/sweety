@@ -16,6 +16,7 @@ import { ReactComponent as ActivedSettingIcon } from "../assets/activedSettingIc
 import { useSetRecoilState } from "recoil";
 import { loginState } from "../recoil/atoms";
 import ToastMessage from "./common/ToastMessage";
+import { logOut } from '../utils/logOut';
 
 const categories = [
   {
@@ -56,12 +57,8 @@ export default function NavigationBar() {
   const setLogin = useSetRecoilState(loginState);
   const [showToast, setShowToast] = useState(false);
 
-  const logOut = async () => {
-    setLogin(false);
-    sessionStorage.removeItem("accessToken");
-    sessionStorage.removeItem("isLogin");
-    sessionStorage.removeItem("id");
-    navigate("/");
+  const handleLogOut = () => {
+    logOut(setLogin, navigate);
   };
 
   const handleCategoryClick = (categoryId: string) => {
@@ -131,7 +128,7 @@ export default function NavigationBar() {
       </TopDiv>
       <BottomDiv>
         <SettingBox $isClicked={isSettingClicked}>
-          <SettingMenu onClick={logOut}>로그아웃</SettingMenu>
+          <SettingMenu onClick={handleLogOut}>로그아웃</SettingMenu>
           <Divider></Divider>
           <SettingMenu onClick={handleToastMessage}>구독하기</SettingMenu>
         </SettingBox>
