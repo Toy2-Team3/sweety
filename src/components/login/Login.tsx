@@ -5,7 +5,7 @@ import { ShowPasswordButton, WarnText } from "./SignUpIDPW";
 import { idState, loginState, pwState } from "../../recoil/atoms";
 import { useNavigate } from "react-router-dom";
 import { Container } from "./StartPage";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useSetRecoilState } from "recoil";
 import styled from "styled-components";
 import { useState } from "react";
 import axios from "axios";
@@ -15,8 +15,8 @@ function Login() {
   const [showPw, setShowPw] = useState(false);
   const [id, setId] = useRecoilState(idState);
   const [pw, setPw] = useRecoilState(pwState);
-  const [login, setLogin] = useRecoilState(loginState);
   const [noneUser, setNoneUser] = useState(false);
+  const setLogin = useSetRecoilState(loginState);
 
   const navigate = useNavigate();
 
@@ -52,9 +52,10 @@ function Login() {
           setWrong(true);
           const data = response.data.accessToken;
           sessionStorage.setItem("accessToken", data);
-          updateTokenInUserCollection(id, data);
+          sessionStorage.setItem("isLogin", "true");
+          sessionStorage.setItem("id", id);
           setLogin(true);
-          console.log(login);
+          updateTokenInUserCollection(id, data);
           navigate("/");
         } else {
           setNoneUser(true);
@@ -85,7 +86,7 @@ function Login() {
           placeholder="아이디를 입력해주세요."
         />
       </InputWrapper>
-      <InputWrapper style={{ position: "relative" }}>
+      <InputWrapper>
         <p>비밀번호</p>
         <IdPwInput
           type={showPw ? "text" : "password"}
@@ -99,7 +100,7 @@ function Login() {
           {showPw ? "🙂" : "😌"}
         </ShowPasswordButton>
       </InputWrapper>
-      <div style={{ position: "relative" }}>
+      <InputWrapper>
         <LoginButton
           id={id}
           pw={pw}
@@ -115,7 +116,7 @@ function Login() {
         ) : id && pw && wrong ? (
           <WarnText>아이디 및 비밀번호를 다시 확인해주세요</WarnText>
         ) : null}
-      </div>
+      </InputWrapper>
 
       <RegisterLink onClick={() => navigate("/signup1")}>
         회원가입하러 가기
@@ -124,8 +125,9 @@ function Login() {
   );
 }
 
-export const InputWrapper = styled.div`
-  margin: 10px 0 15px;
+export const InputWrapper = styled.div<{ margin?: string }>`
+  margin: ${(props) => props.margin || "10px 0 15px"};
+  position: relative;
 `;
 
 export const IdPwInput = styled.input`
