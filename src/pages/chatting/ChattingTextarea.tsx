@@ -45,17 +45,17 @@ const ChattingTextarea = ({
   const handleKeyPress = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (isSending) event.preventDefault();
     if (event.key === "Enter" && !event.shiftKey) {
-      // Enter 키를 누르고 Shift 키를 동시에 누르지 않았을 때 sendMessage 호출
-      event.preventDefault(); // Enter 키 기본 동작 방지
+      event.preventDefault();
       sendMessage();
     }
   };
 
-  // const handleKeyUp = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
-  //   if (event.code === "Enter") {
-  //     event.preventDefault();
-  //   }
-  // };
+  const handleKeyUp = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (isSending) event.preventDefault();
+    if (event.code === "Enter") {
+      event.preventDefault();
+    }
+  };
 
   return (
     <InputContainer>
@@ -66,7 +66,7 @@ const ChattingTextarea = ({
         value={message}
         onChange={handleMessageChange}
         onKeyDown={handleKeyPress}
-        // onKeyUp={handleKeyUp}
+        onKeyUp={handleKeyUp}
       />
       <button onClick={sendMessage} disabled={isSending}>
         <img src={SendChat} alt="" />
