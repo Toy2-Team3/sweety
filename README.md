@@ -99,7 +99,7 @@ _프라이빗 채팅 서비스, **"Sweety"**_
     </td>
     <td align="left">
       <p>
-      반응형 네비게이션 바, 마이 페이지(API 연동) 구현, 피그마 디자인, 회의록 정리, 리드미 작성
+      네비게이션 바, 마이 페이지(API 연동) 구현, 피그마 디자인, 회의록 정리, 리드미 작성
       </p>
     </td>
     <td align="left">
@@ -158,7 +158,7 @@ JWT를 이용한 유저 인증
 채팅방에 속한 유저들의 온라인/오프라인 상태 조회  
 실시간 1:1 채팅 및 그룹 채팅 (소켓 통신)  
 채팅방 나가기  
-<br><br><br> 
+<br><br>
 
 ### 마이페이지
 <img width="600px" src="https://github.com/Toy2-Team3/sweety/assets/63582234/980eff1e-2c5b-48e9-b096-b09c9b27e0b6" />  
@@ -170,6 +170,18 @@ JWT를 이용한 유저 인증
 유저 프로필 정보 수정 시 업데이트 가능 (변경사항 없을 시 disabled)  
 유저 프로필 정보 업데이트 (firebase, 기본 DB)  
 조건 만족 시 회원 탈퇴  
+<br><br>
+
+### 반응형
+<img height="250" src="https://github.com/Toy2-Team3/sweety/assets/63582234/53d57be7-8ecc-48e8-9dad-18e750f54891"> 
+<img height="250" src="https://github.com/Toy2-Team3/sweety/assets/63582234/3a50acd3-937d-46fb-90d2-daeecd7df178">
+<img height="250" src="https://github.com/Toy2-Team3/sweety/assets/63582234/15a6c790-5921-4fe1-ac6c-e54857ee117d">  
+
+<br><br><br>
+
+## 유저 플로우
+<img width="600" alt="유저플로우" src="https://github.com/Toy2-Team3/sweety/assets/63582234/a5312772-bfa2-4fdb-96cd-ead3ca25e6ec">  
+
 <br><br><br>
 
 ## 💪 필수 구현 사항
