@@ -99,7 +99,7 @@ _프라이빗 채팅 서비스, **"Sweety"**_
     </td>
     <td align="left">
       <p>
-      네비게이션 바, 마이 페이지(API 연동) 구현, 피그마 디자인, 회의록 정리, 리드미 작성
+      반응형 네비게이션 바, 마이 페이지(API 연동) 구현, 피그마 디자인, 회의록 정리, 리드미 작성
       </p>
     </td>
     <td align="left">
@@ -130,7 +130,7 @@ JWT를 이용한 유저 인증
 
 [ 담당 개발자: **채민석** ]
 
-유저 프로필 리스트 조회 (이성만 조회 가능, 새로고침 시 랜덤으로 정렬)  
+유저 프로필 리스트 조회 (이성 프로필만 조회 가능, 새로고침 시 랜덤 정렬)  
 유저 상세 정보 프로필 조회  
 유저 상세 정보를 바탕으로 클릭한 유저와의 궁합 점수 조회  
 1:1 채팅 생성 및 채팅방으로 이동 (채팅 기록이 있는 경우 바로 이동)  
@@ -154,8 +154,8 @@ JWT를 이용한 유저 인증
 [ 담당 개발자: **윤석민** ]
 
 채팅방 리스트 조회 시 마지막 메세지 및 수신 시간 조회  
-새로운 유저 입장시 알림, 채팅방 퇴장 시 알림  
-채팅방에 속한 유저의 온라인/오프라인 상태 조회  
+새로운 유저 입장 시 입장한 유저 알림, 채팅방 퇴장 시 퇴장한 유저 알림  
+채팅방에 속한 유저들의 온라인/오프라인 상태 조회  
 실시간 1:1 채팅 및 그룹 채팅 (소켓 통신)  
 채팅방 나가기  
 <br><br><br> 
@@ -178,8 +178,8 @@ JWT를 이용한 유저 인증
 - [x] `react` 상태를 통한 CRUD 구현
 - [x] 상태에 따라 달라지는 스타일 구현
 - [x] `firebase custom hook`을 통한 비동기 처리 구현
-- [x] 유저인증 시스템(로그인, 회원가입) 구현
-- [x] `jwt` 유저 인증 시스템 (로그인, 회원가입)
+- [x] 유저 인증 시스템(로그인, 회원가입) 구현
+- [x] `jwt`를 이용한 유저 인증 시스템 (로그인, 회원가입)
 - [x] 소켓을 이용한 채팅 구현
 
 <br/><br/><br/>  
@@ -196,7 +196,6 @@ JWT를 이용한 유저 인증
 </div>
 
 ### Development (FrontEnd)
-
 <div style="display: flex;">
   <img src="https://img.shields.io/badge/html5-E34F26?style=for-the-badge&logo=html5&logoColor=white" />
   <img src="https://img.shields.io/badge/styledcomponents-DB7093?style=for-the-badge&logo=styledcomponents&logoColor=white" />
@@ -207,15 +206,12 @@ JWT를 이용한 유저 인증
 </div>
 
 ### DB
-
 <img src="https://img.shields.io/badge/firebase-FFCA28?style=for-the-badge&logo=firebase&logoColor=black" />
 
 ### Deploy
-
   <img src="https://img.shields.io/badge/vercel-000000?style=for-the-badge&logo=vercel&logoColor=white" />
 
 ### Communication
-
 <div style="display: flex;">
   <img src="https://img.shields.io/badge/jira-0052CC?style=for-the-badge&logo=jira&logoColor=white" />
 </div>
