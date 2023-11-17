@@ -1,4 +1,4 @@
-import { FC, useEffect } from "react";
+import { FC, useEffect, useState } from "react";
 import styled from "styled-components";
 import Close from "../../assets/close.png";
 import Chat from "../../assets/comments-solid.svg";
@@ -12,6 +12,7 @@ import axios from "axios";
 import { preventScroll } from "../../utils/preventScroll";
 import UserCard from "./UserCard";
 import { CommonData } from "../../constants/constant";
+import Spinner from "../common/Spinner";
 
 interface User {
   id: string;
@@ -51,9 +52,11 @@ const CommunityModal: FC<CommunityModalProps> = ({
   const ACCESS_TOKEN = sessionStorage.getItem("accessToken");
   const [commonList, setCommonList] = useRecoilState(commonListState);
   const navigate = useNavigate();
+  const [progress, setProgress] = useState(false);
 
   //그룹 채팅 참여 버튼 클릭
   const handleClickChatButton = async () => {
+    setProgress(true);
     try {
       const requestBody: RequestBody = {
         chatId: item.chatId as string,
@@ -72,16 +75,20 @@ const CommunityModal: FC<CommunityModalProps> = ({
       );
 
       if (response.status === 200) {
-        handleClosePostModal();
-        navigate(`/chat?chatId=${item.chatId}`);
+        setProgress(false);
+        setToastMsg("채팅방으로 이동합니다 ✈️");
+        setShowToastMsg(true);
       } else {
+        setProgress(false);
         console.log("그룹 채팅 참여하기 실패", response);
+        return;
       }
     } catch (error) {
+      setProgress(false);
       console.log(error);
       setToastMsg("이미 참여한 채팅입니다! 채팅방으로 이동합니다 ✈️");
       setShowToastMsg(true);
-
+    } finally {
       setTimeout(() => {
         setShowToastMsg(false);
         handleClosePostModal();
@@ -95,8 +102,8 @@ const CommunityModal: FC<CommunityModalProps> = ({
       await deleteData("community", id);
 
       // 삭제 완료 글 리스트 새로고침하기
-      const newList = commonList.filter((item) => {
-        return item.id !== ID;
+      const newList = commonList.filter((val) => {
+        return item.id !== val.id;
       });
       setCommonList(newList);
 
@@ -139,29 +146,34 @@ const CommunityModal: FC<CommunityModalProps> = ({
           <ModalRight>
             <h1>{item.title}</h1>
             <p>{item.content}</p>
-            <div>
-              {ID !== item.userId && item.chatId !== "" && (
-                <GoToChatButton onClick={handleClickChatButton}>
-                  <img src={Chat} />
-                  그룹 채팅 참여
-                </GoToChatButton>
-              )}
 
-              {ID === item.userId && (
-                <CommunityButtonWrapper>
-                  <AlertDialogModal item={item} handleDelete={handleDelete} />
-                  <Button
-                    variant="plain"
-                    color="primary"
-                    size="lg"
-                    sx={{ width: 1 / 2 }}
-                    onClick={handleUpdate}
-                  >
-                    수정
-                  </Button>
-                </CommunityButtonWrapper>
-              )}
-            </div>
+            {progress ? (
+              <Spinner />
+            ) : (
+              <>
+                {ID !== item.userId && item.chatId !== "" && (
+                  <GoToChatButton onClick={handleClickChatButton}>
+                    <img src={Chat} />
+                    그룹 채팅 참여
+                  </GoToChatButton>
+                )}
+              </>
+            )}
+
+            {ID === item.userId && (
+              <CommunityButtonWrapper>
+                <AlertDialogModal item={item} handleDelete={handleDelete} />
+                <Button
+                  variant="plain"
+                  color="primary"
+                  size="lg"
+                  sx={{ width: 1 / 2 }}
+                  onClick={handleUpdate}
+                >
+                  수정
+                </Button>
+              </CommunityButtonWrapper>
+            )}
           </ModalRight>
         </ModalContent>
       </ModalWrapper>
@@ -246,6 +258,7 @@ const ModalLeft = styled.div`
 `;
 
 const ModalRight = styled.div`
+  width: 100%;
   display: flex;
   flex-direction: column;
   gap: 1rem;
@@ -255,7 +268,7 @@ const ModalRight = styled.div`
   }
   h1 {
     font-size: 2rem;
-    font-weight: bold;
+    font-weight: 500;
     line-height: 2.5rem;
 
     ${(props) => props.theme.response.tablet} {

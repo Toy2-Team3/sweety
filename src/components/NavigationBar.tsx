@@ -15,6 +15,8 @@ import { ReactComponent as ActivedMyPageIcon } from "../assets/activedMypageIcon
 import { ReactComponent as ActivedSettingIcon } from "../assets/activedSettingIcon.svg";
 import { useSetRecoilState } from "recoil";
 import { loginState } from "../recoil/atoms";
+import ToastMessage from "./common/ToastMessage";
+import { logOut } from '../utils/logOut';
 
 const categories = [
   {
@@ -50,16 +52,13 @@ const categories = [
 export default function NavigationBar() {
   const navigate = useNavigate();
   const location = useLocation();
-  const [activeCategory, setActiveCategory] = useState("");
+  const [activeCategory, setActiveCategory] = useState("home");
   const [isSettingClicked, setIsSettingClicked] = useState(false);
   const setLogin = useSetRecoilState(loginState);
+  const [showToast, setShowToast] = useState(false);
 
-  const logOut = async () => {
-    setLogin(false);
-    sessionStorage.removeItem("accessToken");
-    sessionStorage.removeItem("isLogin");
-    sessionStorage.removeItem("id");
-    navigate("/");
+  const handleLogOut = () => {
+    logOut(setLogin, navigate);
   };
 
   const handleCategoryClick = (categoryId: string) => {
@@ -71,17 +70,31 @@ export default function NavigationBar() {
     setIsSettingClicked(!isSettingClicked);
   };
 
+  const handleToastMessage = () => {
+    setShowToast(true);
+
+    setTimeout(() => {
+      setShowToast(false);
+    }, 2000);
+  };
+  
+  
   useEffect(() => {
-    setActiveCategory("home");
-  }, []);
+    const path = location.pathname.replace("/", "");
+    setActiveCategory(path || "home");
+  }, [location]);
 
   // 새로고침 시 저장되도록
   useEffect(() => {
-    const savedCategory = location.pathname.replace("/", "");
-    console.log(savedCategory);
+    const path = location.pathname.replace("/", "");
 
-    if (savedCategory) {
-      setActiveCategory(savedCategory);
+    if (path) {
+      setActiveCategory(path);
+    }
+
+    // 커뮤니티 글 작성, 수정 페이지 navigate
+    if (path.includes("community")) {
+      setActiveCategory("community");
     }
   }, [location]);
 
@@ -114,10 +127,16 @@ export default function NavigationBar() {
       </TopDiv>
       <BottomDiv>
         <SettingBox $isClicked={isSettingClicked}>
-          <SettingMenu onClick={logOut}>로그아웃</SettingMenu>
+          <SettingMenu onClick={handleLogOut}>로그아웃</SettingMenu>
           <Divider></Divider>
-          <SettingMenu>다른 설정...</SettingMenu>
+          <SettingMenu onClick={handleToastMessage}>구독하기</SettingMenu>
         </SettingBox>
+        {
+          showToast &&
+            <ToastMessage 
+              content="준비 중인 서비스입니다. 😉"
+            />
+        }
         <ClickedBox $isClicked={isSettingClicked}>
           <SettingButton onClick={handleOpenSettingBox}>
             {isSettingClicked ? <ActivedSettingIcon /> : <SettingIcon />}

@@ -83,7 +83,7 @@ const CommunityUpdate = () => {
               sx={{ width: 1 / 2 }}
               onClick={() => navigate("/community")}
             >
-              List
+              뒤로 가기
             </Button>
             <Button
               type="submit"

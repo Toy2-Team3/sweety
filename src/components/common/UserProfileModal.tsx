@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from "react";
 import styled, { keyframes } from "styled-components";
 import Close from "../../assets/close.png";
-import { UserInfoProps, calculateAge } from "../Home/UserInfo";
+import { calculateAge } from "../Home/UserInfo";
 import { calculateLoveSync } from "../../utils/loveSync";
 import { getUserData } from "../../utils/firebase";
+import { HomeUserInfo } from "../../pages/HomePage";
 
 interface UserProfileModalProps {
-  userinfo: UserInfoProps;
+  userinfo: HomeUserInfo;
   setUserModal: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
@@ -59,10 +60,10 @@ const UserProfileModal: React.FC<UserProfileModalProps> = ({
   }, []);
 
   return (
-    <ModalBackground>
-      <ModalWrapper>
-        <CloseButton>
-          <img src={Close} alt="Close" onClick={handleModalClose} />
+    <ModalBackground onClick={handleModalClose}>
+      <ModalWrapper onClick={(e) => e.stopPropagation()}>
+        <CloseButton onClick={handleModalClose}>
+          <img src={Close} alt="Close" />
         </CloseButton>
         <ModalTop>
           <ImageWrapper>
@@ -135,7 +136,7 @@ const UserProfileModal: React.FC<UserProfileModalProps> = ({
               <>
                 <h3>관심사</h3>
                 <div>
-                  {userinfo.interested?.map((value) => {
+                  {userinfo.interested?.map((value: string) => {
                     return <Tag key={value}>{value}</Tag>;
                   })}
                 </div>
@@ -181,7 +182,7 @@ export const ModalWrapper = styled.div`
 
   ${(props) => props.theme.response.tablet} {
     width: 90%;
-    max-height: 70%;
+    max-height: 80%;
     padding: 2.5rem 2rem;
   }
 
@@ -194,6 +195,9 @@ export const ModalWrapper = styled.div`
     }
   }
   h2 {
+    display: flex;
+    align-items: center;
+    height: 40px;
     font-size: 1.4rem;
     white-space: pre-wrap;
     ${(props) => props.theme.response.tablet} {
@@ -231,7 +235,6 @@ export const CloseButton = styled.div`
     }
   }
 
-  // 닫기 버튼에 대한 클릭 이벤트 핸들러 추가
   cursor: pointer;
   &:hover {
     opacity: 0.8;
@@ -272,9 +275,8 @@ export const ImageWrapper = styled.div`
     height: 100%;
     object-fit: cover;
     display: block;
-
-    // 이미지 클릭 시 모달 닫기 이벤트 핸들러 호출
     cursor: pointer;
+
     &:hover {
       opacity: 0.8;
     }
@@ -334,6 +336,7 @@ const LoveButton = styled.button`
 
   ${(props) => props.theme.response.tablet} {
     padding: 0.2rem 1rem;
+    font-size: 0.8rem;
   }
 
   &:hover {
